@@ -12,11 +12,12 @@ Coworx is a local Codex App project for running real work as a coordinated team.
 4. Let Coworx consult the capability map for this user's plugins, skills, connectors, browser profiles, scripts, apps, and fallbacks.
 5. For broad work, let the main thread build a task graph and staff lanes.
 6. Track explicit and implied directives until each is completed, staged, blocked, skipped, or explicitly waiting.
-7. Use subagents when parallel research, implementation, diagnosis, review, verification, or evidence collection improves delivery.
-8. Use installed skills/plugins/connectors as capabilities when they fit the task.
-9. Use Browser Use for in-app/current/local/public targets and Playwright for repeatable structured browser work.
-10. Use Computer Use only for GUI/native/real-profile workflows and only with target-level locks.
-11. Review the run log and final report before treating the task as complete.
+7. Use Standby Mode when the user asks Coworx to keep checking or continue in the background during the current active session.
+8. Use subagents when parallel research, implementation, diagnosis, review, verification, or evidence collection improves delivery.
+9. Use installed skills/plugins/connectors as capabilities when they fit the task.
+10. Use Browser Use for in-app/current/local/public targets and Playwright for repeatable structured browser work.
+11. Use Computer Use only for GUI/native/real-profile workflows and only with target-level locks.
+12. Review the run log and final report before treating the task as complete.
 
 ## Creating A Task
 
@@ -41,6 +42,21 @@ The Director reads the task, checks project memory, confirms scope, classifies r
 Coworx does not stop merely because work touches a browser or account. It stops when authority, target, safety, credentials, or resource locks require it.
 
 Coworx also does not stop merely because the first subtask is finished. It stops when every directive required by the user's goal has been delivered, staged, blocked, skipped, or explicitly marked waiting.
+
+## Standby Mode
+
+Standby Mode is a lightweight dispatch loop for the current active Codex session and Coworx project. It is triggered by requests such as `standby mode`, `dispatch mode`, `keep checking`, `check every 5 minutes`, `run this in standby`, or `continue in the background while this chat/session is active`.
+
+By default, Coworx checks every 5 minutes for up to 6 hours. Each cycle continues from the last checkpoint, performs one bounded useful unit, saves private state under `.coworx-private/standby/`, and waits for the next cycle. It prevents duplicate loops and stops when the task is complete, paused, stopped, at max runtime, or waiting for user input.
+
+First-time setup asks how meaningful updates should be delivered: Discord/private channel/webhook, desktop notification, Messages/iMessage if available, SMS/email if later configured, or local status file only. Quiet cycles should not notify the user unless verbose mode is enabled.
+
+Use:
+
+```bash
+node scripts/coworx_standby.mjs status
+node scripts/coworx_standby.mjs demo-test
+```
 
 ## Using Subagents
 

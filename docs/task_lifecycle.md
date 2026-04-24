@@ -17,3 +17,5 @@
 15. Close: mark complete only after every directive is completed, staged, blocked, skipped, or explicitly waiting; then move state when a queued task was used and write the final report.
 
 Coworx stops after one queued task unless the user explicitly asks it to continue or the current task contains delegated follow-through.
+
+When the user asks for Standby Mode, convert the active task into a resumable dispatch loop instead of a one-shot run. Save private standby state after each bounded cycle, preserve the directive ledger between cycles, prevent duplicate loops, and stop when the task completes, the user stops or pauses it, max runtime is reached, or user input is required.

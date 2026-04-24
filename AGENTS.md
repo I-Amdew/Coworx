@@ -9,6 +9,7 @@ This file is the canonical operating contract. Load supporting docs only when th
 - [docs/parallelism_and_locks.md](docs/parallelism_and_locks.md): parallel-by-default execution and resource locks.
 - [docs/safety_policy.md](docs/safety_policy.md): action levels, approvals, protected areas, and stop conditions.
 - [docs/operator_protocol.md](docs/operator_protocol.md): browser, Playwright, API, connector, and Computer Use execution packets.
+- [docs/standby_mode.md](docs/standby_mode.md): lightweight standby/dispatch loop for the current active session.
 - [docs/capability_discovery.md](docs/capability_discovery.md): per-user capability inventory for plugins, skills, connectors, tools, profiles, and learned routing.
 - [docs/plugin_skill_router.md](docs/plugin_skill_router.md): capability routing across installed Codex skills/plugins.
 - [docs/project_workspace_model.md](docs/project_workspace_model.md): Coworx as a project-backed workspace with local memory, maps, outputs, and hand-off paths.
@@ -143,6 +144,22 @@ In no-question mode, Coworx should:
 - investigate missing context where possible;
 - continue independent lanes while blocked items wait;
 - produce a final completion report and approval queue.
+
+## Standby Mode
+
+Standby Mode is a core Coworx feature for the current active Codex session and Coworx project. It is not a separate experimental product branch.
+
+Trigger Standby Mode when the user says things like `standby mode`, `dispatch mode`, `keep checking`, `check every 5 minutes`, `keep working and text me if you need me`, `run this in standby`, or `continue in the background while this chat/session is active`.
+
+Default interval is 5 minutes. Default max runtime is 6 hours. Each cycle continues from the last checkpoint, performs one bounded unit of useful work, saves local state, and waits until the next cycle. Do not restart planning every cycle and do not message the user every cycle unless verbose mode is enabled.
+
+Prevent duplicate standby loops. Stop when the task is done, the user stops it, max runtime is reached, or user input is required.
+
+If Standby Mode has not been configured before, ask how the user wants meaningful updates: Discord/private channel/webhook, desktop notification, Messages/iMessage if available, SMS/email if later configured, or local status file only. Start with the simplest configured method, usually a local status file, and design new methods as replaceable notification adapters.
+
+Notify only when something meaningful happens: standby starts or stops, task completion, important milestone, blocker/error, needed permission, login/MFA/manual action, ready outputs, or max runtime. Runtime state belongs in ignored `.coworx-private/standby/` files and must not include credentials, webhook URLs, phone numbers, account details, personal screenshots, session files, cookies, tokens, traces, or real personal-account outputs.
+
+Standby Mode uses the existing Coworx browser, app, Computer Use, resource lock, authority, and safety rules. Pause or stage before protected final actions such as sending messages, submitting forms, purchasing, deleting important files, changing account/security settings, publishing, deploying, or sharing private information.
 
 Interrupt only when:
 

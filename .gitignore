@@ -3,6 +3,7 @@
 
 # Private Coworx learning and user-specific memories.
 .coworx-private/
+.coworx-private/standby/
 memory/private/
 memory/**/private-*.md
 memory/**/local-*.md

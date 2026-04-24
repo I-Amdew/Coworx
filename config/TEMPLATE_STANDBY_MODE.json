@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "standby_mode": {
+    "enabled_by_default": true,
+    "trigger_phrases": [
+      "standby mode",
+      "dispatch mode",
+      "keep checking",
+      "check every 5 minutes",
+      "keep working and text me if you need me",
+      "run this in standby",
+      "continue in the background while this chat/session is active"
+    ],
+    "default_interval_minutes": 5,
+    "default_max_runtime_hours": 6,
+    "prevent_duplicate_loops": true,
+    "state_path": ".coworx-private/standby/state.json",
+    "config_path": ".coworx-private/standby/config.json",
+    "status_path": ".coworx-private/standby/status.md",
+    "events_path": ".coworx-private/standby/events.ndjson"
+  },
+  "notifications": {
+    "first_time_setup_required": true,
+    "default_method": "local_status_file",
+    "supported_methods": [
+      "discord_private_channel_or_webhook",
+      "desktop_notification",
+      "messages_or_imessage_if_available",
+      "sms_or_email_if_later_configured",
+      "local_status_file_only"
+    ],
+    "notify_only_for": [
+      "standby_started",
+      "standby_stopped",
+      "task_completed",
+      "milestone_reached",
+      "blocker",
+      "approval_needed",
+      "login_needed",
+      "outputs_ready",
+      "max_runtime_reached"
+    ],
+    "quiet_cycles": true,
+    "verbose_mode": false
+  },
+  "safety": {
+    "use_existing_coworx_authority_model": true,
+    "protected_final_actions_require_pause_or_approval": [
+      "sending_messages",
+      "submitting_forms",
+      "purchasing",
+      "deleting_important_files",
+      "changing_account_or_security_settings",
+      "publishing",
+      "deploying",
+      "sharing_private_information"
+    ],
+    "private_testing_artifacts_must_stay_ignored": [
+      "real_credentials",
+      "webhook_urls",
+      "phone_numbers",
+      "account_details",
+      "personal_screenshots",
+      "browser_session_files",
+      "cookies",
+      "tokens",
+      "traces",
+      "private_local_state",
+      "real_personal_account_outputs"
+    ]
+  }
+}

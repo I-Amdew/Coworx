@@ -52,6 +52,12 @@ Computer Use lanes require target-level locks for app/window/profile/account wor
 9. Write an action result.
 10. Release locks promptly.
 
+## Standby Cycles
+
+Standby Mode may operate browser, API, connector, app, and Computer Use lanes when the current cycle has delegated authority, a clear target, and the required resource locks. Each standby cycle should do one bounded unit of work, write evidence or a checkpoint, and release any lane locks before waiting for the next interval.
+
+Standby Mode must pause before protected final actions, unexpected permission prompts, unclear targets, login/MFA/manual action needs, or any condition that would normally stage or block an Operator lane.
+
 ## Stop Conditions
 
 Stop on:

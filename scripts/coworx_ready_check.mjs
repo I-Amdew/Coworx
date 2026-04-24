@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { execFileSync } from "node:child_process";
 
 const root = process.cwd();
 
@@ -15,6 +16,7 @@ const requiredFiles = [
   "docs/parallelism_and_locks.md",
   "docs/safety_policy.md",
   "docs/operator_protocol.md",
+  "docs/standby_mode.md",
   "docs/capability_discovery.md",
   "docs/task_lifecycle.md",
   "docs/subagent_protocol.md",
@@ -41,6 +43,7 @@ const requiredFiles = [
   "config/TEMPLATE_AUTONOMY_GRANT.json",
   "config/TEMPLATE_BROWSER_LANE.json",
   "config/TEMPLATE_ACTION_LEVELS.json",
+  "config/TEMPLATE_STANDBY_MODE.json",
   "operator/action_requests/TEMPLATE_ACTION_REQUEST.md",
   "operator/action_results/TEMPLATE_ACTION_RESULT.md",
   "operator/approvals/TEMPLATE_EXTERNAL_ACTION_APPROVAL.md",
@@ -53,7 +56,9 @@ const requiredFiles = [
   "memory/capabilities/TEMPLATE_CAPABILITY_MAP.md",
   "evals/smoke_tests/browser_demo.md",
   "evals/smoke_tests/computer_use_safe_app_test.md",
+  "evals/smoke_tests/standby_mode.md",
   "evals/regression_tests/privacy_and_approval_gates.md",
+  "scripts/coworx_standby.mjs",
 ];
 
 const skillDirs = [
@@ -120,8 +125,22 @@ for (const term of ["signed-in accounts", "meetings", "screenshots", "Sanitizati
   if (!privatePolicy.includes(term)) failures.push(`Private memory policy missing ${term}`);
 }
 
+for (const file of [
+  "config/TEMPLATE_APPROVED_SITE.json",
+  "config/TEMPLATE_AUTONOMY_GRANT.json",
+  "config/TEMPLATE_BROWSER_LANE.json",
+  "config/TEMPLATE_ACTION_LEVELS.json",
+  "config/TEMPLATE_STANDBY_MODE.json",
+]) {
+  try {
+    JSON.parse(readFileSync(join(root, file), "utf8"));
+  } catch (error) {
+    failures.push(`Invalid JSON in ${file}: ${error.message}`);
+  }
+}
+
 const gitignore = readFileSync(join(root, ".gitignore"), "utf8");
-for (const pattern of [".coworx-private/", "memory/private/", "outputs/private/", ".playwright-cli/"]) {
+for (const pattern of [".coworx-private/", ".coworx-private/standby/", "memory/private/", "outputs/private/", ".playwright-cli/"]) {
   if (!gitignore.includes(pattern)) failures.push(`.gitignore missing ${pattern}`);
 }
 
@@ -144,6 +163,18 @@ const requiredConcepts = [
   ["docs/safety_policy.md", "Level 3"],
   ["docs/safety_policy.md", "Level 4"],
   ["docs/operator_protocol.md", "resource locks"],
+  ["docs/standby_mode.md", "Default interval is 5 minutes"],
+  ["docs/standby_mode.md", ".coworx-private/standby/"],
+  ["docs/standby_mode.md", "Quiet mode is the default"],
+  ["docs/standby_mode.md", "Codex cannot remotely start a new chat later"],
+  ["config/TEMPLATE_STANDBY_MODE.json", "default_interval_minutes"],
+  ["config/TEMPLATE_STANDBY_MODE.json", "prevent_duplicate_loops"],
+  ["config/TEMPLATE_STANDBY_MODE.json", "local_status_file"],
+  ["evals/smoke_tests/standby_mode.md", "Demo task completes"],
+  ["scripts/coworx_standby.mjs", "A standby loop is already active or paused"],
+  ["scripts/coworx_standby.mjs", "A standby cycle is already running"],
+  ["scripts/coworx_standby.mjs", "run --task"],
+  ["scripts/coworx_standby.mjs", "Standby demo test passed"],
   ["operator/action_requests/TEMPLATE_ACTION_REQUEST.md", "Authority Source"],
   ["operator/action_requests/TEMPLATE_ACTION_REQUEST.md", "Required Resource Locks"],
   ["operator/lane_status/TEMPLATE_BROWSER_LANE_LEASE.md", "parallel by default"],
@@ -216,6 +247,16 @@ for (const file of semanticFiles) {
   for (const pattern of stalePatterns) {
     if (pattern.test(body)) failures.push(`${file} contains stale policy wording: ${pattern}`);
   }
+}
+
+try {
+  execFileSync(process.execPath, [join(root, "scripts/coworx_standby.mjs"), "demo-test"], {
+    cwd: root,
+    stdio: "pipe",
+    encoding: "utf8",
+  });
+} catch (error) {
+  failures.push(`Standby demo test failed: ${error.stderr || error.stdout || error.message}`);
 }
 
 if (failures.length > 0) {

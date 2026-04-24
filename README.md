@@ -12,6 +12,7 @@ The framework teaches Codex App how to operate like an accountable Director:
 - learn which plugins, skills, connectors, browser profiles, local scripts, and apps are available in each user's setup;
 - build a task graph before doing broad work;
 - maintain a directive ledger for multi-stage goals;
+- enter Standby Mode for lightweight dispatch loops during the current active session;
 - run independent work in parallel by default;
 - use subagents when they improve delivery, coverage, diagnosis, review, or verification;
 - use resource locks instead of serializing whole tool classes;
@@ -34,12 +35,13 @@ It includes:
 - `COWORX.md`: short operating manual for running Coworx in Codex App.
 - `docs/director_use.md`: main-thread Director model and active subagent management.
 - `docs/directive_follow_through.md`: directive ledger, delivery close criteria, and subagent use for multi-stage goals.
+- `docs/standby_mode.md`: standby/dispatch loop behavior, local state, notifications, controls, and limits.
 - `docs/project_workspace_model.md`: project-backed workspace model, local customization loop, outputs, hand-off, and memory boundaries.
 - `docs/capability_discovery.md`: per-user capability maps for plugins, skills, connectors, profiles, apps, scripts, and fallbacks.
 - `docs/parallelism_and_locks.md`: parallel-by-default execution and lock semantics.
 - `docs/`: focused policy shards for safety, routing, account work, browser work, Computer Use, calendar work, external actions, and real-work workflows.
 - `.agents/skills/`: local role prompt files for Coworx workflows, not a user-installed product.
-- `config/`: approved-site and autonomy-grant templates.
+- `config/`: approved-site, autonomy-grant, credential-handoff, browser-lane, action-level, and standby templates.
 - `queue/`: task queue.
 - `memory/`: templates, generic maps, and safe playbooks.
 - `operator/`: action requests, lane leases, results, approvals, screenshots, traces, recordings, and evidence templates.
@@ -56,6 +58,7 @@ Coworx can:
 - create and update calendar events when delegated;
 - map websites, dashboards, and desktop apps;
 - organize approved local files;
+- keep checking a task in Standby Mode while the current Coworx session remains available;
 - inspect browser pages and apps using Browser Use, Playwright, APIs, connectors, or Computer Use;
 - create GitHub issues, PR comments, and task-board updates when delegated;
 - use GitHub, Figma, PDF, image, speech, transcription, document, spreadsheet, presentation, browser, and automation skills when installed.
@@ -77,6 +80,18 @@ Computer Use is restricted by target because it may share the real screen, mouse
 Coworx tracks multi-stage requests in a directive ledger. A run is not complete because one step finished; it is complete when every explicit or implied directive has evidence, is staged for approval, is blocked with a reason, is skipped with rationale, or is explicitly waiting.
 
 Subagents are used when they materially improve delivery: independent research, disjoint implementation, browser/API operation, diagnosis, review, verification, and evidence collection. The Director keeps critical-path decisions and integration local, inspects returned evidence, and updates the directive ledger before closing.
+
+## Standby Mode
+
+Standby Mode keeps a current task moving in a lightweight dispatch loop while the active Codex session and computer remain available. Trigger phrases include `standby mode`, `dispatch mode`, `keep checking`, `check every 5 minutes`, `run this in standby`, and `continue in the background while this chat/session is active`.
+
+The default interval is 5 minutes and the default max runtime is 6 hours. Runtime state is private under `.coworx-private/standby/`; committed files include only sanitized docs, config templates, and fake demo tests. Quiet cycles do not notify the user unless verbose mode is enabled.
+
+Run the local fake-account test with:
+
+```bash
+node scripts/coworx_standby.mjs demo-test
+```
 
 ## Project Memory
 
