@@ -1,0 +1,22 @@
+# Coworx local Codex project configuration.
+# Keep project behavior explicit. Do not place secrets in this file.
+
+[project]
+name = "Coworx"
+mode = "codex-native-coworker"
+
+[coworx]
+one_operator_rule = true
+playwright_first = true
+computer_use_fallback = true
+store_secrets = false
+default_action_level = 0
+
+[paths]
+queue = "queue"
+memory = "memory"
+runs = "runs"
+operator = "operator"
+outputs = "outputs"
+evals = "evals"
+docs = "docs"

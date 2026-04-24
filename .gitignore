@@ -1,0 +1,24 @@
+# Runtime browser artifacts.
+.playwright-cli/
+
+# Private Coworx learning and user-specific memories.
+.coworx-private/
+memory/private/
+memory/**/private-*.md
+memory/**/local-*.md
+memory/**/user-*.md
+runs/private/
+runs/active/private-*.md
+operator/screenshots/private/
+operator/traces/private/
+operator/recordings/private/
+outputs/private/
+outputs/files/private/
+
+# Secrets must never be committed.
+*.secret.md
+*.secrets.md
+*.private.md
+*.credentials
+*.token
+*.key

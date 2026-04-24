@@ -1,0 +1,67 @@
+# Signed-In Read-Only Operator Action Request
+
+## Goal
+
+## Tool Mode
+Preferred: Browser Use / Playwright / Computer Use
+Fallback:
+
+## Target
+
+## Privacy Classification
+signed-in-account
+
+## Output Path
+Use ignored private paths only.
+
+## Account Or App Identity
+
+## Allowed Domains Or Apps
+
+## Data Allowed To Read Or Capture
+
+## Screenshot Or Trace Policy
+private-only / prohibited
+
+## External Transmission Boundary
+No sends, submits, publishes, invites, schedules, uploads, deletes, settings changes, or permission changes.
+
+## Action Level
+0 for read-only after manual login; 1 for local drafts; 2 for private local files; 3/4 require exact approval.
+
+## Approval
+- Status:
+- Approver:
+- Timestamp:
+- Scope:
+- Permitted target:
+- Prohibited actions:
+- Expires:
+
+## Preconditions
+- User signed in manually.
+- Target account/app is visible.
+- Private output paths are set.
+- No credentials, tokens, cookies, 2FA codes, or recovery codes may be captured.
+
+## Allowed Actions
+- Inspect approved pages.
+- Summarize approved visible information into private output.
+- Draft local notes or messages.
+- Map workflow steps and stop conditions.
+
+## Steps
+1.
+
+## Stop Conditions
+- Login required.
+- 2FA required.
+- Wrong account or app.
+- Credential, session, payment, security, or recovery prompt.
+- External commitment boundary reached.
+- Private output path missing.
+
+## Required Output
+- Private action result.
+- Private run log.
+- Sanitized improvement proposal, if useful.

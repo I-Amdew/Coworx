@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Coworx Browser Demo</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 40px;
+      max-width: 760px;
+      color: #17202a;
+      background: #f7f9fb;
+    }
+    main {
+      background: white;
+      border: 1px solid #d7dee8;
+      border-radius: 8px;
+      padding: 24px;
+    }
+    button {
+      border: 1px solid #1f6feb;
+      background: #1f6feb;
+      color: white;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font: inherit;
+      cursor: pointer;
+    }
+    output {
+      display: block;
+      margin-top: 16px;
+      min-height: 24px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Coworx Browser Demo</h1>
+    <p>This local fixture verifies that Coworx can open a browser, inspect structured page state, click a safe control, and capture evidence without accounts.</p>
+    <button id="run-demo" type="button">Run safe browser action</button>
+    <output id="result" aria-live="polite">Waiting for action.</output>
+  </main>
+  <script>
+    document.getElementById("run-demo").addEventListener("click", () => {
+      document.getElementById("result").textContent = "Browser action completed safely.";
+    });
+  </script>
+</body>
+</html>
