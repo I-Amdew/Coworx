@@ -1,7 +1,7 @@
 # Browser Demo Smoke Test
 
 ## Goal
-Verify Coworx can perform a safe browser action through the Operator lane.
+Verify Coworx can perform a safe browser action through a leased browser lane.
 
 ## Target
 `evals/scenarios/browser_demo.html`

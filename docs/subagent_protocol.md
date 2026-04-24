@@ -1,28 +1,55 @@
 # Subagent Protocol
 
-Subagents are specialized helpers. The Coordinator owns the task and final result.
+Subagents are active Coworx teammates. The Director owns the task and final result.
 
 ## Allowed Work
+
 - read-only research;
 - test discovery;
 - risk mapping;
 - plan drafting;
-- bounded local file edits when assigned;
+- bounded local file edits with assigned ownership;
+- browser/API/connector operation when assigned a lane lease;
 - review and verification;
+- evidence collection;
 - memory proposals.
 
 ## Not Allowed
-- browser or desktop control unless acting as the approved Operator;
+
 - credential handling;
+- overlapping writes with another owner;
 - broad unsupervised rewrites;
-- overlapping edits with another owner;
-- submitting or publishing external actions.
+- submitting, publishing, inviting, merging, deploying, deleting, or sending without delegated authority or explicit approval;
+- Level 5/protected actions;
+- Computer Use without a target-level lock.
+
+## Assignment Requirements
+
+Each subagent assignment should include:
+
+- task ID;
+- mission;
+- owned scope;
+- out-of-scope boundaries;
+- dependencies;
+- resource locks;
+- expected evidence;
+- checkpoint trigger;
+- stop conditions;
+- instruction not to revert or overwrite user, Director, or sibling edits.
 
 ## Return Format
+
 Subagents should return:
+
 - status;
-- files or areas inspected;
+- owned scope used;
+- files/resources inspected;
+- files/resources changed;
+- commands/checks run;
 - findings with evidence;
-- changed files, if any;
-- tests or checks run;
-- risks and next actions.
+- new tasks discovered;
+- blockers;
+- ownership conflicts;
+- residual risks;
+- recommended next action.

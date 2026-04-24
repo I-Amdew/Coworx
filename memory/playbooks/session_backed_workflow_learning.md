@@ -5,7 +5,7 @@ Let Coworx get smarter from real browser/app use without learning credentials.
 
 ## Steps
 1. User approves target and signs in manually.
-2. Coworx maps the approved workflow through the Operator lane.
+2. Coworx maps the approved workflow through a leased browser/API/connector lane or Computer Use target lock.
 3. Coworx stores private observations in ignored paths.
 4. Coworx identifies reusable generic steps.
 5. Coworx sanitizes private data.

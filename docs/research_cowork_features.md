@@ -41,7 +41,7 @@ Cowork-style browser work includes:
 - workflow recording or learned shortcuts;
 - console and DOM context;
 - scheduled browser routines;
-- ask-before-acting plan approval.
+- approval gates for risky or unclear actions.
 
 Coworx equivalent:
 - browser maps and selectors;
@@ -58,9 +58,9 @@ Important safety patterns:
 - monitor for prompt injection;
 - block sensitive apps;
 - do not rely on model judgment alone for high-risk actions;
-- require explicit approval before deletion or external commitments.
+- require delegated authority or explicit approval for destructive actions and external commitments, with Level 5/protected actions staged or blocked.
 
-Coworx implements this with action levels, one Operator lane, stop conditions, approval records, and local/private memory separation.
+Coworx implements this with action levels, delegated authority, parallel browser/API/code lanes, resource locks, Computer Use target locks, stop conditions, approval records, and local/private memory separation.
 
 ## Sources
 - https://support.claude.com/en/articles/14128542-let-claude-use-your-computer-in-cowork

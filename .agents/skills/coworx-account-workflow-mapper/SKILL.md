@@ -7,7 +7,7 @@ Maps approved signed-in account workflows without storing credentials or submitt
 Account Workflow Mapper.
 
 ## When To Use
-Use after the user manually signs in and explicitly approves a read-only or draft-only account mapping task.
+Use after the user approves a credential-safe account workflow mapping task.
 
 ## Input Format
 - approved target account or app;
@@ -25,10 +25,11 @@ Use after the user manually signs in and explicitly approves a read-only or draf
 - stop conditions.
 
 ## Rules
-- The user performs login manually.
+- Use credential-safe access only: user-controlled login, approved session/profile, connector, OAuth, keychain/password-manager prompt, API token outside the repo, or vault handle.
 - Never request, store, or enter credentials, 2FA codes, cookies, tokens, or recovery codes.
 - Store real user-specific maps only in ignored private memory unless the user asks for a sanitized export.
-- Stop before sending, submitting, scheduling, inviting, deleting, purchasing, changing settings, or transmitting sensitive data.
+- Execute non-high-risk Level 3/4 actions only with delegated authority or explicit approval.
+- Stage or block Level 5/protected actions, unauthorized sends/submits/schedules/invites/deletes/settings changes, purchases, or sensitive-data transmission.
 
 ## Failure Or Blocked Behavior
-If login is required or the target is not already signed in, stop and ask the user to sign in manually. If the workflow reaches an external commitment, stop and request approval.
+If credential-safe access is missing, stop and ask the user to provide access through an approved secure flow. If the workflow reaches an external commitment outside delegated authority or explicit approval, stop and stage it.

@@ -3,12 +3,14 @@
 Coworx improves by doing real tasks, but real tests must be isolated from the shippable framework.
 
 ## Rule
-Real workflow testing belongs on a testing branch and in ignored private paths.
 
-Before testing real accounts or apps, create `operator/approvals/TEMPLATE_USER_RESPONSIBILITY_ACK.md` for the task and record the user's exact approved scope.
+Real workflow testing belongs in ignored private paths and, when useful, on a testing branch.
+
+Before testing real accounts or apps, record the user's approved scope, authority source, privacy class, and stop conditions.
 
 ## Branch
-Use a temporary development branch such as:
+
+Use a temporary development branch when testing framework changes:
 
 ```bash
 git switch -c codex-coworx-real-work-testing
@@ -16,35 +18,38 @@ git switch -c codex-coworx-real-work-testing
 
 Do not merge private artifacts. Merge only sanitized framework improvements.
 
-## Login Flow
-Coworx must not retrieve login information from skills, files, browser storage, password managers, Claude logs, or any other source.
+## Credential-Safe Access
 
-The user logs in manually. Coworx may then operate within the approved task boundary.
+Coworx must not retrieve login information from skills, files, browser storage, password managers, old logs, or any other source.
+
+Use approved credential-safe access: user-controlled login, approved session, dedicated browser profile, connector, OAuth, keychain/password-manager prompt, API credential stored outside the repo, or vault handle.
 
 ## Allowed Private Tests
+
 - Summarize a signed-in dashboard.
-- Draft an email or message.
-- Draft a calendar event.
+- Draft or send a routine message when delegated.
+- Draft, create, or invite to a calendar event when delegated.
 - Create a local report from user-approved account data.
 - Map a workflow for future use.
-- Move or organize local files when explicitly approved.
-- Create slides, documents, or spreadsheets from user-approved source material.
+- Move or organize local files when approved.
+- Create slides, documents, or spreadsheets from approved source material.
 
-## Action-Time Approval Required
-Coworx must pause before:
-- sending or replying to messages;
-- inviting people;
-- scheduling or editing meetings;
-- submitting forms;
-- publishing posts;
-- deleting or archiving cloud data;
-- changing permissions or settings;
-- uploading or transmitting sensitive data.
+## Authority Required
 
-Calendar actions may be reversible, but they still require action-time approval because they can write to cloud accounts, notify people, reserve time, or expose private details.
+Non-high-risk Level 3/4 actions require delegated authority or explicit approval.
+
+Stage or block:
+
+- unclear authority;
+- unclear target/account/recipient/data;
+- Level 5/protected actions;
+- sending sensitive personal data to new recipients;
+- payment, purchase, account security, legal, medical, financial, identity, academic submission, or irreversible production actions.
 
 ## Private Storage
+
 Use:
+
 - `.coworx-private/`
 - `runs/private/`
 - `outputs/private/`
@@ -55,7 +60,9 @@ Use:
 Do not store private test artifacts in shippable paths.
 
 ## Sanitization Before Ship
+
 Before committing framework improvements:
+
 1. Review `git status --short`.
 2. Confirm no ignored private files are being forced into git.
 3. Search for names, emails, account IDs, message bodies, meeting details, dashboard values, screenshots, traces, cookies, tokens, and credentials.

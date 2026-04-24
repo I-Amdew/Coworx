@@ -25,7 +25,8 @@ Use for every queued Coworx task.
 ## Rules
 - Keep architecture, integration, and final answer in the lead thread.
 - Use subagents only for independent work.
-- Route browser and desktop work through the Operator.
+- Route browser/API/connector work through leased lanes and resource locks.
+- Route Computer Use through target-level locks.
 - Stop after one task unless instructed otherwise.
 
 ## Failure Or Blocked Behavior

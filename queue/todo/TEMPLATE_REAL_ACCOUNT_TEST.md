@@ -20,10 +20,14 @@ private-local
 
 ## Target Account Or App
 
-## Manual Login Status
-not required / user will sign in manually / already signed in by user
+## Credential-Safe Access Status
+not required / user-controlled login / approved session or profile / connector or vault handle
 
 ## Action Level
+Level 0 / 1 / 2 / 3 / 4 / 5
+
+## Authority Source
+delegated by request / explicit approval / stage only
 
 ## Exact Approval Scope
 - Target:
@@ -40,16 +44,18 @@ not required / user will sign in manually / already signed in by user
 - password manager access;
 - 2FA handling;
 - cookie/token/session capture;
-- external send/submit/publish/invite/schedule/delete without action-time approval.
+- Level 5/protected actions;
+- external send/submit/publish/invite/schedule/delete outside delegated authority or explicit approval.
 
 ## Acceptance Criteria
 -
 
 ## Stop Conditions
-- login required and user has not manually signed in;
+- credential-safe access is unavailable;
 - credential, 2FA, recovery, token, cookie, security, payment, or account-recovery prompt;
 - wrong account or app;
-- external commitment boundary reached;
+- external commitment outside delegated authority or explicit approval;
+- Level 5/protected boundary reached;
 - output path is not private.
 
 ## Required Outputs

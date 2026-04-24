@@ -1,79 +1,57 @@
 # Session-Backed Account Operations
 
-Coworx can work in real browsers and real accounts by using sessions the user controls.
+Coworx can work in real accounts by using sessions, profiles, connectors, or credential handles the user controls.
 
 ## Principle
-Coworx learns workflows, not credentials.
+
+Coworx learns workflows, not secrets.
 
 It may learn:
+
 - which app or site is used for a workflow;
+- which approved account label applies;
 - where important pages live;
 - which selectors, tabs, views, and buttons matter;
 - what the user's normal process is;
 - which data belongs in private memory;
-- where the approval boundaries are;
-- what worked and what failed.
+- where delegated authority and stop boundaries are;
+- what worked and failed.
 
-It must not learn or store:
-- passwords;
-- 2FA codes;
-- recovery codes;
-- session cookies;
-- OAuth tokens;
-- API keys;
-- password-manager entries;
-- security questions;
-- private keys;
-- payment credentials.
+It must not learn or store passwords, 2FA codes, recovery codes, cookies, OAuth tokens, API keys, password-manager secrets, security answers, private keys, or payment credentials.
 
-## Real Browser Flow
-1. User approves the target account, site, and task.
-2. User signs in manually in the approved browser or app.
+## Real Account Flow
+
+1. User or saved policy approves the target account, site, and task.
+2. Coworx uses a credential-safe access path.
 3. Coworx confirms it is on the intended target.
-4. Coworx creates an Operator lease.
-5. Coworx performs the approved read-only, draft-only, or action-approved workflow.
-6. Coworx writes private logs, screenshots, traces, and maps.
+4. Coworx creates browser/API/connector or Computer Use lane leases as needed.
+5. Coworx performs approved read-only, draft, reversible external, or delegated external actions.
+6. Coworx writes private logs, screenshots, traces, and maps when user-specific data is involved.
 7. Coworx writes only sanitized improvements to shippable framework files.
 
 ## Real Action Flow
-Coworx can take real actions when the user approves the exact action at action time.
 
-Examples requiring action-time approval:
-- send a message;
-- reply to an email;
-- schedule a calendar event;
-- invite attendees;
-- submit a form;
-- publish a post;
-- upload a file;
-- move, archive, or delete cloud data;
-- change permissions;
-- deploy, merge, or change settings.
+Coworx can take real non-high-risk Level 3/4 actions when delegated authority or explicit approval covers the exact action class and target.
 
-The approval must include:
-- target app/account;
-- exact action;
-- data to transmit or modify;
-- recipient, calendar, folder, or destination;
-- expiration or one-time scope;
-- prohibited actions.
+Examples:
+
+- send a routine message requested by the user;
+- reply to an email with user-provided facts;
+- schedule a calendar event requested by the user;
+- invite attendees named by the user or clearly derived from an approved source;
+- submit an internal form with user-provided data;
+- publish an internal project update;
+- upload approved files to an approved workspace;
+- update non-sensitive task-board or CRM fields.
+
+Stage or block if the action is Level 5/protected, authority is unclear, or the target/data differs from the authority packet.
 
 ## Learning Loop
+
 After each approved workflow:
+
 1. Save private workflow observations.
 2. Extract generic reusable steps.
 3. Remove private names, values, links, screenshots, and account identifiers.
 4. Update shippable templates or playbooks only with sanitized lessons.
 5. Add a regression or smoke test when possible.
-
-## Why This Gets Smarter
-Coworx improves from:
-- better app maps;
-- known stop conditions;
-- stable selectors;
-- successful drafts and output formats;
-- reusable task decomposition;
-- safer approval patterns;
-- remembered user preferences stored privately.
-
-This gives the same practical effect as a coworker learning how the user works, without turning credentials into project memory.

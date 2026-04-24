@@ -1,54 +1,56 @@
 # Non-Coding Workflows
 
-Coworx is for real work, not only coding. It can coordinate browser work, desktop apps, documents, spreadsheets, presentations, design files, research, issue triage, and media tasks using installed Codex skills and plugins.
+Coworx runs real office, browser, account, document, spreadsheet, presentation, design, research, calendar, message, file, and desktop work using installed Codex capabilities.
 
 ## Standard Flow
-1. Dispatch the request into one task.
+
+1. Dispatch the request or identify the active task.
 2. Classify risk and action level.
-3. Choose installed skills/plugins.
-4. Use subagents for parallel planning, research, review, and memory.
-5. Use the Operator for any browser or computer action.
-6. Draft or execute safe actions according to the action level.
-7. Review the result.
-8. Write outputs and memory.
+3. Identify authority, accounts, tools, files, and shared resources.
+4. Build a task graph.
+5. Staff independent lanes in parallel.
+6. Acquire resource locks before shared-resource edits or commits.
+7. Draft, build, operate, or execute according to action level and authority.
+8. Review and verify.
+9. Save outputs, evidence, logs, and safe memory.
+10. Report completed, staged, blocked, and residual work.
 
 ## Safe Automatic Work
-These actions are auto-safe only for public/no-login pages, local fixtures, repo files, user-provided non-sensitive files, and local drafts:
-- reading a page or document;
-- drafting an email, issue, report, or form text locally;
-- creating local documents, spreadsheets, or presentations;
-- taking screenshots of approved local test targets;
-- mapping a no-login app or fixture read-only;
-- running local tests or validations.
 
-These require explicit approval and private output paths:
-- signed-in pages;
-- private dashboards;
-- screenshots or traces from real apps;
-- cloud drafts;
-- user-specific app mapping;
-- meeting, message, calendar, or account-context artifacts.
+Allowed inside approved scope:
 
-## Approval Work
-Coworx must ask before it sends, submits, publishes, deletes, purchases, invites, merges, deploys, edits permissions, changes settings, or transmits sensitive data.
+- reading pages, documents, dashboards, files, and account data;
+- drafting emails, issues, reports, forms, calendar details, and messages;
+- creating local documents, spreadsheets, presentations, summaries, and exports;
+- mapping approved apps or workflows;
+- running local tests or validations;
+- creating reversible external drafts or objects when delegated.
 
-## Academic Work
-Coworx can map school tools, organize assignments, create study aids, explain concepts, and draft user-reviewed notes. Coworx must not impersonate the user, complete graded work as the user, or submit academic work.
+## External Work
 
-## Real Account Work
-If login is required, the user signs in manually. Coworx can then perform approved read-only or draft-only tasks by default. External commitments still require approval.
+Non-high-risk Level 3/4 actions may proceed when delegated authority or explicit approval covers the target and action class.
+
+Stage when authority is unclear. Block Level 5/protected actions.
 
 ## Meeting-To-Deliverable Flow
-1. Ingest transcript, notes, or recording.
+
+1. Ingest transcript, notes, recording, chat, or meeting artifacts.
 2. Use transcription if audio/video is provided.
 3. Extract summary, decisions, action items, owners, and dates.
-4. Route output to Documents, Presentations, Spreadsheets, or a message draft.
+4. Route output to Documents, Presentations, Spreadsheets, report, task list, message draft, or calendar workflow.
 5. Review for accuracy and private data.
-6. Save locally. Stop before sending or scheduling.
+6. Save locally or externally according to authority.
+7. Send, schedule, invite, or publish only when delegated or explicitly approved and not protected.
 
 ## Messaging And Calendar Flow
+
 1. Read approved context.
-2. Draft message or event details in `outputs/drafts/`.
-3. Ask reviewer to check tone, facts, recipients, dates, and risk.
-4. If the user explicitly approves, Operator may place the draft into the target app.
-5. Stop again before final send, invite, or schedule unless the exact final action was approved at action time.
+2. Draft message or event details.
+3. Verify tone, facts, recipients, dates, timezone, attachments, and risk.
+4. Use a browser/API/connector lane or Computer Use target lock as appropriate.
+5. Execute if delegated authority or explicit approval covers the action.
+6. Stage if recipients, timing, content, target, or authority are unclear.
+
+## Academic Work
+
+Coworx may organize material, summarize readings, create study aids, explain concepts, draft outlines, proofread user-created work, format citations, and map LMS workflows. It must not impersonate the user, complete graded work as the user, take assessments, or submit academic work.

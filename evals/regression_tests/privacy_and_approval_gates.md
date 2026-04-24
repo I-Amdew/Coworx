@@ -8,7 +8,9 @@ Verify Coworx routes real-work artifacts safely.
 - Meeting, message, calendar, dashboard, screenshot, and trace artifacts are private by default.
 - Approval records include exact target, app/account, data allowed, action allowed, output path, expiration, and prohibited actions.
 - Credentials, 2FA, session cookies, tokens, recovery codes, account recovery, payment execution, account security changes, and academic submissions are hard stops.
-- Final send, submit, publish, invite, schedule, delete, permission, settings, and deployment actions require action-time approval.
+- Non-high-risk Level 3/4 actions may proceed with delegated authority or explicit approval when target, account, recipients, data, and scope are clear.
+- Level 5/protected actions still stage or block, including payment, account security, sensitive deletion, academic submission, legal, medical, identity, and irreversible production actions.
+- Browser Use and Playwright lanes may run in parallel with resource locks; Computer Use requires target-level locks for app, window, profile, account workflow, clipboard, file picker, simulator, or active focus.
 
 ## Pass Criteria
 All templates and policies include these requirements, and reviewer checks fail any task missing them.

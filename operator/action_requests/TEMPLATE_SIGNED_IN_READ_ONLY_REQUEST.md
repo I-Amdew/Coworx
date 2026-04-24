@@ -27,7 +27,7 @@ private-only / prohibited
 No sends, submits, publishes, invites, schedules, uploads, deletes, settings changes, or permission changes.
 
 ## Action Level
-0 for read-only after manual login; 1 for local drafts; 2 for private local files; 3/4 require exact approval.
+0 for read-only after credential-safe access; 1 for local drafts; 2 for private local files; 3/4 require delegated authority or explicit approval.
 
 ## Approval
 - Status:

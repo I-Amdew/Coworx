@@ -1,0 +1,8 @@
+{
+  "level_0": "read_only",
+  "level_1": "draft_and_prepare",
+  "level_2": "reversible_local_action",
+  "level_3": "credentialed_reversible_external_action_inside_delegated_authority",
+  "level_4": "delegated_external_commitment_with_clear_target_and_non_high_risk_scope",
+  "level_5": "high_risk_or_protected_stage_or_block"
+}

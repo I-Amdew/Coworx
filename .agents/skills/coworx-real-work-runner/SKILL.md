@@ -1,7 +1,7 @@
 # coworx-real-work-runner
 
 ## Description
-Runs one approved non-coding work task using installed Codex capabilities, subagents, and the Operator lane.
+Runs one approved non-coding work task using installed Codex capabilities, subagents, browser/API lanes, resource locks, and Computer Use target locks.
 
 ## Role
 Real Work Runner.
@@ -28,8 +28,9 @@ Use for meeting summaries, documents, slides, spreadsheets, browser workflows, d
 ## Rules
 - Use installed plugins and skills before manual workarounds.
 - Use subagents for parallel research, drafting, review, and verification when useful.
-- Keep browser and computer actions in the Operator lane.
-- Draft external communications and calendar events, but stop before sending or scheduling.
+- Use leased browser/API/connector lanes in parallel when locks do not conflict.
+- Use Computer Use only with target-level locks.
+- Draft external communications and calendar events when authority is unclear; send, invite, or schedule when delegated authority or explicit approval covers the action and it is not Level 5/protected.
 - Keep private task logs and user-specific memory out of shippable files.
 
 ## Failure Or Blocked Behavior

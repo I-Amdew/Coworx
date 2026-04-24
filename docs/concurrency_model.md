@@ -1,47 +1,26 @@
 # Concurrency Model
 
-Coworx separates thinking work, browser work, and desktop work.
+Coworx uses the lock model in [parallelism_and_locks.md](parallelism_and_locks.md).
 
-## Parallel Thinking
-Subagents may run planning, research, review, drafting, file generation, and verification in parallel when their scopes do not overlap.
+## Summary
 
-## Parallel Browser Lanes
-Browser work can run in parallel when each lane has:
-- a separate browser tab or session;
-- a browser lane lease;
-- a distinct target app/site/workflow;
-- its own private output path;
-- explicit stop conditions;
-- no shared final-action boundary.
-
-Use Browser Use for in-app browser targets and Playwright for repeatable structured checks. Browser lanes are appropriate for:
-- researching public pages;
-- inspecting separate dashboards;
-- drafting in separate browser apps;
-- checking independent web workflows;
-- reading multiple approved sources.
-
-Do not let two browser agents control the same tab, same form, same account workflow, or same final send/submit boundary.
-
-## Single Desktop Lane
-Computer Use is single-lane by default. It controls the actual desktop, which means one screen, one mouse, one keyboard, one clipboard, one active window, and one focused app.
-
-Only one Desktop Operator may use Computer Use at a time unless the current Codex runtime explicitly provides isolated independent desktop sessions.
-
-Use Computer Use for:
-- native Mac apps;
-- GUI-only workflows;
-- apps without plugins or browser APIs;
-- visual checks;
-- multi-app desktop flows.
+- Browser/API/code/subagents are parallel by default.
+- Shared resources are locked only at the object being changed.
+- Computer Use is restricted by app, window, profile, account workflow, clipboard, file picker, simulator, and active focus.
 
 ## Coordinator Responsibilities
-The Coordinator must:
-- assign non-overlapping browser lanes;
-- keep Computer Use serialized;
-- pause all lanes at external action boundaries;
-- collect results before final reporting;
+
+The Coordinator or Director must:
+
+- identify independent lanes early;
+- assign browser and Playwright lanes with separate targets, sessions, outputs, and stop conditions;
+- use read, write, or commit locks before shared-resource mutation;
+- keep Computer Use target locks specific;
+- avoid broad global locks such as `all_browser_work` unless there is a concrete collision risk;
+- continue independent lanes while one lane waits for approval or a locked target;
+- collect evidence before final reporting;
 - route private real-account artifacts to ignored private paths.
 
 ## Practical Pattern
-Run many browser/research/drafting lanes in parallel, then queue one desktop operation when a task needs the actual computer.
+
+Run research, drafting, browser checks, API calls, file reads, tests, and review in parallel. Use locks only when a lane will mutate or commit the same target. Use Computer Use only for GUI work that cannot be handled structurally.

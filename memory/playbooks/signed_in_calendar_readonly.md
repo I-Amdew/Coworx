@@ -4,10 +4,10 @@
 Safely inspect a manually signed-in calendar and create private local planning outputs.
 
 ## Default Action Level
-0 for reading, 1 for drafts, 2 for private local files. Event creation, edits, invitations, reminders, and scheduling are Level 4.
+0 for reading, 1 for drafts, 2 for private local files. Non-high-risk event creation, edits, invitations, reminders, and scheduling are Level 4 when delegated or explicitly approved.
 
 ## Preconditions
-- User manually signs in.
+- User uses credential-safe access.
 - Exact account/app is approved.
 - Private output path is set.
 - Operator request has privacy and approval fields.
@@ -22,7 +22,8 @@ Safely inspect a manually signed-in calendar and create private local planning o
 ## Stop Conditions
 - Login or 2FA required.
 - Event details include sensitive personal content not approved for capture.
-- Any create, edit, delete, invite, schedule, send, or settings action is requested without action-time approval.
+- Any create, edit, delete, invite, schedule, send, or settings action is outside delegated authority or explicit approval.
+- Level 5/protected action requested.
 
 ## Memory Rule
 Real event titles, attendees, locations, links, and notes stay private. Shippable memory may only say how to navigate generic calendar views.

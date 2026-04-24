@@ -1,52 +1,60 @@
 # Account Login Handoff
 
-Coworx can work with accounts only through user-controlled login.
+Coworx can work with accounts only through credential-safe, user-approved paths.
 
 ## Rule
-The user signs in. Coworx never asks for, stores, or enters passwords, 2FA codes, recovery codes, session cookies, tokens, or private keys.
 
-## Allowed After Manual Login
+Coworx never asks for, stores, logs, screenshots, exports, or shares passwords, 2FA codes, recovery codes, session cookies, OAuth tokens, API keys, private keys, credit cards, or security answers.
+
+## Allowed Credential-Safe Paths
+
+- user-controlled manual login;
+- existing approved signed-in browser session;
+- dedicated Coworx browser profile;
+- password-manager autofill controlled by the user or secure local prompt;
+- OS keychain prompt;
+- OAuth/app connector;
+- API connector or token stored outside the repo;
+- encrypted vault handle.
+
+The secret value must never enter chat, logs, repo files, memory, screenshots, or subagent prompts.
+
+## Allowed After Login Or Connector Authorization
+
 - read approved pages;
 - summarize dashboards;
 - draft messages, documents, forms, or calendar details;
+- create reversible external drafts or objects when delegated;
+- execute non-high-risk Level 3/4 actions when delegated or explicitly approved;
 - map workflows;
-- capture safe selectors and page landmarks;
+- capture safe selectors and landmarks;
 - save safe app maps and workflow maps.
 
-## Approval Required At Action Time
-- send or reply to a message;
-- submit a form;
-- schedule or edit a meeting;
-- invite someone;
-- publish or post content;
-- change permissions;
-- upload or transmit sensitive data;
-- delete, archive, or move cloud data when the action is destructive or externally visible.
+## Stage Or Block
 
-Approval must name the exact account/app, target, data allowed, action allowed, output destination, and expiration. Vague permission to "use my account" is not enough for external actions.
+Stage when:
+
+- target account/app is unclear;
+- authority does not cover the external action;
+- recipients, destination, files, or data are uncertain;
+- data sensitivity is unclear.
+
+Block or require the user to act manually on credentials, account security, recovery, payment, identity verification, academic submission, and other Level 5/protected actions.
 
 ## Memory
+
 Store:
+
 - where login starts;
-- whether manual login is required;
+- approved account label;
+- credential-safe method type;
+- password manager item name or vault handle, not the secret;
+- OAuth connector name;
 - post-login page locations;
-- safe read-only workflows;
+- safe workflows;
 - approval-required workflows;
 - stop conditions.
 
-Do not store:
-- credentials;
-- 2FA or recovery codes;
-- cookies;
-- tokens;
-- security answers;
-- payment details.
+Do not store raw credentials, cookies, tokens, browser profile files, session files, security answers, payment details, or private account data in shippable memory.
 
-Real account maps are private by default and belong in ignored paths unless sanitized for a blank framework.
-
-## Login Mapping Template
-1. User approves target account and signs in manually.
-2. Operator confirms target and action level.
-3. Coworx maps only the approved workflow.
-4. Coworx writes safe memory.
-5. Coworx stops before external commitments unless the user approves the exact action.
+Real account maps are private by default and belong in ignored paths unless sanitized for the blank framework.

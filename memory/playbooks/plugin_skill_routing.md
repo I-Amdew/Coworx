@@ -22,4 +22,4 @@ Choose the best installed Codex capability for a Coworx task.
 - Figma node: Figma plugin.
 
 ## Stop Conditions
-Stop on credentials, 2FA, account security, payment, destructive actions, external commitment without approval, sensitive-data transmission without approval, or academic submission.
+Stop on credentials, 2FA, account security, payment, Level 5/protected actions, destructive actions outside delegated authority, external commitments outside delegated authority or explicit approval, sensitive-data transmission outside authority, or academic submission.

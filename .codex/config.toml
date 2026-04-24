@@ -6,8 +6,12 @@ name = "Coworx"
 mode = "codex-native-coworker"
 
 [coworx]
-one_operator_rule = true
-playwright_first = true
+parallel_by_default = true
+lock_resources_not_agents = true
+browser_lanes_parallel = true
+computer_use_target_locks = true
+playwright_for_structured_browser = true
+browser_use_for_in_app_local_public = true
 computer_use_fallback = true
 store_secrets = false
 default_action_level = 0

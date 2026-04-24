@@ -1,71 +1,97 @@
 # Coworx
 
-Coworx is a Codex-native coworker framework. It teaches Codex App how to coordinate real work on your computer using the plugins, skills, MCP tools, browser controls, local files, and desktop apps you already have enabled.
+Coworx is Cowork in Codex: a local, Codex-native coworker operating system for doing real work across files, browsers, accounts, desktop apps, documents, spreadsheets, slides, GitHub, research, calendars, messages, and code.
 
-The goal is Claude Cowork-style operation, adapted for Codex:
-- route work through installed Codex skills and plugins;
-- split complex requests across subagents;
-- use Browser Use or Playwright for web workflows;
-- use Computer Use for native Mac apps and visual GUI tasks;
-- create documents, slides, spreadsheets, summaries, reports, drafts, and app maps;
-- write logs and memory so workflows improve over time;
-- run multiple approved browser lanes in parallel;
-- keep one Computer Use desktop lane for the shared screen, mouse, keyboard, clipboard, and app focus;
-- keep private account/workflow memory out of the shippable framework.
+The framework teaches Codex App how to operate like an accountable Director:
+
+- keep `AGENTS.md` as the canonical operating contract;
+- build a task graph before doing broad work;
+- run independent work in parallel by default;
+- use resource locks instead of serializing whole tool classes;
+- use Browser Use, Playwright, API connectors, plugins, and subagents freely when targets do not collide;
+- restrict Computer Use by app, window, browser profile, account workflow, clipboard, file picker, simulator, and active focus;
+- execute non-high-risk Level 3/4 actions when delegated authority or explicit approval covers them;
+- stage unclear actions and block Level 5/protected actions;
+- keep evidence, logs, outputs, and safe memory.
 
 ## What This Project Is
-This repository is the blank framework. It should be safe for other users to download and adapt.
+
+This repository is the blank Coworx framework. It should be safe for other users to download and adapt.
 
 It includes:
-- `AGENTS.md`: operating rules, roles, action levels, and safety boundaries.
-- `COWORX.md`: how to run Coworx inside Codex App.
-- `.agents/skills/`: Coworx skills that teach Codex the workflow.
-- `docs/`: architecture, routing, account handoff, real-work task model, safety, and private memory policy.
-- `docs/concurrency_model.md`: how Coworx runs parallel browser lanes while serializing Computer Use.
+
+- `AGENTS.md`: canonical mission, authority, action levels, parallelism, browser, Computer Use, memory, and reporting rules.
+- `COWORX.md`: short operating manual for running Coworx in Codex App.
+- `docs/director_use.md`: main-thread Director model and active subagent management.
+- `docs/parallelism_and_locks.md`: parallel-by-default execution and lock semantics.
+- `docs/`: focused policy shards for safety, routing, account work, browser work, Computer Use, calendar work, external actions, and real-work workflows.
+- `.agents/skills/`: role skills for Coworx workflows.
+- `config/`: approved-site and autonomy-grant templates.
 - `queue/`: task queue.
 - `memory/`: templates, generic maps, and safe playbooks.
-- `operator/`: action requests, results, approvals, screenshots, traces, recordings, and Operator lease templates.
+- `operator/`: action requests, lane leases, results, approvals, screenshots, traces, recordings, and evidence templates.
 - `evals/`: smoke and regression tests.
 - `scripts/coworx_ready_check.mjs`: static readiness check.
 
 ## What Coworx Can Do
-Coworx can run both coding and non-coding work:
+
+Coworx can:
+
 - summarize meetings and transcripts;
 - make reports, documents, slides, and spreadsheets;
-- draft messages, calendar events, and follow-ups;
+- draft and send routine messages when delegated;
+- create and update calendar events when delegated;
 - map websites, dashboards, and desktop apps;
-- organize local files when approved;
-- inspect browser pages and apps using Browser Use, Playwright, or Computer Use;
-- use GitHub, Figma, PDF, image, speech, transcription, document, spreadsheet, and presentation skills when installed.
+- organize approved local files;
+- inspect browser pages and apps using Browser Use, Playwright, APIs, connectors, or Computer Use;
+- create GitHub issues, PR comments, and task-board updates when delegated;
+- use GitHub, Figma, PDF, image, speech, transcription, document, spreadsheet, presentation, browser, and automation skills when installed.
+
+## Parallelism
+
+Coworx runs Browser/API/code/subagent work in parallel by default.
+
+Locks apply to resources, not whole agent classes:
+
+- read locks allow many inspectors;
+- write locks allow one editor for a target;
+- commit locks control final sends, submits, invites, publishes, merges, deploys, purchases, deletes, and settings changes.
+
+Computer Use is restricted by target because it may share the real screen, mouse, keyboard, clipboard, windows, menus, dialogs, active app focus, browser profile, and app-local state.
 
 ## Account Work
+
 Coworx can work with signed-in accounts, but it does not learn or store login secrets.
 
-Correct login flow:
-1. You approve the exact target account or app.
-2. You sign in manually.
-3. Coworx confirms the target and action level.
-4. Coworx performs read-only or draft-only work by default.
-5. Coworx stops before sending, submitting, inviting, scheduling, deleting, purchasing, changing settings, or transmitting sensitive data unless you approve the exact final action at action time.
+Credential-safe paths include:
 
-Coworx may remember safe workflow maps, selectors, page locations, and stop conditions. It must not store passwords, 2FA codes, recovery codes, cookies, tokens, private keys, payment data, or account-security details.
+- user-controlled manual login;
+- approved existing sessions;
+- dedicated Coworx browser profiles;
+- password-manager or OS keychain prompts controlled by the user;
+- OAuth/app connectors;
+- API tokens stored outside the repo;
+- encrypted vault handles.
 
-This is session-backed account operation: the user controls login, while Coworx learns private workflow maps and sanitized reusable playbooks.
+Coworx may remember safe workflow maps, selectors, page locations, non-secret account labels, credential references, and stop conditions. It must not store passwords, 2FA codes, recovery codes, cookies, tokens, private keys, payment data, browser profile files, or account-security secrets.
+
+## Action Levels
+
+- Level 0: read-only.
+- Level 1: draft and prepare.
+- Level 2: reversible local action.
+- Level 3: credentialed reversible external action, allowed inside delegated authority.
+- Level 4: delegated external commitment, allowed only when the exact action class and target are delegated or explicitly approved.
+- Level 5: high-risk or protected action, stage or block.
+
+Level 5 includes payments, purchases, contracts, legal filings, medical decisions, financial transfers, account security changes, password changes, credential exports, deleting important records, identity verification, academic submission, sensitive personal data transmission to new recipients, irreversible production changes, and anything likely to harm the user if guessed wrong.
 
 ## Private Testing
-Real workflow testing is how Coworx improves, but real test artifacts must stay private.
 
-Shipping note: this framework does not include private account memories or private test logs. I did not log into Schoology or any real account, and I did not automate academic assignment completion/submission.
+Real workflow testing is private by default.
 
-Private-by-default tasks include:
-- signed-in account workflows;
-- user-specific app maps;
-- meeting notes, transcripts, messages, and calendar details;
-- screenshots or traces from real apps;
-- private dashboard values;
-- real task logs and outputs.
+Store private account maps, screenshots, traces, logs, outputs, and user-specific memory in ignored paths such as:
 
-Store those in ignored paths such as:
 - `.coworx-private/`
 - `memory/private/`
 - `runs/private/`
@@ -73,60 +99,31 @@ Store those in ignored paths such as:
 - `operator/screenshots/private/`
 - `operator/traces/private/`
 
-The shippable framework should contain only templates, generic examples, local no-login fixtures, and sanitized playbooks.
-
-## Safety Model
-Coworx uses action levels:
-- Level 0: read-only.
-- Level 1: draft-only.
-- Level 2: reversible local action.
-- Level 3: external reversible action, approval required.
-- Level 4: external commitment, action-time approval required.
-- Level 5: sensitive or high-risk, pause and ask.
-
-Credentials, 2FA, session cookies, tokens, recovery codes, account recovery, payment execution, account security settings, and academic submission are hard stops. Coworx should not automate them.
-
-Before real account/app testing, Coworx records user responsibility acknowledgement with `operator/approvals/TEMPLATE_USER_RESPONSIBILITY_ACK.md`. Every real workflow ends with an action ledger so the user knows what Coworx did.
+Commit only the blank framework, templates, generic examples, and sanitized lessons.
 
 ## First Checks
-Run the static readiness check:
+
+Run:
 
 ```bash
 node scripts/coworx_ready_check.mjs
 ```
 
-Run the first local smoke task:
-1. Use `queue/todo/001_map-coworx-itself.md`.
-2. Write a run log and final report.
-3. Update only safe project/process memory.
+Useful smoke tasks:
 
-Safe action-lane smoke tests already exist:
-- Browser/Playwright local fixture: `evals/smoke_tests/browser_demo.md`
-- Computer Use Calculator test: `evals/smoke_tests/computer_use_safe_app_test.md`
-
-## Iteration Workflow
-Use a testing branch for real workflow development:
-
-```bash
-git switch -c codex-coworx-real-work-testing
-```
-
-Then:
-1. Test real workflows only after manual login and exact approval.
-2. Store all real artifacts in ignored private paths.
-3. Improve templates, docs, playbooks, and skills from what worked.
-4. Sanitize anything that might be useful to ship.
-5. Commit only the blank framework, templates, generic examples, and sanitized lessons.
-
-Do not commit private memories, account maps, screenshots, task logs, meeting content, message drafts, calendar details, or credentials.
+- `queue/todo/001_map-coworx-itself.md`
+- `evals/smoke_tests/browser_demo.md`
+- `evals/smoke_tests/computer_use_safe_app_test.md`
 
 ## Real Actions
-Coworx can take real external actions after exact action-time approval. Use `docs/external_action_protocol.md` and `operator/approvals/TEMPLATE_EXTERNAL_ACTION_APPROVAL.md`.
+
+Coworx can take real non-high-risk external actions after delegated authority or explicit approval. Use `docs/external_action_protocol.md` and `operator/action_requests/TEMPLATE_ACTION_REQUEST.md`.
 
 Default pattern:
-1. Draft locally or privately.
-2. Review.
-3. Ask for exact approval.
-4. Operator performs only that action.
-5. Private result is logged.
-6. Sanitized lessons are folded back into the framework.
+
+1. Understand authority and target.
+2. Draft or prepare when needed.
+3. Acquire the right lock.
+4. Execute only inside authority.
+5. Save evidence and action result.
+6. Report what happened and what remains staged or blocked.

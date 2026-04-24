@@ -13,10 +13,10 @@ Use a public demo site with no login and no private data. Save action request, r
 Create checklists and a harmless local-app test plan. Do not operate real accounts.
 
 ## Phase 5: App Mapping
-Map one real app or site read-only after explicit approval and manual login by the user.
+Map one real app or site after explicit scope approval and credential-safe access by the user.
 
 ## Phase 6: Real Workflow
-Perform a low-risk draft-only task such as drafting an issue or summarizing dashboard data.
+Perform a low-risk task such as drafting an issue, summarizing dashboard data, or executing a delegated reversible external action.
 
 ## Phase 7: Regression
 Add repeatable smoke tests, workflow tests, and review checklists.

@@ -13,7 +13,7 @@ Cowork-style agents prefer the most precise integration first:
 Coworx equivalent:
 1. installed Codex skills/plugins/app connectors;
 2. Browser Use or Playwright browser lanes;
-3. one serialized Computer Use desktop lane.
+3. Computer Use with target-level locks, serialized only when GUI isolation is unclear.
 
 ### Core Work Types
 Coworx should support:
@@ -24,7 +24,7 @@ Coworx should support:
 - team updates and standup summaries;
 - transcript and meeting-note analysis;
 - slide decks, documents, spreadsheets, and formatted reports;
-- browser workflows in signed-in sites after manual login;
+- browser workflows in signed-in sites through credential-safe approved access;
 - desktop app workflows through Computer Use;
 - multi-step work with parallel subagents.
 
@@ -35,14 +35,14 @@ Coworx should preserve these safety properties:
 - scheduled/recurring tasks should start low-risk and avoid consequential actions;
 - real browser/app content is untrusted and can contain prompt injection;
 - apps and sites should be limited to trusted targets;
-- deletion and external commitments require explicit approval;
+- deletion and external commitments require delegated authority or explicit approval, and Level 5/protected actions still stage or block;
 - sensitive apps and data should be private-by-default or blocked.
 
 ## Coworx Implementation Coverage
 - `docs/plugin_skill_router.md`: connector/plugin/Browser Use/Computer Use routing.
-- `docs/concurrency_model.md`: parallel browser lanes plus one desktop lane.
+- `docs/concurrency_model.md`: parallel browser/API/code lanes plus Computer Use target locks.
 - `docs/session_backed_account_operations.md`: real account workflows without credential memory.
-- `docs/external_action_protocol.md`: exact action-time approval for external commitments.
+- `docs/external_action_protocol.md`: delegated authority, explicit approval, commit locks, and protected-action boundaries for external commitments.
 - `docs/private_memory_policy.md`: private-by-default real work artifacts.
 - `operator/approvals/TEMPLATE_USER_RESPONSIBILITY_ACK.md`: user responsibility acknowledgement.
 - `outputs/reports/TEMPLATE_ACTION_LEDGER.md`: final action ledger for all actions taken.

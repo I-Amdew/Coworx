@@ -24,7 +24,7 @@ Use at dispatch, before Operator actions, before external actions, and before cl
 - policy notes.
 
 ## Rules
-- Default unknown external actions to approval-required.
+- Default unknown external actions to staged until delegated authority or explicit approval is clear.
 - Treat credentials, 2FA, security, payment, deletion, legal, medical, financial, employment, and academic submission as Level 5.
 - Do not reduce risk based on convenience.
 

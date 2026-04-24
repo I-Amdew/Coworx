@@ -26,7 +26,7 @@ Use when the Coordinator has selected a single task from `queue/todo/`.
 - Run exactly one task.
 - Keep actions inside the approved scope.
 - Maintain the run log as work proceeds.
-- Do not use browser or Computer Use unless an approved Operator request exists.
+- Do not use browser/API/connector or Computer Use lanes unless an approved action request, authority source, and required locks exist.
 
 ## Failure Or Blocked Behavior
 Stop, log the blocker, and write a partial final report.

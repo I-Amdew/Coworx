@@ -1,66 +1,82 @@
 # Plugin And Skill Router
 
-Coworx uses installed Codex skills, plugins, MCP tools, and app connectors as its capability layer.
+Coworx uses installed Codex skills, plugins, MCP tools, app connectors, Browser Use, Playwright, Computer Use, and local tools as its capability layer.
 
 ## Routing Algorithm
-1. Read the task and classify the action level.
-2. Identify the work type: browser, native app, file, document, spreadsheet, presentation, design, GitHub, media, automation, research, coding, review, or mixed.
-3. Prefer an installed skill or plugin built for that work type.
-4. If browser work is needed, prefer Browser Use for in-app browser targets and Playwright for repeatable structured automation.
-5. If desktop work is needed, use Computer Use through the Operator lane.
-6. If multiple independent subtasks exist, assign subagents for planning, research, review, memory, and bounded implementation.
-7. Record tool choice, action level, approvals, and evidence in the run log.
+
+1. Read the task and classify action level.
+2. Identify authority source, target resources, privacy class, and locks.
+3. Identify work type: browser, native app, file, document, spreadsheet, presentation, design, GitHub, media, automation, research, coding, review, or mixed.
+4. Prefer an installed connector, plugin, MCP tool, or skill built for the work type.
+5. Use Browser Use for Codex in-app/current/local/file-backed/public targets.
+6. Use Playwright for repeatable structured browser checks and approved isolated profiles.
+7. Use APIs/connectors for credentialed account work when available.
+8. Use Computer Use for native apps, real browser profiles, system dialogs, visual checks, simulators, and GUI-only tasks.
+9. Staff independent lanes in parallel.
+10. Record tool choice, action level, authority, locks, and evidence in the run log.
 
 ## Installed Capability Examples
-- Browser Use: in-app browser automation.
-- Computer Use: Mac app control.
+
+- Browser Use: in-app/current/local/public browser automation.
+- Playwright: repeatable browser automation, QA, screenshots, and traces.
+- Computer Use: native Mac apps, real browser profiles, GUI-only flows.
 - GitHub: repositories, issues, pull requests, CI.
 - Figma: design context and Figma file operations.
 - Documents: DOCX creation and editing.
 - Spreadsheets: XLSX/CSV analysis and generation.
 - Presentations: PPTX slide decks.
-- Playwright: structured browser automation and screenshots.
-- PDF, image, speech, transcription, and media skills when installed.
+- PDF, image, speech, transcription, video, and media skills when installed.
 
 ## Non-Coding Routing Table
-| Work type | Primary route | Fallback | Approval notes |
+
+| Work type | Primary route | Fallback | Authority notes |
 |---|---|---|---|
-| Meeting audio/video | Transcribe skill | Local notes parsing | Draft summaries are Level 1; sending follow-ups is Level 4. |
+| Meeting audio/video | Transcribe skill | Local notes parsing | Drafts are Level 1; sends are Level 4 when delegated. |
 | DOCX/report | Documents plugin | `doc` skill | Local file creation is Level 2. |
 | Slides | Presentations plugin | local outline draft | Local deck creation is Level 2. |
 | Spreadsheet | Spreadsheets plugin | CSV/local script | Local workbook creation is Level 2. |
-| PDF | PDF skill | local extraction/render tools | Keep sensitive PDFs in private memory/output paths. |
-| Browser task | Browser Use for in-app/current/local targets | Playwright for repeatable structured automation | Signed-in pages default to read-only/draft-only. |
-| Native app task | Computer Use | Screenshot skill for read-only evidence | One Operator only; stop at permission/sensitive prompts. |
+| PDF | PDF skill | local extraction/render tools | Keep sensitive PDFs in private paths. |
+| Browser task | Browser Use for in-app/current/local/public targets | Playwright for repeatable automation | Credentialed work prefers connectors or approved isolated profiles. |
+| Native app task | Computer Use | Screenshot skill for read-only evidence | Use target-level locks. |
 | GitHub | GitHub plugin skills | `gh-*` standalone skills | Comments, PRs, merges, and settings follow action levels. |
-| Figma/design | Figma plugin and Figma skills | screenshots/context export | Write operations require task approval. |
-| Messaging/calendar | Draft in local output first | Browser/Computer Use only after approval | Final send/invite/schedule is Level 4. |
+| Figma/design | Figma plugin and Figma skills | screenshots/context export | Write operations require task authority. |
+| Messaging/calendar | Connector/API/browser lane | Computer Use for real profiles | Sends/invites/schedules are Level 4 when delegated or explicitly approved. |
 | Media generation | image/sora/speech skills | local drafts | Never ask user to paste API keys. |
 
 ## Router Rules
-1. Match artifact type first: DOCX, PPTX, XLSX/CSV, PDF, image, audio, video.
-2. Match operating surface second: browser, native app, repo/files, connector/plugin.
-3. Match risk before execution: drafts are not sends; local files are not cloud writes; read-only is not submission.
+
+1. Match artifact type first.
+2. Match operating surface second.
+3. Match risk before execution.
 4. Prefer plugin skills over standalone equivalents when both exist.
-5. For meetings, transcribe or read notes first, then route to the requested deliverable.
-6. For calendar and messaging, keep Coworx draft-first unless the user approves the exact final action.
-7. For account workflows, require manual login and write user-specific maps to private ignored memory.
+5. For account workflows, use credential-safe access and write user-specific maps to ignored private memory.
+6. For calendar and messaging, stage when authority, target, recipients, or content are unclear.
+7. Do not use plugins or skills to bypass action levels, locks, or credential rules.
 
-## Auto-Approval Defaults
+## Auto-Execution Defaults
+
 Coworx may automatically perform:
-- Level 0 read-only actions;
-- Level 1 draft-only actions;
-- Level 2 reversible local actions when the task requests them.
 
-Coworx must pause for:
-- external reversible actions without prior permission;
-- send, submit, publish, delete, purchase, invite, merge, deploy, or settings changes;
-- credentials, account security, payments, legal, medical, financial, employment, and academic submission flows.
+- Level 0 read-only actions;
+- Level 1 draft/prep actions;
+- Level 2 reversible local actions when requested;
+- Level 3 reversible external actions inside delegated authority;
+- Level 4 non-high-risk external commitments when the exact action class and target are delegated or explicitly approved.
+
+Coworx must stage or block:
+
+- Level 5/protected actions;
+- unclear authority;
+- uncertain targets;
+- credentials, account security, payments, legal, medical, financial, employment, identity, academic submission, and irreversible production flows.
 
 ## Evidence
+
 Every tool-using workflow should leave:
+
 - run log;
-- action request and result when Operator is used;
-- screenshots, traces, generated files, or command output references when useful;
+- action request/result when external tools or GUI state are used;
+- screenshots, traces, generated files, command output, links, or IDs when useful;
+- locks and authority source;
 - reviewer verdict;
-- safe memory updates.
+- safe memory updates or proposals.

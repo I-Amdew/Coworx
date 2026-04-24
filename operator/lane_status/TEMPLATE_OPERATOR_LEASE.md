@@ -12,6 +12,11 @@ Computer Use
 
 ## Allowed Target
 
+## Target-Level Locks
+- App/window:
+- Browser profile/account workflow:
+- Clipboard/file picker/simulator/active focus:
+
 ## Action Level
 
 ## Approval Source
@@ -25,7 +30,8 @@ Computer Use
 - 2FA;
 - payments;
 - account security;
-- external commitments;
+- Level 5/protected actions;
+- external commitments outside delegated authority or explicit approval;
 - destructive actions;
 - academic submission;
 - wrong-target actions.
@@ -33,4 +39,4 @@ Computer Use
 ## Release Rules
 - Release after writing the action result.
 - Release immediately on any stop condition.
-- Do not start another Computer Use session while this lease is active.
+- Do not start another Computer Use session against the same target-level lock while this lease is active.

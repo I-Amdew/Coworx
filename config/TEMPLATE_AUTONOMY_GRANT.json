@@ -1,0 +1,41 @@
+{
+  "grant_name": "Example Routine Scheduling",
+  "site_or_app": "Example Calendar",
+  "account_label": "work",
+  "login_method": "approved_connector_or_browser_profile",
+  "allowed_without_extra_approval": [
+    "read_calendar",
+    "create_follow_up_meetings_from_user_instruction",
+    "copy_attendees_from_user_named_source_meeting"
+  ],
+  "stage_for_approval": [
+    "invite_uncertain_attendees",
+    "delete_events",
+    "send_sensitive_external_description"
+  ],
+  "always_pause_or_block": [
+    "payment",
+    "account_security",
+    "password_change",
+    "credential_export",
+    "identity_verification",
+    "academic_submission"
+  ],
+  "external_notifications_allowed": false,
+  "final_send_submit_allowed": false,
+  "guests_or_recipients_may_be_added": false,
+  "data_allowed": [
+    "task_relevant_calendar_data"
+  ],
+  "data_to_avoid": [
+    "secrets",
+    "unrelated_private_data"
+  ],
+  "evidence_required": [
+    "action_result",
+    "created_or_updated_object_id",
+    "timestamp"
+  ],
+  "review_or_expiration": "YYYY-MM-DD or one_task"
+}
+

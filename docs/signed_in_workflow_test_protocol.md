@@ -1,76 +1,46 @@
 # Signed-In Workflow Test Protocol
 
-Coworx should be able to do real work in signed-in apps, but login and final external actions stay under user control.
+Signed-in workflow tests are private by default.
 
-## Goal
-Test real account workflows such as:
-- checking a calendar;
-- summarizing upcoming events;
-- drafting a message or follow-up;
-- checking task dashboards;
-- mapping an account workflow;
-- creating a local document, slide outline, or spreadsheet from approved account context.
+## Setup
 
-## Non-Negotiable Login Rule
-Coworx must not retrieve login information from:
-- Claude skills;
-- Codex skills;
-- password managers;
-- browser storage;
-- cookies;
-- tokens;
-- old logs;
-- screenshots;
-- copied notes.
+1. Define target app/site/account label.
+2. Define action level and authority source.
+3. Define private output paths.
+4. Define allowed data and stop conditions.
+5. Use credential-safe access.
+6. Create a lane lease with locks.
+7. Run only the approved workflow.
+8. Save private evidence and sanitized lessons.
 
-The user signs in manually.
+## Allowed
 
-## Test Setup
-1. Create or switch to a testing branch.
-2. Choose the exact app or site.
-3. User manually signs in.
-4. Create a task from `queue/todo/TEMPLATE_REAL_ACCOUNT_TEST.md`.
-5. Set storage to ignored private paths.
-6. Create an Operator request with privacy and approval fields filled in.
-7. Run only the approved read-only or draft-only workflow.
-8. Write private results.
-9. Convert any useful lesson into a sanitized template before committing.
+- inspect approved pages;
+- summarize dashboards;
+- create local private reports;
+- draft messages and events;
+- execute non-high-risk Level 3/4 actions when delegated or explicitly approved;
+- map generic navigation and selectors.
 
-## Example: Calendar Read-Only Test
-Allowed:
-- inspect the calendar page after manual login;
-- summarize upcoming events;
-- draft a planning note locally;
-- map where the week/month/day views live.
+## Not Allowed
 
-Not allowed without action-time approval:
-- create, edit, delete, or move an event;
-- invite attendees;
-- send reminders;
-- change calendar settings;
-- expose private event details in shippable memory.
+- credential entry by Coworx;
+- 2FA handling by Coworx;
+- cookie/token/session export;
+- payment;
+- account security changes;
+- identity verification;
+- academic submission;
+- external commitments outside delegated authority or explicit approval;
+- private artifacts in shippable paths.
 
-## Example: School Or District Portal Test
-Allowed:
-- manually signed-in read-only mapping;
-- summarize visible deadlines or announcements into private output;
-- draft a study or work plan locally;
-- save sanitized workflow notes.
+## Evidence
 
-Not allowed:
-- completing graded work as the user;
-- submitting assignments;
-- handling credentials or 2FA;
-- changing account/security/payment settings;
-- storing private grades, messages, or personal details in shippable memory.
+Save:
 
-## Output Rules
-Private outputs go under:
-- `.coworx-private/`
-- `runs/private/`
-- `outputs/private/`
-- `memory/private/`
-- `operator/screenshots/private/`
-- `operator/traces/private/`
-
-Shippable outputs can include only sanitized templates and generic lessons.
+- action request;
+- lane lease;
+- action result;
+- private screenshots/traces if allowed;
+- sanitized memory proposal;
+- final report with assumptions and residual risk.

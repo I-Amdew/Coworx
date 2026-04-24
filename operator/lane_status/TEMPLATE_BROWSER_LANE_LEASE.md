@@ -10,6 +10,9 @@ available / active / released / blocked
 ## Browser Surface
 Browser Use / Playwright / other
 
+## Parallelism
+parallel by default; use locks for shared write targets
+
 ## Tab Or Session ID
 
 ## Allowed Target
@@ -24,6 +27,10 @@ Browser Use / Playwright / other
 
 ## Approval Source
 
+## Resource Locks
+- Target:
+- Lock type: read / write / commit
+
 ## Started
 
 ## Expires
@@ -34,7 +41,8 @@ Browser Use / Playwright / other
 - session/token/cookie capture;
 - payment;
 - account security;
-- external commitment without approval;
+- Level 5/protected action;
+- external commitment outside delegated authority or explicit approval;
 - destructive action;
 - academic submission;
 - wrong target.

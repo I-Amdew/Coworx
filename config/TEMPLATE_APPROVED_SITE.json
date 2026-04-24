@@ -1,0 +1,41 @@
+{
+  "site": "Example Calendar",
+  "domain": "calendar.example.com",
+  "account_label": "work",
+  "login_method": "approved_connector_or_browser_profile",
+  "standing_approval": false,
+  "allowed_without_extra_approval": [
+    "read_calendar",
+    "create_events_when_user_requests_scheduling"
+  ],
+  "stage_for_approval": [
+    "invite_uncertain_attendees",
+    "modify_events_not_created_by_coworx",
+    "send_sensitive_client_facing_description"
+  ],
+  "always_block_or_pause": [
+    "account_security",
+    "payment_settings",
+    "password_change",
+    "credential_export",
+    "identity_verification"
+  ],
+  "may_send_notifications": false,
+  "may_invite_people": false,
+  "may_submit_routine_forms": false,
+  "data_allowed": [
+    "task_relevant_records"
+  ],
+  "data_to_avoid": [
+    "secrets",
+    "payment_details",
+    "unrelated_private_data"
+  ],
+  "evidence_required": [
+    "action_result",
+    "target_url_or_id",
+    "timestamp"
+  ],
+  "expires": "YYYY-MM-DD or one_task"
+}
+

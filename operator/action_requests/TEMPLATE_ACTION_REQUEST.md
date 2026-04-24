@@ -29,6 +29,9 @@ Describe anything that would send, submit, upload, invite, schedule, publish, de
 
 ## Action Level
 
+## Authority Source
+delegated by request / explicit approval / stage only
+
 ## Approval
 - Status: not required / requested / granted / denied
 - Approver:
@@ -42,8 +45,13 @@ Describe anything that would send, submit, upload, invite, schedule, publish, de
 - Browser/app target is approved.
 - No credentials should be entered by Coworx.
 - No secrets, session tokens, cookies, 2FA codes, or recovery codes may be captured.
+- Non-high-risk Level 3/4 actions have delegated authority or explicit approval.
 
 ## Allowed Actions
+
+## Required Resource Locks
+- Browser Use/Playwright: lock only shared write targets.
+- Computer Use: lock target app/window/profile/account workflow and any clipboard, file picker, simulator, or active-focus dependency.
 
 ## Steps
 1.
@@ -53,8 +61,8 @@ Describe anything that would send, submit, upload, invite, schedule, publish, de
 - 2FA required.
 - Permission prompt appears.
 - Wrong target.
-- External commitment would be made.
-- Sensitive or destructive action is requested.
+- External commitment is outside delegated authority or explicit approval.
+- Level 5/protected, sensitive, or destructive action is requested.
 
 ## Required Output
 - summary;

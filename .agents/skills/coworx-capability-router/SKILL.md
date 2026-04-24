@@ -31,7 +31,8 @@ Use after dispatch and safety classification, before planning execution.
 - Use Browser Use or Playwright for browser tasks.
 - Use Computer Use for native apps and GUI-only tasks.
 - Use subagents for independent planning, research, review, verification, and memory.
-- Keep browser and desktop control in the single Operator lane.
+- Use leased Browser Use/Playwright/API lanes in parallel when targets do not collide.
+- Use Computer Use only with target-level locks.
 - Never use plugins or skills to bypass approval policy.
 
 ## Failure Or Blocked Behavior

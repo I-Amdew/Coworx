@@ -1,0 +1,22 @@
+{
+  "lane_id": "browser-lane-01",
+  "surface": "Browser Use or Playwright",
+  "target": "https://example.com",
+  "account_label": "none_or_approved_label",
+  "privacy_classification": "public",
+  "parallelism": "parallel_by_default",
+  "locks": [
+    {
+      "target": "example_resource",
+      "type": "read"
+    }
+  ],
+  "output_path": "outputs/reports/example.md",
+  "stop_conditions": [
+    "wrong_target",
+    "credential_prompt",
+    "level_5_protected_action",
+    "external_commitment_outside_authority"
+  ]
+}
+
