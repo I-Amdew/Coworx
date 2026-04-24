@@ -18,6 +18,7 @@ Use at task intake, when a request is broad, ambiguous, multi-step, or not yet i
 ## Output Format
 - task file path;
 - goal;
+- directive ledger;
 - action level;
 - acceptance criteria;
 - allowed and disallowed tools;
@@ -26,6 +27,9 @@ Use at task intake, when a request is broad, ambiguous, multi-step, or not yet i
 ## Rules
 - Prefer one task that can finish in one run.
 - Split broad goals into PR-sized or report-sized units.
+- Extract explicit and implied directives from multi-stage requests.
+- Give each directive an acceptance condition, dependency, authority source, action level, and evidence expectation.
+- Mark directives that are good candidates for subagents, including independent research, disjoint implementation, diagnosis, review, verification, and evidence collection.
 - Do not include secrets.
 - Mark external, destructive, sensitive, or academic-submission actions for approval.
 

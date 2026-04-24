@@ -7,21 +7,22 @@ The Director owns the outcome. Subagents, browser lanes, API connectors, reviewe
 ## Operating Model
 
 1. Define the user-visible mission and acceptance criteria.
-2. Build a task/prerequisite graph before staffing.
-3. Keep shared contracts, immediate blockers, integration, safety calls, and final reporting local to the Director.
-4. Staff every useful independent lane.
-5. Continue local critical-path work while lanes run.
-6. Checkpoint agents when their output can change the graph, unblock work, or needs steering.
-7. Inspect evidence before trusting returned claims.
-8. Recompute the graph after each meaningful result.
-9. Verify the integrated result before calling the task done.
+2. Convert explicit and implied multi-stage instructions into a directive ledger.
+3. Build a task/prerequisite graph before staffing.
+4. Keep shared contracts, immediate blockers, integration, safety calls, and final reporting local to the Director.
+5. Staff every useful independent lane that improves delivery.
+6. Continue local critical-path work while lanes run.
+7. Checkpoint agents when their output can change the graph, unblock work, or needs steering.
+8. Inspect evidence before trusting returned claims.
+9. Recompute the graph and directive ledger after each meaningful result.
+10. Verify the integrated result before calling the task done.
 
 ## Task Graph
 
 Track enough state to avoid losing the mission:
 
 ```text
-ID | Task | Class | Type | Depends on | Owner | Scope | Status | Locks | Next checkpoint
+ID | Directive/Task | Class | Type | Depends on | Owner | Scope | Status | Locks | Evidence | Next checkpoint
 ```
 
 Classes:
@@ -49,7 +50,7 @@ Recompute the graph whenever an agent returns, a command fails, a lock is acquir
 
 Director Use should feel materially different from solo work.
 
-Default to staffing:
+Default to staffing when it increases the chance of fully delivering the directive ledger:
 
 - a scope/recon lane when the surface may be larger than obvious;
 - separate research lanes for independent sources;
@@ -59,12 +60,13 @@ Default to staffing:
 - evidence collectors for screenshots, traces, links, IDs, and command output;
 - memory writers for safe reusable procedures after the task is done.
 
-Do not spawn agents for duplicate work, overlapping write scopes, immediate Director-only decisions, or work that would fight over a locked resource.
+Keep work local for immediate Director-only decisions, shared contracts, integration, critical-path steps that would be slowed by delegation, or tightly coupled context. Do not spawn agents for duplicate work, overlapping write scopes, or work that would fight over a locked resource.
 
 ## Agent Assignments
 
 Every lane needs:
 
+- directive ID it advances;
 - task ID and mission;
 - dependencies it may assume;
 - owned scope and out-of-scope boundaries;
@@ -111,6 +113,17 @@ When a lane returns, the Director immediately decides:
 
 Do not leave returned agents merely "noted" when their context can cheaply verify, refine, or extend their lane.
 
+## Delivery Closeout
+
+Before final reporting, reconcile the directive ledger:
+
+- every explicit or implied directive is completed, staged, blocked, skipped, or waiting with a reason;
+- all subagent results have been inspected and integrated or rejected with rationale;
+- all completed items have evidence;
+- all staged items have concrete approval commands;
+- all discovered downstream tasks have been classified;
+- no ready directive remains unowned.
+
 ## Verification
 
 Passing agent statements are not evidence by themselves.
@@ -126,4 +139,3 @@ Prefer:
 - reviewer findings with exact file/line references.
 
 Before the final report, confirm no useful running agent, unowned ready task, unresolved blocking decision, unreleased lock, or unverified acceptance criterion remains. If any remain, resolve them or report the residual risk plainly.
-

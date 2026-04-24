@@ -2,30 +2,43 @@
 
 Coworx is Cowork in Codex: a local, Codex-native coworker operating system for doing real work across files, browsers, accounts, desktop apps, documents, spreadsheets, slides, GitHub, research, calendars, messages, and code.
 
+Coworx is not a skill the user downloads and deploys. It is a project workspace Codex opens and uses as its operating base. The folder stores policies, task queues, run logs, outputs, reusable maps, private workflow memory, selectors, account references, and evidence so Coworx gets faster and more personal over time.
+
 The framework teaches Codex App how to operate like an accountable Director:
 
 - keep `AGENTS.md` as the canonical operating contract;
+- use the project folder as the persistent operating base;
+- check maps and private workflow memory before rediscovering known paths;
+- learn which plugins, skills, connectors, browser profiles, local scripts, and apps are available in each user's setup;
 - build a task graph before doing broad work;
+- maintain a directive ledger for multi-stage goals;
 - run independent work in parallel by default;
+- use subagents when they improve delivery, coverage, diagnosis, review, or verification;
 - use resource locks instead of serializing whole tool classes;
 - use Browser Use, Playwright, API connectors, plugins, and subagents freely when targets do not collide;
 - restrict Computer Use by app, window, browser profile, account workflow, clipboard, file picker, simulator, and active focus;
 - execute non-high-risk Level 3/4 actions when delegated authority or explicit approval covers them;
 - stage unclear actions and block Level 5/protected actions;
 - keep evidence, logs, outputs, and safe memory.
+- save safe workflow maps and output locations for future speed.
+- save safe capability lessons so future routing fits the user's setup.
+- close only after every directive is completed, staged, blocked, skipped, or explicitly waiting.
 
 ## What This Project Is
 
-This repository is the blank Coworx framework. It should be safe for other users to download and adapt.
+This repository is the blank Coworx project framework. It should be safe for other users to copy or adapt as a starting workspace. The personalized value comes from the local maps, private memory, logs, outputs, and workflow references accumulated inside a user's own Coworx project.
 
 It includes:
 
 - `AGENTS.md`: canonical mission, authority, action levels, parallelism, browser, Computer Use, memory, and reporting rules.
 - `COWORX.md`: short operating manual for running Coworx in Codex App.
 - `docs/director_use.md`: main-thread Director model and active subagent management.
+- `docs/directive_follow_through.md`: directive ledger, delivery close criteria, and subagent use for multi-stage goals.
+- `docs/project_workspace_model.md`: project-backed workspace model, local customization loop, outputs, hand-off, and memory boundaries.
+- `docs/capability_discovery.md`: per-user capability maps for plugins, skills, connectors, profiles, apps, scripts, and fallbacks.
 - `docs/parallelism_and_locks.md`: parallel-by-default execution and lock semantics.
 - `docs/`: focused policy shards for safety, routing, account work, browser work, Computer Use, calendar work, external actions, and real-work workflows.
-- `.agents/skills/`: role skills for Coworx workflows.
+- `.agents/skills/`: local role prompt files for Coworx workflows, not a user-installed product.
 - `config/`: approved-site and autonomy-grant templates.
 - `queue/`: task queue.
 - `memory/`: templates, generic maps, and safe playbooks.
@@ -58,6 +71,22 @@ Locks apply to resources, not whole agent classes:
 - commit locks control final sends, submits, invites, publishes, merges, deploys, purchases, deletes, and settings changes.
 
 Computer Use is restricted by target because it may share the real screen, mouse, keyboard, clipboard, windows, menus, dialogs, active app focus, browser profile, and app-local state.
+
+## Follow-Through
+
+Coworx tracks multi-stage requests in a directive ledger. A run is not complete because one step finished; it is complete when every explicit or implied directive has evidence, is staged for approval, is blocked with a reason, is skipped with rationale, or is explicitly waiting.
+
+Subagents are used when they materially improve delivery: independent research, disjoint implementation, browser/API operation, diagnosis, review, verification, and evidence collection. The Director keeps critical-path decisions and integration local, inspects returned evidence, and updates the directive ledger before closing.
+
+## Project Memory
+
+Coworx learns through local project files. It may store course routes, dashboard maps, file locations, preferred output folders, selector maps, account labels, browser profile names, connector names, vault handles, and stop conditions. It uses those references to complete future tasks faster.
+
+Coworx also learns each user's capability setup. It can remember which Codex plugins, skills, connectors, MCP tools, browser profiles, local scripts, desktop apps, and fallback routes are available and useful, without assuming every user has the same setup.
+
+Coworx stores login routes and account references, not raw secrets. Passwords, 2FA codes, cookies, tokens, session files, private keys, and payment data must never be stored in project memory.
+
+Outputs are created in `outputs/` or private ignored paths first. When delegated, Coworx may move or copy approved outputs to Downloads, a project folder, a cloud document, or another approved destination, and it records that hand-off as evidence.
 
 ## Account Work
 

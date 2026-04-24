@@ -1,19 +1,21 @@
 # Plugin And Skill Router
 
-Coworx uses installed Codex skills, plugins, MCP tools, app connectors, Browser Use, Playwright, Computer Use, and local tools as its capability layer.
+Coworx is the project-backed workspace. Installed Codex skills, plugins, MCP tools, app connectors, Browser Use, Playwright, Computer Use, local scripts, apps, and CLIs are capability layers it may call to complete work.
 
 ## Routing Algorithm
 
 1. Read the task and classify action level.
-2. Identify authority source, target resources, privacy class, and locks.
-3. Identify work type: browser, native app, file, document, spreadsheet, presentation, design, GitHub, media, automation, research, coding, review, or mixed.
-4. Prefer an installed connector, plugin, MCP tool, or skill built for the work type.
-5. Use Browser Use for Codex in-app/current/local/file-backed/public targets.
-6. Use Playwright for repeatable structured browser checks and approved isolated profiles.
-7. Use APIs/connectors for credentialed account work when available.
-8. Use Computer Use for native apps, real browser profiles, system dialogs, visual checks, simulators, and GUI-only tasks.
-9. Staff independent lanes in parallel.
-10. Record tool choice, action level, authority, locks, and evidence in the run log.
+2. Check Coworx project memory for known maps, routes, output preferences, account labels, selectors, and stop conditions.
+3. Check the capability map for user-available plugins, skills, connectors, MCP tools, browser profiles, scripts, apps, and known fallbacks.
+4. Identify authority source, target resources, privacy class, and locks.
+5. Identify work type: browser, native app, file, document, spreadsheet, presentation, design, GitHub, media, automation, research, coding, review, or mixed.
+6. Prefer the most direct available connector, plugin, MCP tool, skill, script, or profile when it helps complete the directive with evidence.
+7. Use Browser Use for Codex in-app/current/local/file-backed/public targets.
+8. Use Playwright for repeatable structured browser checks and approved isolated profiles.
+9. Use APIs/connectors for credentialed account work when available.
+10. Use Computer Use for native apps, real browser profiles, system dialogs, visual checks, simulators, and GUI-only tasks.
+11. Staff independent lanes in parallel.
+12. Record tool choice, action level, authority, locks, evidence, outputs, capability result, and any memory updates in the run log.
 
 ## Installed Capability Examples
 
@@ -48,10 +50,13 @@ Coworx uses installed Codex skills, plugins, MCP tools, app connectors, Browser 
 1. Match artifact type first.
 2. Match operating surface second.
 3. Match risk before execution.
-4. Prefer plugin skills over standalone equivalents when both exist.
-5. For account workflows, use credential-safe access and write user-specific maps to ignored private memory.
-6. For calendar and messaging, stage when authority, target, recipients, or content are unclear.
-7. Do not use plugins or skills to bypass action levels, locks, or credential rules.
+4. Use project maps and memory before rediscovering a known route.
+5. Use capability maps before assuming a fixed toolset.
+6. Prefer plugin skills over standalone equivalents when both exist and local evidence says they work for this setup.
+7. Prefer a learned fallback when the primary capability is missing, unreliable, or out of scope for this user's setup.
+8. For account workflows, use credential-safe access and write user-specific maps to ignored private memory.
+9. For calendar and messaging, stage when authority, target, recipients, or content are unclear.
+10. Do not use plugins or skills to bypass action levels, locks, or credential rules.
 
 ## Auto-Execution Defaults
 
@@ -79,4 +84,6 @@ Every tool-using workflow should leave:
 - screenshots, traces, generated files, command output, links, or IDs when useful;
 - locks and authority source;
 - reviewer verdict;
+- output hand-off records when files are moved or copied outside `outputs/`;
+- capability used, fallback used, and lesson learned;
 - safe memory updates or proposals.

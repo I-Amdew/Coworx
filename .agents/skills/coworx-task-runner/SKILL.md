@@ -17,6 +17,7 @@ Use when the Coordinator has selected a single task from `queue/todo/`.
 
 ## Output Format
 - status;
+- directive ledger status;
 - files changed;
 - evidence;
 - review result;
@@ -25,8 +26,11 @@ Use when the Coordinator has selected a single task from `queue/todo/`.
 ## Rules
 - Run exactly one task.
 - Keep actions inside the approved scope.
+- Drive every directive in the task ledger to completed, staged, blocked, skipped, or explicitly waiting.
+- Continue through delegated downstream stages required by the original request.
+- Use subagents when independent work improves delivery, and integrate their evidence before closing.
 - Maintain the run log as work proceeds.
 - Do not use browser/API/connector or Computer Use lanes unless an approved action request, authority source, and required locks exist.
 
 ## Failure Or Blocked Behavior
-Stop, log the blocker, and write a partial final report.
+Stop only the blocked directive when other safe directives can continue. Log blockers and write a partial final report if the whole task cannot continue.

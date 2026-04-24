@@ -15,6 +15,8 @@ Shippable memory is safe to commit:
 Private local memory is not for commits:
 - real account maps;
 - user-specific workflows;
+- user-specific capability inventories, plugin availability, connector names, browser profile labels, local app maps, scripts, and fallback lessons;
+- course, dashboard, app, document, folder, and output-location maps tied to the user;
 - screenshots from user apps;
 - meeting notes;
 - message drafts;
@@ -30,6 +32,8 @@ Private by default applies to any task involving:
 - screenshots or traces from real apps;
 - cloud documents, cloud drafts, or uploads;
 - user-specific workflows or account maps.
+
+Private local memory may be highly customized. It can record where the user's stuff lives, how to reach approved workflows, which account label or browser profile to use, which plugins or connectors are available, what outputs normally go where, and what prior work established. It still must not contain raw secrets.
 
 Private memory belongs in:
 - `.coworx-private/`;
