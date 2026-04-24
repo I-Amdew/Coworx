@@ -20,15 +20,22 @@ Use separate output paths for screenshots, traces, logs, and private artifacts.
 
 ## Credential Rules
 
-Do not use Playwright to enter credentials, bypass 2FA, export cookies, copy profile data, or expose tokens. For credentialed work, prefer official API/app connectors, MCP/plugin integrations, approved isolated profiles, or Computer Use with a real approved browser/profile when GUI operation is necessary.
+For credentialed browser work, prefer official connectors/API first when available. Prefer Playwright with an isolated approved browser profile or local environment variables when technically available.
+
+Playwright may use approved local credential handoff for the approved target, but it must not put secret values in command-line arguments, traces, videos, screenshots, logs, prompts, reports, or storage committed to the repo. Prefer environment variables or ignored local files read inside the script. Store browser state only in ignored private paths. Do not commit storage state. Do not export cookies.
+
+Use resource locks for account workflows. Verify the target domain before login. Stop if the page redirects to an unexpected domain or security flow.
 
 ## Stop Conditions
 
 Stop on:
 
-- credential or 2FA prompts;
+- credential or MFA prompts not covered by approved local handoff;
 - payment;
 - account security;
+- account recovery;
+- password change;
+- unexpected domain redirect;
 - identity verification;
 - destructive actions outside authority;
 - academic submission flows;

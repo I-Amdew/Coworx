@@ -62,7 +62,7 @@ Standby Mode must pause before protected final actions, unexpected permission pr
 
 Stop on:
 
-- login, credential, 2FA, recovery, token, cookie, or secret prompts outside approved secure flows;
+- login, credential, MFA, recovery, token, cookie, or secret prompts outside approved local-only credential handoff;
 - wrong target, wrong account, or changed destination;
 - permission prompt not covered by authority;
 - payment, account security, identity, legal, medical, financial, academic submission, or protected action;

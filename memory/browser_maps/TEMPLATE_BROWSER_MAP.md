@@ -5,16 +5,16 @@
 ## Target
 
 ## Access
-Use no-login pages by default. If login is required, pause and ask the user to sign in manually.
+Use no-login pages by default. If login is required, use the approved local-only access route or ask the user to sign in manually.
 
 ## Safe Actions
 
 ## Approval-Required Actions
 
 ## Stop Conditions
-- login;
-- 2FA;
-- credentials;
+- login outside approved local-only handoff;
+- MFA outside approved local-only handoff;
+- credential exposure/export/capture/storage;
 - payment;
 - account security;
 - external commitment;

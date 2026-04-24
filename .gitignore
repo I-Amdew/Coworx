@@ -3,7 +3,12 @@
 
 # Private Coworx learning and user-specific memories.
 .coworx-private/
+.coworx-private/secrets/
+.coworx-private/browser-profiles/
+.coworx-private/session-state/
 .coworx-private/standby/
+.coworx-private/traces/
+.coworx-private/screenshots/raw/
 memory/private/
 memory/**/private-*.md
 memory/**/local-*.md
@@ -23,3 +28,6 @@ outputs/files/private/
 *.credentials
 *.token
 *.key
+*.secret
+*.secrets
+*.local.env

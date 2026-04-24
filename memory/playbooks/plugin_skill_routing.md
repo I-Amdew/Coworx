@@ -26,4 +26,4 @@ Choose the best available Codex capability for a Coworx task in this user's cust
 - Credentialed account workflow: connector/API first, then approved browser profile or Computer Use when needed.
 
 ## Stop Conditions
-Stop on credentials, 2FA, account security, payment, Level 5/protected actions, destructive actions outside delegated authority, external commitments outside delegated authority or explicit approval, sensitive-data transmission outside authority, or academic submission.
+Stop on credential prompts outside approved local-only handoff, MFA outside approved local-only handoff, account security, payment, Level 5/protected actions, destructive actions outside delegated authority, external commitments outside delegated authority or explicit approval, sensitive-data transmission outside authority, or academic submission.

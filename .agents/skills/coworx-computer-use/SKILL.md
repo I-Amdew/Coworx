@@ -27,8 +27,9 @@ Use after Playwright is insufficient or when the task is about native apps or sy
 ## Rules
 - Keep tasks narrow.
 - Do not open sensitive apps unless approved and necessary.
-- Never enter credentials or 2FA codes.
-- Stop on permissions, security/account/payment areas, destructive actions, or wrong target.
+- May enter credentials only into an approved login form from an approved local credential source, with target verified and secret-visible evidence disabled or redacted.
+- Never print, log, screenshot, trace, export, or store credentials, MFA answers, cookies, tokens, or recovery codes.
+- Stop on permissions outside authority, security/account/payment areas, password changes, recovery, identity verification, destructive actions, or wrong target.
 
 ## Failure Or Blocked Behavior
 Stop and write the reason. Do not try to bypass permissions or account controls.

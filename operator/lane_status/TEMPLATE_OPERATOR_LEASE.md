@@ -21,13 +21,18 @@ Computer Use
 
 ## Approval Source
 
+## Credential Handoff
+- Source:
+- Secret-visible evidence disabled/redacted:
+- Clipboard use:
+
 ## Started
 
 ## Expires
 
 ## Prohibited Actions
-- credentials;
-- 2FA;
+- credential export or exposure;
+- MFA outside approved local handoff;
 - payments;
 - account security;
 - Level 5/protected actions;

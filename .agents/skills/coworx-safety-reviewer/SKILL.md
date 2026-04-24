@@ -25,7 +25,7 @@ Use at dispatch, before Operator actions, before external actions, and before cl
 
 ## Rules
 - Default unknown external actions to staged until delegated authority or explicit approval is clear.
-- Treat credentials, 2FA, security, payment, deletion, legal, medical, financial, employment, and academic submission as Level 5.
+- Treat credential exposure/export, MFA outside approved handoff, security, payment, deletion, legal, medical, financial, employment, and academic submission as Level 5.
 - Do not reduce risk based on convenience.
 
 ## Failure Or Blocked Behavior

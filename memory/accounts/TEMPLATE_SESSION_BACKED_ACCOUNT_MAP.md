@@ -6,7 +6,7 @@
 private-local for real accounts.
 
 ## Login Handling
-Use credential-safe access. Coworx does not store credentials, cookies, tokens, 2FA codes, recovery codes, password-manager secrets, or browser profile data.
+Use credential-safe access or approved local-only credential handoff. Coworx does not store credential values, cookies, tokens, MFA answers, recovery codes, password-manager secrets, or browser profile data.
 
 ## Approved Workflows
 
@@ -17,9 +17,9 @@ Use credential-safe access. Coworx does not store credentials, cookies, tokens, 
 ## External Actions Requiring Approval
 
 ## Stop Conditions
-- login required;
-- credential prompt;
-- 2FA prompt;
+- login required outside approved local-only handoff;
+- credential prompt outside approved local-only handoff;
+- MFA prompt outside approved local-only handoff;
 - account recovery;
 - payment;
 - account security settings;

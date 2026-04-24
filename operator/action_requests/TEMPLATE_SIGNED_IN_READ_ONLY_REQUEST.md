@@ -39,10 +39,10 @@ No sends, submits, publishes, invites, schedules, uploads, deletes, settings cha
 - Expires:
 
 ## Preconditions
-- User signed in manually.
+- Approved credential-safe access or local-only handoff is complete.
 - Target account/app is visible.
 - Private output paths are set.
-- No credentials, tokens, cookies, 2FA codes, or recovery codes may be captured.
+- No credential values, tokens, cookies, MFA answers, or recovery codes may be captured.
 
 ## Allowed Actions
 - Inspect approved pages.
@@ -54,10 +54,10 @@ No sends, submits, publishes, invites, schedules, uploads, deletes, settings cha
 1.
 
 ## Stop Conditions
-- Login required.
-- 2FA required.
+- Login required outside approved local-only handoff.
+- MFA required outside approved local-only handoff.
 - Wrong account or app.
-- Credential, session, payment, security, or recovery prompt.
+- Credential exposure/export/capture/storage, session export, payment, security, or recovery prompt.
 - External commitment boundary reached.
 - Private output path missing.
 

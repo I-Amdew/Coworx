@@ -4,7 +4,7 @@
 Let Coworx get smarter from real browser/app use without learning credentials.
 
 ## Steps
-1. User approves target and signs in manually.
+1. User approves target and credential-safe access route.
 2. Coworx maps the approved workflow through a leased browser/API/connector lane or Computer Use target lock.
 3. Coworx stores private observations in ignored paths.
 4. Coworx identifies reusable generic steps.
@@ -23,10 +23,10 @@ Let Coworx get smarter from real browser/app use without learning credentials.
 - user preferences that are safe to store privately.
 
 ## What Not To Learn
-- credentials;
+- credential values;
 - cookies;
 - tokens;
-- 2FA;
+- MFA answers;
 - recovery codes;
 - payment data;
 - security answers;

@@ -9,6 +9,7 @@ This file is the canonical operating contract. Load supporting docs only when th
 - [docs/parallelism_and_locks.md](docs/parallelism_and_locks.md): parallel-by-default execution and resource locks.
 - [docs/safety_policy.md](docs/safety_policy.md): action levels, approvals, protected areas, and stop conditions.
 - [docs/operator_protocol.md](docs/operator_protocol.md): browser, Playwright, API, connector, and Computer Use execution packets.
+- [docs/credential_handoff_protocol.md](docs/credential_handoff_protocol.md): local-only credential handoff for approved account workflows.
 - [docs/standby_mode.md](docs/standby_mode.md): lightweight standby/dispatch loop for the current active session.
 - [docs/capability_discovery.md](docs/capability_discovery.md): per-user capability inventory for plugins, skills, connectors, tools, profiles, and learned routing.
 - [docs/plugin_skill_router.md](docs/plugin_skill_router.md): capability routing across installed Codex skills/plugins.
@@ -55,7 +56,9 @@ Parallelize by default. Lock resources, not agents.
 
 Use Computer Use only when GUI operation is needed, and restrict it by app, window, profile, account workflow, clipboard, file picker, simulator, or active desktop focus.
 
-Do not store or expose secrets. Do not silently complete high-risk protected actions.
+Coworx may use secrets locally, but must not know them in durable memory or expose them in evidence.
+
+Do not store, print, screenshot, trace, commit, or expose secrets. Do not silently complete high-risk protected actions.
 
 ## Director Use In The Main Thread
 
@@ -553,7 +556,7 @@ Always treat these as Level 5 or protected:
 
 ## Credentialed Work
 
-Coworx may work inside user-approved logged-in accounts only through credential-safe paths.
+Coworx may work inside user-approved logged-in accounts through credential-safe paths and local-only credential handoff.
 
 Allowed credential-safe paths:
 
@@ -561,12 +564,25 @@ Allowed credential-safe paths:
 - existing signed-in browser sessions;
 - browser password-manager autofill triggered by the user or secure local flow;
 - OS password manager or keychain prompts;
+- ignored local secret files under `.coworx-private/secrets/`;
+- approved environment variables;
 - encrypted vault handles;
 - OAuth or app connectors;
 - API tokens stored outside the repo and never printed;
 - secure plugin-managed authentication.
 
-Coworx must never ask the user to paste passwords, 2FA codes, recovery codes, cookies, OAuth tokens, API keys, private keys, or credit card numbers into chat or repo files.
+Credentialed login itself is allowed when needed for an approved account workflow. Secret exposure is protected, but credentialed work is not automatically blocked.
+
+Coworx must never ask the user to paste passwords, MFA answers, recovery codes, cookies, OAuth tokens, API keys, private keys, or credit card numbers into chat or repo files.
+
+Coworx may enter credentials into an approved login form only when:
+
+- the target app/site/domain is verified;
+- the account label is approved;
+- the credential source is approved;
+- the account workflow lock is held;
+- screenshots, videos, and traces are disabled or redacted during secret entry;
+- secret values are never printed, logged, stored, committed, or sent to subagents.
 
 Safe memory may store:
 
@@ -577,6 +593,8 @@ Safe memory may store:
 - password manager item name;
 - vault handle ID;
 - OAuth connector name;
+- local environment variable names, not values;
+- ignored secret file path, not contents;
 - non-secret navigation steps;
 - selector maps;
 - stop conditions.

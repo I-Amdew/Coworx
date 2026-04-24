@@ -20,9 +20,9 @@ Do not merge private artifacts. Merge only sanitized framework improvements.
 
 ## Credential-Safe Access
 
-Coworx must not retrieve login information from skills, files, browser storage, password managers, old logs, or any other source.
+Coworx must not extract, reveal, store, export, log, screenshot, trace, or commit login information from skills, files, browser storage, password managers, old logs, or any other source.
 
-Use approved credential-safe access: user-controlled login, approved session, dedicated browser profile, connector, OAuth, keychain/password-manager prompt, API credential stored outside the repo, or vault handle.
+Use approved credential-safe access: user-controlled login, approved session, dedicated browser profile, connector, OAuth, keychain/password-manager prompt, approved local environment variables, approved ignored private secret file, API credential stored outside the repo, or vault handle.
 
 ## Allowed Private Tests
 
@@ -51,6 +51,11 @@ Stage or block:
 Use:
 
 - `.coworx-private/`
+- `.coworx-private/secrets/`
+- `.coworx-private/browser-profiles/`
+- `.coworx-private/session-state/`
+- `.coworx-private/traces/`
+- `.coworx-private/screenshots/raw/`
 - `runs/private/`
 - `outputs/private/`
 - `memory/private/`

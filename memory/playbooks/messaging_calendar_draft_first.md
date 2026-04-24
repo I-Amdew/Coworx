@@ -16,6 +16,6 @@ Prepare messages and calendar events safely before external action.
 ## Stop Conditions
 - Recipient or calendar target is ambiguous.
 - Message contains sensitive data.
-- App asks for login, credentials, 2FA, security, or payment.
+- App asks for login or credentials outside approved local-only handoff, MFA outside approved local-only handoff, security, or payment.
 - The external action is outside delegated authority or explicit approval.
 - The action is Level 5/protected.

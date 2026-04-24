@@ -1,10 +1,12 @@
 # Account Login Handoff
 
-Coworx can work with accounts only through credential-safe, user-approved paths.
+Coworx can work with accounts through credential-safe, user-approved paths and local-only credential handoff.
 
 ## Rule
 
-Coworx never asks for, stores, logs, screenshots, exports, or shares passwords, 2FA codes, recovery codes, session cookies, OAuth tokens, API keys, private keys, credit cards, or security answers.
+Coworx may use secrets locally, but must not know them in durable memory or expose them in evidence.
+
+Coworx never asks for, stores, logs, screenshots, traces, exports, commits, or shares passwords, MFA answers, recovery codes, session cookies, OAuth tokens, API keys, private keys, credit cards, or security answers.
 
 ## Allowed Credential-Safe Paths
 
@@ -13,11 +15,15 @@ Coworx never asks for, stores, logs, screenshots, exports, or shares passwords, 
 - dedicated Coworx browser profile;
 - password-manager autofill controlled by the user or secure local prompt;
 - OS keychain prompt;
+- approved ignored local secret file under `.coworx-private/secrets/`;
+- approved environment variables;
 - OAuth/app connector;
 - API connector or token stored outside the repo;
 - encrypted vault handle.
 
-The secret value must never enter chat, logs, repo files, memory, screenshots, or subagent prompts.
+The secret value must never enter chat, logs, repo files, memory, screenshots, traces, reports, generated artifacts, or subagent prompts.
+
+Coworx may enter approved credentials into the approved login form when the credential source is local-only and the target domain/app, account label, authority source, and account workflow lock are confirmed. If no safe local handoff exists, Coworx asks the user to complete login manually and then continues after confirmation.
 
 ## Allowed After Login Or Connector Authorization
 
@@ -39,7 +45,7 @@ Stage when:
 - recipients, destination, files, or data are uncertain;
 - data sensitivity is unclear.
 
-Block or require the user to act manually on credentials, account security, recovery, payment, identity verification, academic submission, and other Level 5/protected actions.
+Block or require the user to act manually on credential export, cookie export, token export, password changes, account recovery, recovery code handling, security setting changes, payment credential changes, identity verification, suspicious login pages, wrong-domain login pages, academic submission, and other Level 5/protected actions.
 
 ## Memory
 
@@ -50,6 +56,8 @@ Store:
 - credential-safe method type;
 - password manager item name or vault handle, not the secret;
 - OAuth connector name;
+- local environment variable names, not values;
+- ignored secret file path, not contents;
 - post-login page locations;
 - safe workflows;
 - approval-required workflows;

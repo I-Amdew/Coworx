@@ -17,6 +17,10 @@ External actions include:
 
 Level 5/protected actions still stage or block even when the user asks for broad work.
 
+Credentialed login does not by itself authorize final external actions. Login may proceed through approved local handoff, but sends, submits, invites, publishes, deployments, destructive deletion, and other commitments still require delegated authority or explicit approval and the right commit lock.
+
+Protected final actions must be staged unless a specific grant safely covers them, and some remain manual. Protected final actions include purchases, payments, contracts, legal filings, medical actions, financial transfers, account security changes, password changes, identity verification, high-impact employment actions, academic evaluation submissions, destructive deletion, production deployment without a deployment grant, and public publishing without a publishing grant.
+
 ## Authority Packet
 
 Before a lane acts, record:

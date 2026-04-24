@@ -26,7 +26,7 @@ Use when Coworx needs to learn where features, pages, settings, logs, or safe wo
 
 ## Rules
 - Read-only by default.
-- If login is required, ask the user to sign in manually.
+- If login is required, use approved local-only credential handoff or ask the user to sign in manually.
 - Do not map secrets, security pages, payment details, or private account data unless explicitly approved and necessary.
 
 ## Failure Or Blocked Behavior

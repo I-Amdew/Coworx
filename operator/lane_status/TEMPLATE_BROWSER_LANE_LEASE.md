@@ -27,6 +27,11 @@ parallel by default; use locks for shared write targets
 
 ## Approval Source
 
+## Credential Handoff
+- Source:
+- Storage state path: ignored private path only / not applicable
+- Secret-visible traces/screenshots/videos disabled/redacted:
+
 ## Resource Locks
 - Target:
 - Lock type: read / write / commit
@@ -36,8 +41,8 @@ parallel by default; use locks for shared write targets
 ## Expires
 
 ## Prohibited Actions
-- credentials;
-- 2FA;
+- credential export or exposure;
+- MFA outside approved local handoff;
 - session/token/cookie capture;
 - payment;
 - account security;

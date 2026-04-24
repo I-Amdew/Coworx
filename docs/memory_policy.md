@@ -13,7 +13,7 @@ Coworx memory is local project context for repeatable work, not private secrets.
 - approval requirements;
 - project conventions;
 - output folders and hand-off preferences;
-- account labels, login URLs, browser profile names, connector names, password-manager item names, OAuth connector names, and vault handles;
+- account labels, login URLs, browser profile names, connector names, password-manager item names, OAuth connector names, vault handles, local environment variable names, and ignored secret file paths without values;
 - capability maps for available plugins, skills, connectors, MCP tools, scripts, apps, browser profiles, and learned fallbacks.
 
 ## Forbidden
@@ -28,7 +28,7 @@ Coworx memory is local project context for repeatable work, not private secrets.
 - private account-security details.
 
 ## Account Memory
-Account files may describe where a user must manually sign in, which workflows are read-only, and which actions require approval. They must not include credentials.
+Account files may describe which approved local-only access route or handoff is used, which workflows are read-only, and which actions require approval. They must not include credentials.
 
 Account memory may identify "which login route to use" or "which account label applies." It must not include the secret that authenticates the account.
 

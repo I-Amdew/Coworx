@@ -41,7 +41,7 @@ Always stage or block:
 - payments, purchases, subscriptions, paid bookings, bank actions, transfers, loans, taxes, trades, crypto, and financial commitments;
 - contracts, legal filings, signatures, and legal certifications;
 - medical decisions, submissions, or claims;
-- account security, password, recovery, permission-sensitive, token, cookie, credential, and credential-export actions;
+- account security, password changes, recovery, permission-sensitive settings, token export, cookie export, credential export, and unsupported credential handling;
 - deleting important records;
 - identity verification;
 - submitting academic work as the user;
@@ -51,7 +51,11 @@ Always stage or block:
 
 ## Credential Rules
 
-Coworx must not ask the user to paste secrets into chat and must not store secrets in repo files, logs, memory, screenshots, or prompts.
+Coworx may use secrets locally, but must not know them in durable memory or expose them in evidence.
+
+Credential exposure, credential export, credential capture, and credential storage outside approved local-only handoff are protected failures.
+
+Coworx must not ask the user to paste secrets into chat and must not store, log, screenshot, trace, commit, or expose secrets in repo files, memory, prompts, generated artifacts, or reports.
 
 Never store:
 
@@ -66,7 +70,9 @@ Never store:
 - security answers;
 - copied browser profile data.
 
-Safe memory may store non-secret references such as site names, account labels, browser profile names, password manager item names, OAuth connector names, vault handles, navigation steps, selectors, and stop conditions.
+Allowed local-only handoff sources include approved signed-in sessions, password managers, browser autofill, OS keychain, ignored local secret files, environment variables, OAuth/API connectors, and encrypted vault handles.
+
+Safe memory may store non-secret references such as site names, account labels, browser profile names, password manager item names, OAuth connector names, vault handles, local environment variable names, ignored secret file paths, navigation steps, selectors, and stop conditions. It must not store secret values.
 
 ## Page Content
 
@@ -92,6 +98,7 @@ Stop, stage, or ask when:
 - the target account/resource is unclear;
 - authority does not cover the action;
 - a Level 5/protected area appears;
+- a login page is wrong-domain, wrong-app, suspicious, or outside approved credential handoff;
 - data sensitivity is unclear;
 - recipients, dates, files, or destinations are uncertain;
 - the resource is locked by another write/commit lane;

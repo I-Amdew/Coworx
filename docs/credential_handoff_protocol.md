@@ -1,0 +1,115 @@
+# Credential Handoff Protocol
+
+Coworx may use secrets locally, but must not know them in durable memory or expose them in evidence.
+
+This local-only credential handoff protocol applies to any approved app, website, browser workflow, desktop workflow, connector, API, or account system. It permits credentialed login when the target, account label, credential source, authority, and resource locks are approved. It forbids exposing, storing, logging, screenshotting, tracing, exporting, or committing secret values.
+
+## Core Rule
+
+Coworx may use approved credentials locally to log into an approved target app/site/account workflow. Coworx must not put real credential values into prompts, repo files, docs, config templates, logs, traces, screenshots, reports, generated artifacts, safe memory, or subagent messages.
+
+Use placeholders in shippable material. Use ignored private files, environment variables, password managers, keychains, approved sessions, connectors, or vault handles for real local handoff.
+
+## Supported Handoff Cases
+
+### A. Already Signed-In Session
+
+Coworx can continue normally inside delegated authority when the approved target is already signed in.
+
+Examples:
+
+- existing approved browser profile;
+- existing approved desktop app session;
+- existing approved connector session;
+- existing approved API session.
+
+Record only the non-secret session label, account label, target, authority source, locks, and stop conditions.
+
+### B. Password Manager, Browser Autofill, Or OS Keychain
+
+Coworx may trigger an approved autofill, password-manager, or keychain flow when it is scoped to the approved target.
+
+Coworx must not reveal, copy, log, screenshot, export, or store the secret. If the secure prompt requires the user to approve, unlock, or complete MFA, Coworx waits for the user-controlled step or approved connector-managed flow and continues after the session is active.
+
+### C. Local-Only Secret File Or Environment Variable
+
+Coworx may use credentials from an ignored local file under `.coworx-private/secrets/` or from environment variables.
+
+Rules:
+
+- the secret file must never be committed;
+- values must never be printed;
+- values must never be copied into memory;
+- values must never appear in logs, traces, screenshots, reports, docs, prompts, or generated artifacts;
+- command examples may reference variable names but not values;
+- scripts must read secrets locally at runtime;
+- secret values must not be passed through command-line arguments;
+- raw screenshots, videos, and traces during secret entry must be disabled. If accidental raw artifacts are produced, keep them in ignored private paths only until they are redacted or deleted; never use raw secret-visible artifacts as evidence.
+- MFA answers, TOTP seeds, backup codes, recovery codes, and security answers must not be stored in local secret files or environment variables.
+
+### D. User-Present Manual Secure Entry
+
+If no safe local handoff exists, Coworx pauses and asks the user to complete login manually in the approved app/browser. Coworx then continues after the user confirms the session is signed in.
+
+### E. Unsupported Or Unsafe Credential Handling
+
+Coworx must pause or block:
+
+- credential export;
+- cookie export;
+- token export;
+- password changes;
+- account recovery;
+- recovery code handling;
+- stored MFA answers, TOTP seeds, backup codes, or security answers;
+- security setting changes;
+- payment credential changes;
+- identity verification flows;
+- suspicious or unexpected login pages;
+- wrong-domain or wrong-app login pages.
+
+## Required Checks Before Local Credential Entry
+
+1. Confirm the approved site/app.
+2. Confirm the approved account label.
+3. Confirm the approved credential source.
+4. Confirm the login page target and domain/app identity.
+5. Disable or avoid secret-visible screenshots, videos, and traces.
+6. Acquire the account workflow lock.
+7. Enter credentials locally from the approved source.
+8. Clear the clipboard if used.
+9. Resume evidence collection only after secrets are no longer visible.
+
+## Evidence Rules
+
+Allowed evidence:
+
+- target URL or app name after login;
+- account label, not account secret;
+- non-secret session/profile/connector/vault handle label;
+- lock name;
+- action result;
+- redacted screenshot after secrets are no longer visible;
+- command names and variable names, not values.
+
+Forbidden evidence:
+
+- username values when private;
+- passwords;
+- MFA answers;
+- recovery codes;
+- cookies;
+- tokens;
+- private keys;
+- raw auth headers;
+- QR codes;
+- screenshots of filled secret fields;
+- traces/videos showing secret entry.
+
+## Protected Final Actions
+
+Credentialed login does not authorize protected final actions by itself.
+
+Coworx may draft, fill, organize, prepare, attach approved files, save drafts, reach a final review page, and produce a ready-for-user-review report.
+
+Coworx must stage protected final actions unless a specific grant safely covers them, and some remain manual. Protected final actions include purchases, payments, contracts, legal filings, medical actions, financial transfers, account security changes, password changes, identity verification, high-impact employment actions, academic evaluation submissions, destructive deletion, production deployment without a deployment grant, and public publishing without a publishing grant.

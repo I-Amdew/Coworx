@@ -21,7 +21,7 @@ private-local
 ## Target Account Or App
 
 ## Credential-Safe Access Status
-not required / user-controlled login / approved session or profile / connector or vault handle
+not required / user-controlled login / approved session or profile / password manager / browser autofill / OS keychain / local env / private file / connector or vault handle
 
 ## Action Level
 Level 0 / 1 / 2 / 3 / 4 / 5
@@ -41,8 +41,8 @@ delegated by request / explicit approval / stage only
 
 ## Disallowed Tools
 - credential extraction;
-- password manager access;
-- 2FA handling;
+- credential exposure/export/capture/storage;
+- MFA handling outside approved local-only handoff;
 - cookie/token/session capture;
 - Level 5/protected actions;
 - external send/submit/publish/invite/schedule/delete outside delegated authority or explicit approval.
@@ -52,7 +52,8 @@ delegated by request / explicit approval / stage only
 
 ## Stop Conditions
 - credential-safe access is unavailable;
-- credential, 2FA, recovery, token, cookie, security, payment, or account-recovery prompt;
+- credential or MFA prompt outside approved local-only handoff;
+- recovery, token, cookie, security, payment, identity verification, or account-recovery prompt;
 - wrong account or app;
 - external commitment outside delegated authority or explicit approval;
 - Level 5/protected boundary reached;

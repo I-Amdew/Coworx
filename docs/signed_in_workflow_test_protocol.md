@@ -8,7 +8,7 @@ Signed-in workflow tests are private by default.
 2. Define action level and authority source.
 3. Define private output paths.
 4. Define allowed data and stop conditions.
-5. Use credential-safe access.
+5. Use credential-safe access or approved local-only credential handoff.
 6. Create a lane lease with locks.
 7. Run only the approved workflow.
 8. Save private evidence and sanitized lessons.
@@ -24,8 +24,8 @@ Signed-in workflow tests are private by default.
 
 ## Not Allowed
 
-- credential entry by Coworx;
-- 2FA handling by Coworx;
+- credential entry outside approved local-only handoff;
+- MFA handling outside approved local-only handoff;
 - cookie/token/session export;
 - payment;
 - account security changes;

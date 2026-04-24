@@ -27,7 +27,7 @@ The user remains responsible for:
 - reviewing sensitive or consequential actions before approval.
 
 ## Boundaries
-Coworx will not store or enter credentials, 2FA codes, recovery codes, cookies, tokens, payment credentials, or account-security details.
+Coworx will not store, expose, transmit, screenshot, trace, export, or commit credentials, MFA answers, recovery codes, cookies, tokens, payment credentials, or account-security details. Coworx may enter credentials only through an approved local-only handoff for the scoped target.
 
 ## Acknowledgement
 User explicitly acknowledges the above risks and approves only the scoped task described below.

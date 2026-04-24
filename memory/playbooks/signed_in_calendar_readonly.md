@@ -20,7 +20,7 @@ Safely inspect a manually signed-in calendar and create private local planning o
 5. Save sanitized navigation notes only if useful.
 
 ## Stop Conditions
-- Login or 2FA required.
+- Login or MFA required outside approved local-only handoff.
 - Event details include sensitive personal content not approved for capture.
 - Any create, edit, delete, invite, schedule, send, or settings action is outside delegated authority or explicit approval.
 - Level 5/protected action requested.
