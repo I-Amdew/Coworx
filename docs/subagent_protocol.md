@@ -12,6 +12,8 @@ Use a subagent when it can materially improve true delivery:
 - a browser/API/connector lane can operate under a clear lease and lock;
 - a large surface area creates meaningful risk of missed requirements without parallel coverage.
 
+For broad, multi-stage, or uncertain work, subagents are the default execution model. Build the task graph first, then staff every ready independent lane that has a safe read scope or disjoint write scope. A single scout is not enough when the graph also has independent test discovery, source research, browser/API work, review, verification, evidence collection, or bounded implementation ready to run.
+
 Keep work in the main Director thread when:
 
 - the next step is an immediate blocker or critical-path decision;
@@ -19,6 +21,8 @@ Keep work in the main Director thread when:
 - write ownership or external resource locks overlap;
 - the context is too coupled to assign safely;
 - the subagent cannot return useful evidence.
+
+Ready work should not remain idle just because another subagent is running. Leave a lane unstaffed only when it is Director-owned, intentionally deferred with rationale, waiting on a resource lock, blocked by safety/authority, or duplicative of work already assigned.
 
 ## Allowed Work
 
@@ -69,11 +73,18 @@ Subagents should return:
 - files/resources changed;
 - commands/checks run;
 - findings with evidence;
+- completed tasks;
 - new tasks discovered;
+- newly blocked or unblocked tasks;
+- dependency changes;
+- parallel-ready sibling work;
 - blockers;
 - ownership conflicts;
 - residual risks;
 - recommended next action;
-- whether the directive is complete, should continue, should be redirected, or should be closed.
+- whether the directive is complete, should continue, should be redirected, or should be closed;
+- close rationale when the lane is terminal.
 
 Subagent claims are not completion by themselves. The Director must inspect returned evidence, update the directive ledger, and either integrate, redirect, verify, or close the lane.
+
+Returned subagents should receive an explicit checkpoint decision. Reuse the same agent for focused follow-up, same-scope verification, or narrowed investigation when its context is still fresh. Spawn a fresh agent for unrelated sibling work, stale context, or isolation. Close an agent only after its result is integrated, rejected, obsolete, or no longer useful, and record the rationale when the mission is non-trivial.

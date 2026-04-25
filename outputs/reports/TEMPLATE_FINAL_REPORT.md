@@ -4,6 +4,10 @@
 
 ## Directive Ledger
 
+## Active Directive File
+Path:
+Last Checked:
+
 | ID | Directive | Status | Evidence | Residual Risk Or Approval Needed |
 | --- | --- | --- | --- | --- |
 
@@ -16,6 +20,10 @@
 ## Blocked
 
 ## Evidence
+
+## Prompt Injection Checks
+
+## Privileged Workflow Information Review
 
 ## Output Hand-Offs
 

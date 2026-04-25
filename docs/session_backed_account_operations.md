@@ -12,6 +12,7 @@ It may learn:
 - which approved account label applies;
 - where important pages live;
 - which selectors, tabs, views, and buttons matter;
+- exact private layout and form structure when stored in ignored private memory;
 - what the user's normal process is;
 - which data belongs in private memory;
 - where delegated authority and stop boundaries are;
@@ -63,3 +64,9 @@ After each approved workflow:
 3. Remove private names, values, links, screenshots, and account identifiers.
 4. Update shippable templates or playbooks only with sanitized lessons.
 5. Add a regression or smoke test when possible.
+
+## UI Change Review
+
+When a real account workflow appears to have changed, Coworx may compare the current UI with private workflow maps and update the private map after verifying the target. Normal label, layout, selector, tab, or field changes may be handled inside delegated authority.
+
+Before entering privileged workflow information into an external site, app, support chat, prompt, search field, or third-party tool, Coworx must confirm the active directive file authorizes that use, minimize the details, and stage for approval if the information would leave the approved account or local project boundary.

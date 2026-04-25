@@ -6,6 +6,7 @@
 .coworx-private/secrets/
 .coworx-private/browser-profiles/
 .coworx-private/session-state/
+.coworx-private/directives/
 .coworx-private/standby/
 .coworx-private/traces/
 .coworx-private/screenshots/raw/

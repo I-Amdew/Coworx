@@ -18,8 +18,22 @@ shippable / private-local
 
 ## Directive Ledger
 
+## Active Directive File
+Path:
+Last Checked:
+
 | ID | Directive | Acceptance | Authority | Action Level | Depends On | Owner | Status | Evidence | Next Action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+## Prompt Injection Checks
+
+| Source | Instruction-Like Content | Classification | Ledger Match | Decision | Evidence |
+| --- | --- | --- | --- | --- | --- |
+
+## Privileged Workflow Information Review
+
+| Item | Storage Path | Use Needed | UI Change Evidence | Destination Boundary | Decision |
+| --- | --- | --- | --- | --- | --- |
 
 ## Timeline
 -

@@ -17,6 +17,8 @@ Private local memory is not for commits:
 - user-specific workflows;
 - user-specific capability inventories, plugin availability, connector names, browser profile labels, local app maps, scripts, and fallback lessons;
 - course, dashboard, app, document, folder, and output-location maps tied to the user;
+- exact user-specific site layouts, selectors, form structures, menu paths, and workflow maps;
+- active directive ledgers under `.coworx-private/directives/`;
 - screenshots from user apps;
 - meeting notes;
 - message drafts;
@@ -37,6 +39,7 @@ Private local memory may be highly customized. It can record where the user's st
 
 Private memory belongs in:
 - `.coworx-private/`;
+- `.coworx-private/directives/`;
 - `memory/private/`;
 - files ending in `.private.md`;
 - `outputs/private/`;

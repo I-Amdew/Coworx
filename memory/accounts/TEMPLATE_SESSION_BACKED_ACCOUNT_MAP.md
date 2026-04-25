@@ -29,5 +29,7 @@ Use credential-safe access or approved local-only credential handoff. Coworx doe
 ## Private Workflow Notes
 Keep real names, event titles, messages, account identifiers, screenshots, links, and dashboard values in ignored private memory only.
 
+Exact layouts, selectors, field names, form structure, menu paths, and UI-change observations are privileged workflow information. Keep them private by default, use them only for approved workflows, and stage before entering them into another site, app, prompt, support channel, or external destination unless the active directive explicitly authorizes it.
+
 ## Sanitized Lessons For Framework
 Only generic workflow structure goes here.

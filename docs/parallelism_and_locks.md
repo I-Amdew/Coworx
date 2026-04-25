@@ -29,6 +29,16 @@ Parallelize:
 
 Do not serialize browser/API/code/research work merely because another lane is active.
 
+For non-trivial work, fill the wave. A ready lane should be either running, Director-owned, intentionally deferred, waiting on a specific lock, or blocked by safety or authority. Do not let safe independent work sit idle behind unrelated recon, tests, browser checks, drafting, review, or evidence collection.
+
+Good parallel waves include:
+
+- recon over the codebase while test discovery runs;
+- browser inspection while an API connector lane gathers IDs;
+- drafting a document while a verifier checks source evidence;
+- one implementation owner per disjoint file set while a reviewer maps risk;
+- Computer Use on one locked GUI target while non-GUI lanes continue elsewhere.
+
 ## Restricted By Target
 
 Acquire a lock before mutating:
@@ -45,6 +55,8 @@ Acquire a lock before mutating:
 - the same account settings page;
 - the same checkout/cart;
 - the same GUI app/window/profile/account workflow.
+
+The lock target should be as narrow as the real collision risk. Prefer object locks such as `github_pr:45`, `calendar_event:weekly_sync`, `gdoc:proposal`, or `file:docs/director_use.md` over broad locks such as `all_browser_work` or `all_docs`.
 
 ## Lock Types
 
@@ -155,4 +167,3 @@ Examples of Computer Use locks:
 - `desktop_resource:active_window_focus`
 
 Release locks as soon as the action is complete, evidence is saved, GUI state is stable, and the lane no longer needs that resource.
-

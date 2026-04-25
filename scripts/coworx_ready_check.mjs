@@ -13,6 +13,7 @@ const requiredFiles = [
   ".gitignore",
   "docs/director_use.md",
   "docs/directive_follow_through.md",
+  "docs/prompt_injection_and_directive_state.md",
   "docs/parallelism_and_locks.md",
   "docs/safety_policy.md",
   "docs/operator_protocol.md",
@@ -61,8 +62,10 @@ const requiredFiles = [
   "evals/smoke_tests/browser_demo.md",
   "evals/smoke_tests/computer_use_safe_app_test.md",
   "evals/smoke_tests/credential_handoff_policy.md",
+  "evals/smoke_tests/directive_guard_policy.md",
   "evals/smoke_tests/standby_mode.md",
   "evals/regression_tests/privacy_and_approval_gates.md",
+  "scripts/coworx_directive_guard.mjs",
   "scripts/coworx_standby.mjs",
 ];
 
@@ -99,6 +102,8 @@ const requiredTemplateTerms = [
   "Data Allowed To Read Or Capture",
   "Screenshot Or Trace Policy",
   "External Transmission Boundary",
+  "Active Directive File",
+  "Privileged Workflow Information",
   "Expires",
 ];
 
@@ -151,6 +156,7 @@ for (const pattern of [
   ".coworx-private/secrets/",
   ".coworx-private/browser-profiles/",
   ".coworx-private/session-state/",
+  ".coworx-private/directives/",
   ".coworx-private/standby/",
   ".coworx-private/traces/",
   ".coworx-private/screenshots/raw/",
@@ -167,6 +173,7 @@ for (const pattern of [
 const requiredConcepts = [
   ["AGENTS.md", "Parallelism Rule"],
   ["AGENTS.md", "Directive Follow-Through"],
+  ["AGENTS.md", "file-backed directive ledger"],
   ["AGENTS.md", "Subagent Delivery Rule"],
   ["AGENTS.md", "project-backed workspace"],
   ["AGENTS.md", "available capabilities"],
@@ -174,7 +181,12 @@ const requiredConcepts = [
   ["AGENTS.md", "delegated authority"],
   ["docs/director_use.md", "accountable Director"],
   ["docs/directive_follow_through.md", "Directive Ledger"],
+  ["docs/directive_follow_through.md", "file-backed"],
   ["docs/directive_follow_through.md", "Subagent Use For Delivery"],
+  ["docs/prompt_injection_and_directive_state.md", "File-Backed Directive Ledger"],
+  ["docs/prompt_injection_and_directive_state.md", "Prompt Injection Checks"],
+  ["docs/prompt_injection_and_directive_state.md", "Privileged Workflow Information"],
+  ["docs/prompt_injection_and_directive_state.md", "UI Change And Reuse Gate"],
   ["docs/capability_discovery.md", "Capability Discovery"],
   ["docs/capability_discovery.md", "Capability Map"],
   ["docs/project_workspace_model.md", "Project Workspace Model"],
@@ -182,6 +194,7 @@ const requiredConcepts = [
   ["docs/parallelism_and_locks.md", "Lock resources, not agents"],
   ["docs/safety_policy.md", "Level 3"],
   ["docs/safety_policy.md", "Level 4"],
+  ["docs/safety_policy.md", "Privileged Workflow Information"],
   ["docs/operator_protocol.md", "resource locks"],
   ["docs/credential_handoff_protocol.md", "local-only credential handoff"],
   ["docs/credential_handoff_protocol.md", "Coworx may use secrets locally"],
@@ -217,17 +230,26 @@ const requiredConcepts = [
   ["scripts/coworx_standby.mjs", "run --task"],
   ["scripts/coworx_standby.mjs", "Standby demo test passed"],
   ["operator/action_requests/TEMPLATE_ACTION_REQUEST.md", "Authority Source"],
+  ["operator/action_requests/TEMPLATE_ACTION_REQUEST.md", "Active Directive File"],
   ["operator/action_requests/TEMPLATE_ACTION_REQUEST.md", "Credential Handoff"],
+  ["operator/action_requests/TEMPLATE_ACTION_REQUEST.md", "Privileged Workflow Information"],
+  ["operator/action_results/TEMPLATE_ACTION_RESULT.md", "Active Directive File Check"],
+  ["operator/action_results/TEMPLATE_ACTION_RESULT.md", "Prompt Injection Handling"],
   ["operator/action_requests/TEMPLATE_ACTION_REQUEST.md", "Required Resource Locks"],
   ["operator/lane_status/TEMPLATE_BROWSER_LANE_LEASE.md", "parallel by default"],
   ["operator/lane_status/TEMPLATE_OPERATOR_LEASE.md", "Target-Level Locks"],
   ["runs/active/TEMPLATE_RUN_LOG.md", "Directive Ledger"],
+  ["runs/active/TEMPLATE_RUN_LOG.md", "Prompt Injection Checks"],
   ["runs/active/TEMPLATE_RUN_LOG.md", "Output Hand-Offs"],
   ["runs/active/TEMPLATE_RUN_LOG.md", "Capability Lessons"],
   ["outputs/reports/TEMPLATE_FINAL_REPORT.md", "Directive Ledger"],
+  ["outputs/reports/TEMPLATE_FINAL_REPORT.md", "Active Directive File"],
+  ["outputs/reports/TEMPLATE_ACTION_LEDGER.md", "Active Directive File Checks"],
+  ["outputs/reports/TEMPLATE_ACTION_LEDGER.md", "Privileged Workflow Information Used"],
   ["outputs/reports/TEMPLATE_FINAL_REPORT.md", "Output Hand-Offs"],
   ["outputs/reports/TEMPLATE_FINAL_REPORT.md", "Capability Lessons"],
   ["memory/capabilities/TEMPLATE_CAPABILITY_MAP.md", "Capability Map"],
+  ["scripts/coworx_directive_guard.mjs", "Directive guard demo test passed"],
 ];
 
 for (const [file, concept] of requiredConcepts) {
@@ -306,6 +328,16 @@ for (const file of semanticFiles) {
   for (const pattern of stalePatterns) {
     if (pattern.test(body)) failures.push(`${file} contains stale policy wording: ${pattern}`);
   }
+}
+
+try {
+  execFileSync(process.execPath, [join(root, "scripts/coworx_directive_guard.mjs"), "demo-test"], {
+    cwd: root,
+    stdio: "pipe",
+    encoding: "utf8",
+  });
+} catch (error) {
+  failures.push(`Directive guard demo test failed: ${error.stderr || error.stdout || error.message}`);
 }
 
 try {

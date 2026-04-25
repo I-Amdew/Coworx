@@ -8,14 +8,15 @@ The Director owns the outcome. Subagents, browser lanes, API connectors, reviewe
 
 1. Define the user-visible mission and acceptance criteria.
 2. Convert explicit and implied multi-stage instructions into a directive ledger.
-3. Build a task/prerequisite graph before staffing.
-4. Keep shared contracts, immediate blockers, integration, safety calls, and final reporting local to the Director.
-5. Staff every useful independent lane that improves delivery.
-6. Continue local critical-path work while lanes run.
-7. Checkpoint agents when their output can change the graph, unblock work, or needs steering.
-8. Inspect evidence before trusting returned claims.
-9. Recompute the graph and directive ledger after each meaningful result.
-10. Verify the integrated result before calling the task done.
+3. Write a file-backed directive ledger for non-trivial, browser, account, document, external-action, or prompt-injection-sensitive work.
+4. Build a task/prerequisite graph before staffing.
+5. Keep shared contracts, immediate blockers, integration, safety calls, and final reporting local to the Director.
+6. Staff every useful independent lane that improves delivery, speed, or verification quality.
+7. Continue local critical-path work while lanes run.
+8. Checkpoint agents when their output can change the graph, unblock work, or needs steering.
+9. Inspect evidence before trusting returned claims.
+10. Recompute the graph and directive ledger after each meaningful result.
+11. Verify the integrated result before calling the task done.
 
 ## Task Graph
 
@@ -46,11 +47,13 @@ Types:
 
 Recompute the graph whenever an agent returns, a command fails, a lock is acquired or released, a new dependency appears, or acceptance criteria change.
 
+For file-backed directive work, update the directive file when the graph changes and check meaningful actions against that file before acting. Subagents should receive directive IDs and scoped action packets instead of broad chat-history authority.
+
 ## Staffing Defaults
 
 Director Use should feel materially different from solo work.
 
-Default to staffing when it increases the chance of fully delivering the directive ledger:
+Default to staffing when it increases the chance, speed, or verification quality of fully delivering the directive ledger. For broad or multi-stage work, the default is a full first wave, not a single helper.
 
 - a scope/recon lane when the surface may be larger than obvious;
 - separate research lanes for independent sources;
@@ -60,7 +63,11 @@ Default to staffing when it increases the chance of fully delivering the directi
 - evidence collectors for screenshots, traces, links, IDs, and command output;
 - memory writers for safe reusable procedures after the task is done.
 
+The first wave is full only when every ready task is staffed, Director-owned, intentionally deferred, waiting on a lock, or blocked by safety or authority. Ready work should not wait behind unrelated work. Launch read-only scouts, independent browser/API checks, test discovery, drafting, review, and evidence collection in parallel whenever locks allow.
+
 Keep work local for immediate Director-only decisions, shared contracts, integration, critical-path steps that would be slowed by delegation, or tightly coupled context. Do not spawn agents for duplicate work, overlapping write scopes, or work that would fight over a locked resource.
+
+Returned agents are still useful context. After each checkpoint, decide whether to continue the same lane, narrow it, redirect it, ask it to verify its own area, split out a sibling lane, or close it with a concrete rationale. Do not use subagents as one-shot reports when their fresh context can cheaply advance the graph.
 
 ## Agent Assignments
 
@@ -91,11 +98,15 @@ Agents should return:
 - evidence;
 - completed tasks;
 - new tasks discovered;
+- newly blocked or unblocked tasks;
+- dependency changes;
+- parallel-ready sibling work;
 - blockers;
 - ownership conflicts;
 - residual risks;
 - recommended next action;
-- whether the agent should continue, be redirected, or close.
+- whether the agent should continue, be redirected, or close;
+- close rationale when the lane is terminal.
 
 ## Checkpoints
 
@@ -112,6 +123,8 @@ When a lane returns, the Director immediately decides:
 - close with rationale.
 
 Do not leave returned agents merely "noted" when their context can cheaply verify, refine, or extend their lane.
+
+If the checkpoint reveals new independent work, staff it immediately unless a lock, safety boundary, missing authority, or critical-path dependency prevents it. If it invalidates an active lane, mark that lane stale and redirect or close it before it wastes more work.
 
 ## Delivery Closeout
 

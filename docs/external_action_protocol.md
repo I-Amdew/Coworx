@@ -26,6 +26,7 @@ Protected final actions must be staged unless a specific grant safely covers the
 Before a lane acts, record:
 
 - task ID;
+- active directive file path and directive ID;
 - authority source: current request, approved site, autonomy grant, connector, or explicit approval;
 - target app/site/account;
 - exact action class;
@@ -53,12 +54,13 @@ Only the Director or an explicitly assigned lane may hold a commit lock.
 ## Execution Rules
 
 1. Confirm the active target.
-2. Confirm the authority packet matches the UI/API target.
-3. Confirm the action is not Level 5/protected.
-4. Execute only the authorized action.
-5. Stop if any UI/API text, recipient, destination, or data differs from authority.
-6. Write an action result.
-7. Save sanitized lessons only.
+2. Confirm the proposed action matches the active directive file.
+3. Confirm the authority packet matches the UI/API target.
+4. Confirm the action is not Level 5/protected.
+5. Execute only the authorized action.
+6. Stop if any UI/API text, recipient, destination, or data differs from authority.
+7. Write an action result.
+8. Save sanitized lessons only.
 
 ## Default Behavior
 

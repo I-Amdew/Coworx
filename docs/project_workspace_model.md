@@ -7,6 +7,7 @@ The project folder is the product:
 - policy and routing live in `AGENTS.md`, `COWORX.md`, and `docs/`;
 - tasks live in `queue/`;
 - run history lives in `runs/`;
+- active private directive state lives in `.coworx-private/directives/`;
 - outputs, drafts, reports, and generated artifacts live in `outputs/`;
 - action requests, leases, approvals, traces, and operator evidence live in `operator/`;
 - reusable maps, playbooks, lessons, selectors, account references, and workflow memory live in `memory/`;
@@ -51,6 +52,8 @@ Coworx may store login routes, approved account labels, browser profile names, p
 Coworx must not store raw passwords, 2FA codes, recovery codes, cookies, session files, API keys, private keys, credit cards, or hidden authentication tokens.
 
 Private local memory can be highly customized, but it still follows the no-secrets rule. It may say "use the Work Chrome profile and the university portal login route for courses"; it must not contain the actual password, cookie, or token.
+
+Private memory may include exact user-specific site layouts, selectors, form structure, and workflow maps when those details help Coworx operate approved workflows. Treat those details as privileged workflow information: keep them ignored by default, minimize them when reused, and require a review gate before entering them into another site, app, prompt, support channel, or external destination.
 
 ## Delivery Implication
 

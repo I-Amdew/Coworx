@@ -21,6 +21,13 @@ Confirm exact account/app/site if relevant.
 
 ## Data Allowed To Read Or Capture
 
+## Privileged Workflow Information
+- Required: no / yes
+- Private storage path:
+- Exact site/layout/selector details allowed: no / yes
+- External entry or transmission allowed: no / stage for approval / yes by directive
+- UI change evidence required: no / yes
+
 ## Screenshot Or Trace Policy
 allowed / prohibited / private-only
 
@@ -31,6 +38,12 @@ Describe anything that would send, submit, upload, invite, schedule, publish, de
 
 ## Authority Source
 delegated by request / explicit approval / stage only
+
+## Active Directive File
+- Path:
+- Directive IDs:
+- Last checked:
+- Guard result:
 
 ## Credential Handoff
 - Required: no / yes

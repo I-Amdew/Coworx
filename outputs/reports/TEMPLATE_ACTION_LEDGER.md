@@ -23,6 +23,13 @@ List sends, submissions, uploads, schedules, invites, deletes, moves, settings c
 
 ## Approval Records
 
+## Active Directive File Checks
+
+## Prompt Injection Checks
+
+## Privileged Workflow Information Used
+List exact-site/layout/workflow information used, its private storage path or sanitized source, whether it stayed local or crossed a boundary, and the review decision. Do not include secrets.
+
 ## Screenshots / Traces
 
 ## Memory Updates
