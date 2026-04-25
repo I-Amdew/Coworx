@@ -51,13 +51,13 @@ Always stage or block:
 
 ## Credential Rules
 
-Coworx may use secrets locally, but must not know them in durable memory or expose them in evidence.
+Coworx may use secrets locally, and may persist them only in explicitly delegated ignored private secret storage or approved keychain/password-manager/vault mechanisms. Coworx must not know secrets in shippable memory, safe memory, chat memory, logs, prompts, screenshots, traces, reports, or committed files.
 
 Credential exposure, credential export, credential capture, and credential storage outside approved local-only handoff are protected failures.
 
-Coworx must not ask the user to paste secrets into chat and must not store, log, screenshot, trace, commit, or expose secrets in repo files, memory, prompts, generated artifacts, or reports.
+Coworx must not ask the user to paste secrets into chat and must not log, screenshot, trace, commit, or expose secrets in repo files, safe memory, prompts, generated artifacts, or reports.
 
-Never store:
+Never store in chat, safe memory, shippable files, logs, prompts, screenshots, traces, reports, generated artifacts, or committed files:
 
 - passwords;
 - 2FA codes;
@@ -71,6 +71,10 @@ Never store:
 - copied browser profile data.
 
 Allowed local-only handoff sources include approved signed-in sessions, password managers, browser autofill, OS keychain, ignored local secret files, environment variables, OAuth/API connectors, and encrypted vault handles.
+
+If the user explicitly asks Coworx to save credentials for future approved work, treat that as a local persistence request, not a refusal trigger. Persist only through `.coworx-private/secrets/*.local.env`, OS keychain, password manager, encrypted vault handle, or another ignored private secret path. Store only non-secret references in memory and evidence.
+
+If the user already volunteered a login secret in chat and explicitly asks Coworx to save or use it, Coworx may perform a one-time transfer into approved local-only secret persistence without echoing the value. Prefer a local environment, keychain, password manager, vault, or private file handoff when available.
 
 Safe memory may store non-secret references such as site names, account labels, browser profile names, password manager item names, OAuth connector names, vault handles, local environment variable names, ignored secret file paths, navigation steps, selectors, and stop conditions. It must not store secret values.
 

@@ -4,9 +4,9 @@ Coworx can work with accounts through credential-safe, user-approved paths and l
 
 ## Rule
 
-Coworx may use secrets locally, but must not know them in durable memory or expose them in evidence.
+Coworx may use secrets locally, and may persist them only in explicitly delegated ignored private secret storage or approved keychain/password-manager/vault mechanisms. Coworx must not know secrets in shippable memory, safe memory, chat memory, logs, prompts, screenshots, traces, reports, or committed files.
 
-Coworx never asks for, stores, logs, screenshots, traces, exports, commits, or shares passwords, MFA answers, recovery codes, session cookies, OAuth tokens, API keys, private keys, credit cards, or security answers.
+Coworx never asks for secrets in chat and never logs, screenshots, traces, exports, commits, or shares passwords, MFA answers, recovery codes, session cookies, OAuth tokens, API keys, private keys, credit cards, or security answers.
 
 ## Allowed Credential-Safe Paths
 
@@ -23,7 +23,7 @@ Coworx never asks for, stores, logs, screenshots, traces, exports, commits, or s
 
 The secret value must never enter chat, logs, repo files, memory, screenshots, traces, reports, generated artifacts, or subagent prompts.
 
-Coworx may enter approved credentials into the approved login form when the credential source is local-only and the target domain/app, account label, authority source, and account workflow lock are confirmed. If no safe local handoff exists, Coworx asks the user to complete login manually and then continues after confirmation.
+When explicitly delegated, Coworx may create or update an ignored private secret file with `scripts/coworx_local_secret_store.mjs` or store a non-secret reference to a keychain/password-manager/vault item. Coworx may enter approved credentials into the approved login form when the credential source is local-only and the target domain/app, account label, authority source, and account workflow lock are confirmed. If no safe local handoff exists, Coworx asks the user to complete login manually and then continues after confirmation.
 
 ## Allowed After Login Or Connector Authorization
 
@@ -63,6 +63,6 @@ Store:
 - approval-required workflows;
 - stop conditions.
 
-Do not store raw credentials, cookies, tokens, browser profile files, session files, security answers, payment details, or private account data in shippable memory.
+Do not store raw credentials, cookies, tokens, browser profile files, session files, security answers, payment details, or private account data in shippable memory. Raw login credentials belong only in explicitly delegated ignored private secret stores or approved keychain/password-manager/vault mechanisms.
 
 Real account maps are private by default and belong in ignored paths unless sanitized for the blank framework.

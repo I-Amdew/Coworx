@@ -79,7 +79,7 @@ Coworx gets faster by storing safe local knowledge:
 - selectors, reports, filters, export paths, and naming conventions;
 - what to stage, what to do automatically, and what to block.
 
-Private user-specific maps belong in ignored private paths. Coworx may store login routes and account labels, but not passwords, 2FA codes, cookies, tokens, recovery codes, session files, private keys, or payment data.
+Private user-specific maps belong in ignored private paths. Coworx may store login routes, account labels, and local secret-store references. When explicitly delegated, Coworx may persist login credentials only in ignored private secret storage, OS keychain, password manager, or vault handles, not in shippable memory or logs.
 
 ## Using Installed Capabilities
 
@@ -116,7 +116,7 @@ Browser/API/Playwright lanes may run in parallel when locks do not conflict. Com
 
 ## Memory Updates
 
-Memory updates are procedure-focused. Store app maps, workflow maps, selectors, safe account notes, lessons, failures, decisions, and safety guidance. Never store credentials or private tokens.
+Memory updates are procedure-focused. Store app maps, workflow maps, selectors, safe account notes, local secret-store references, lessons, failures, decisions, and safety guidance. Never store credential values or private tokens in memory.
 
 When memory is uncertain or user-specific, write private/proposed memory rather than shippable memory.
 

@@ -18,6 +18,7 @@ const requiredFiles = [
   "docs/safety_policy.md",
   "docs/operator_protocol.md",
   "docs/credential_handoff_protocol.md",
+  "docs/local_credential_persistence.md",
   "docs/standby_mode.md",
   "docs/capability_discovery.md",
   "docs/task_lifecycle.md",
@@ -66,6 +67,7 @@ const requiredFiles = [
   "evals/smoke_tests/standby_mode.md",
   "evals/regression_tests/privacy_and_approval_gates.md",
   "scripts/coworx_directive_guard.mjs",
+  "scripts/coworx_local_secret_store.mjs",
   "scripts/coworx_standby.mjs",
 ];
 
@@ -104,6 +106,7 @@ const requiredTemplateTerms = [
   "External Transmission Boundary",
   "Active Directive File",
   "Privileged Workflow Information",
+  "Persist credentials for future approved use",
   "Expires",
 ];
 
@@ -198,12 +201,16 @@ const requiredConcepts = [
   ["docs/operator_protocol.md", "resource locks"],
   ["docs/credential_handoff_protocol.md", "local-only credential handoff"],
   ["docs/credential_handoff_protocol.md", "Coworx may use secrets locally"],
-  ["docs/credential_handoff_protocol.md", "must not know them in durable memory"],
+  ["docs/credential_handoff_protocol.md", "explicitly delegated ignored private secret storage"],
   ["docs/credential_handoff_protocol.md", "Unsupported Or Unsafe Credential Handling"],
   ["docs/credential_handoff_protocol.md", "Protected Final Actions"],
+  ["docs/local_credential_persistence.md", "Local Credential Persistence"],
+  ["docs/local_credential_persistence.md", "explicitly delegates credential persistence"],
+  ["docs/local_credential_persistence.md", "scripts/coworx_local_secret_store.mjs"],
   ["docs/account_login_handoff.md", "local-only credential handoff"],
   ["docs/account_login_handoff.md", "ignored local secret file"],
   ["docs/safety_policy.md", "Coworx may use secrets locally"],
+  ["docs/safety_policy.md", "explicitly asks Coworx to save credentials"],
   ["docs/safety_policy.md", "Credential exposure"],
   ["docs/computer_use_policy.md", "Before Credential Entry"],
   ["docs/playwright_policy.md", "local credential handoff"],
@@ -214,6 +221,8 @@ const requiredConcepts = [
   ["config/TEMPLATE_CREDENTIAL_HANDOFF.json", "do_not_store_totp_seeds_backup_codes_recovery_codes_security_answers_or_mfa_answers"],
   ["config/TEMPLATE_CREDENTIAL_HANDOFF.json", "disable_or_redact_during_secret_entry"],
   ["docs/templates/LOCAL_SECRET_SETUP.md", "Do not store MFA answers"],
+  ["docs/templates/LOCAL_SECRET_SETUP.md", "coworx_local_secret_store.mjs"],
+  ["scripts/coworx_local_secret_store.mjs", "Coworx local secret store demo test passed"],
   ["docs/credential_handoff_protocol.md", "MFA answers, TOTP seeds, backup codes, recovery codes, and security answers must not be stored"],
   ["queue/todo/TEMPLATE_CREDENTIAL_WORKFLOW_TEST.md", "Credential Workflow Test Task"],
   ["evals/smoke_tests/credential_handoff_policy.md", "approved local env credential handoff"],
@@ -338,6 +347,16 @@ try {
   });
 } catch (error) {
   failures.push(`Directive guard demo test failed: ${error.stderr || error.stdout || error.message}`);
+}
+
+try {
+  execFileSync(process.execPath, [join(root, "scripts/coworx_local_secret_store.mjs"), "demo-test"], {
+    cwd: root,
+    stdio: "pipe",
+    encoding: "utf8",
+  });
+} catch (error) {
+  failures.push(`Local secret store demo test failed: ${error.stderr || error.stdout || error.message}`);
 }
 
 try {

@@ -33,6 +33,8 @@ Account files may describe which approved local-only access route or handoff is 
 
 Account memory may identify "which login route to use" or "which account label applies." It must not include the secret that authenticates the account.
 
+When credential persistence is explicitly delegated, memory may store the ignored secret file path, keychain item label, password-manager item label, vault handle, and environment variable names. The secret values stay only in the approved private secret store.
+
 User-specific exact layouts, selectors, field names, and navigation maps are privileged workflow information. Store them in ignored private memory unless they have been sanitized into a generic template. Before entering those details into another site, app, support channel, prompt, or external destination, apply the privileged-info review gate in `docs/prompt_injection_and_directive_state.md`.
 
 ## Capability Memory

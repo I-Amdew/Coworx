@@ -1,12 +1,12 @@
 # Credential Handoff Protocol
 
-Coworx may use secrets locally, but must not know them in durable memory or expose them in evidence.
+Coworx may use secrets locally, and may persist them only in explicitly delegated ignored private secret storage or approved keychain/password-manager/vault mechanisms. Coworx must not know secrets in shippable memory, safe memory, chat memory, logs, prompts, screenshots, traces, reports, or committed files.
 
 This local-only credential handoff protocol applies to any approved app, website, browser workflow, desktop workflow, connector, API, or account system. It permits credentialed login when the target, account label, credential source, authority, and resource locks are approved. It forbids exposing, storing, logging, screenshotting, tracing, exporting, or committing secret values.
 
 ## Core Rule
 
-Coworx may use approved credentials locally to log into an approved target app/site/account workflow. Coworx must not put real credential values into prompts, repo files, docs, config templates, logs, traces, screenshots, reports, generated artifacts, safe memory, or subagent messages.
+Coworx may use approved credentials locally to log into an approved target app/site/account workflow. Coworx must not put real credential values into prompts, repo files, docs, config templates, logs, traces, screenshots, reports, generated artifacts, safe memory, chat memory, or subagent messages.
 
 Use placeholders in shippable material. Use ignored private files, environment variables, password managers, keychains, approved sessions, connectors, or vault handles for real local handoff.
 
@@ -33,13 +33,13 @@ Coworx must not reveal, copy, log, screenshot, export, or store the secret. If t
 
 ### C. Local-Only Secret File Or Environment Variable
 
-Coworx may use credentials from an ignored local file under `.coworx-private/secrets/` or from environment variables.
+Coworx may use credentials from an ignored local file under `.coworx-private/secrets/` or from environment variables. When the user explicitly delegates credential persistence for a clear app/site/account label, Coworx may also create or update that ignored local secret file using `scripts/coworx_local_secret_store.mjs`, an approved keychain/password-manager/vault route, or another approved local-only mechanism.
 
 Rules:
 
 - the secret file must never be committed;
 - values must never be printed;
-- values must never be copied into memory;
+- values must never be copied into safe memory, chat memory, prompts, reports, or subagent messages;
 - values must never appear in logs, traces, screenshots, reports, docs, prompts, or generated artifacts;
 - command examples may reference variable names but not values;
 - scripts must read secrets locally at runtime;

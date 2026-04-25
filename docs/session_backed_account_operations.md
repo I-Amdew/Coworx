@@ -4,7 +4,7 @@ Coworx can work in real accounts by using sessions, profiles, connectors, local-
 
 ## Principle
 
-Coworx learns workflows, not secrets.
+Coworx learns workflows and secret-store references, not secret values.
 
 It may learn:
 
@@ -18,13 +18,13 @@ It may learn:
 - where delegated authority and stop boundaries are;
 - what worked and failed.
 
-It must not learn, store, print, screenshot, trace, export, or commit passwords, MFA answers, recovery codes, cookies, OAuth tokens, API keys, password-manager secrets, security answers, private keys, or payment credentials.
+It must not learn, print, screenshot, trace, export, commit, or copy passwords, MFA answers, recovery codes, cookies, OAuth tokens, API keys, password-manager secrets, security answers, private keys, or payment credentials into chat, logs, prompts, safe memory, reports, generated artifacts, or shippable files.
 
 ## Credential Handoff Cases
 
 - Already signed-in session: continue inside delegated authority.
 - Password manager, browser autofill, or OS keychain: trigger the approved local flow without exposing the secret.
-- Local ignored secret file or environment variable: read only at runtime, never print values, never pass values as command-line arguments, and keep files under ignored private paths.
+- Local ignored secret file or environment variable: create or use only when explicitly delegated, never print values, never pass values as command-line arguments, and keep files under ignored private paths.
 - User-present manual secure entry: pause for the user to complete login, then continue after confirmation.
 - Unsupported credential handling: pause or block credential export, cookie export, token export, password changes, account recovery, security settings, payment credential changes, identity verification, wrong-domain login, and suspicious login pages.
 

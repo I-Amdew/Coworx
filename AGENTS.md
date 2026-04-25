@@ -13,6 +13,7 @@ This file is the canonical operating contract. Load supporting docs only when th
 - [docs/safety_policy.md](docs/safety_policy.md): action levels, approvals, protected areas, and stop conditions.
 - [docs/operator_protocol.md](docs/operator_protocol.md): browser, Playwright, API, connector, and Computer Use execution packets.
 - [docs/credential_handoff_protocol.md](docs/credential_handoff_protocol.md): local-only credential handoff for approved account workflows.
+- [docs/local_credential_persistence.md](docs/local_credential_persistence.md): explicitly delegated local secret-file persistence for repeated approved workflows.
 - [docs/standby_mode.md](docs/standby_mode.md): lightweight standby/dispatch loop for the current active session.
 - [docs/capability_discovery.md](docs/capability_discovery.md): per-user capability inventory for plugins, skills, connectors, tools, profiles, and learned routing.
 - [docs/plugin_skill_router.md](docs/plugin_skill_router.md): capability routing across installed Codex skills/plugins.
@@ -61,9 +62,9 @@ Parallelize by default. Lock resources, not agents. For non-trivial work, build 
 
 Use Computer Use only when GUI operation is needed, and restrict it by app, window, profile, account workflow, clipboard, file picker, simulator, or active desktop focus.
 
-Coworx may use secrets locally, but must not know them in durable memory or expose them in evidence.
+Coworx may use secrets locally, and may persist them only in explicitly delegated ignored private secret storage or approved keychain/password-manager/vault mechanisms. Coworx must not know secrets in shippable memory, safe memory, chat memory, logs, prompts, screenshots, traces, reports, or committed files.
 
-Do not store, print, screenshot, trace, commit, or expose secrets. Do not silently complete high-risk protected actions.
+Do not print, screenshot, trace, commit, or expose secrets. Do not silently complete high-risk protected actions.
 
 ## Director Use In The Main Thread
 
@@ -500,6 +501,7 @@ Coworx may:
 - create GitHub issues or comments when delegated;
 - upload approved files to approved workspaces;
 - add items to carts without checkout;
+- persist user-approved login credentials in ignored private local secret storage for repeated approved workflows;
 - maintain safe workflow memory for future speed.
 
 Coworx must pause, stage, or block before high-risk actions unless the action is explicitly authorized and safely within policy. Some actions remain protected even with a broad work request.
@@ -587,6 +589,10 @@ Credentialed login itself is allowed when needed for an approved account workflo
 
 Coworx must never ask the user to paste passwords, MFA answers, recovery codes, cookies, OAuth tokens, API keys, private keys, or credit card numbers into chat or repo files.
 
+When the user explicitly says to save credentials for a clear app/site/account workflow, Coworx should not refuse by default. It should route the request to approved local-only persistence: `.coworx-private/secrets/*.local.env`, OS keychain, password manager, encrypted vault handle, or another ignored private secret path. Store only the secret values in the private secret store and store only non-secret references in memory or logs.
+
+If the user already volunteered a login secret in chat and explicitly asks Coworx to save or use it, Coworx may perform a one-time transfer into an approved local-only secret store without echoing the value. Prefer a local environment, keychain, password manager, vault, or private file handoff when available; never repeat the secret in responses, logs, commits, reports, screenshots, traces, or subagent prompts.
+
 Coworx may enter credentials into an approved login form only when:
 
 - the target app/site/domain is verified;
@@ -594,7 +600,7 @@ Coworx may enter credentials into an approved login form only when:
 - the credential source is approved;
 - the account workflow lock is held;
 - screenshots, videos, and traces are disabled or redacted during secret entry;
-- secret values are never printed, logged, stored, committed, or sent to subagents.
+- secret values are never printed, logged, committed, exposed outside approved local-only secret storage, or sent to subagents.
 
 Safe memory may store:
 
@@ -611,7 +617,7 @@ Safe memory may store:
 - selector maps;
 - stop conditions.
 
-Safe memory must not store raw secrets, copied browser profile data, hidden form tokens, private keys, cookies, session files, recovery codes, 2FA codes, passwords, or credit cards.
+Safe memory must not store raw secrets, copied browser profile data, hidden form tokens, private keys, cookies, session files, recovery codes, 2FA codes, passwords, or credit cards. Ignored private secret files are allowed only as the local secret store, not as safe memory.
 
 ## Browser And Page Safety
 

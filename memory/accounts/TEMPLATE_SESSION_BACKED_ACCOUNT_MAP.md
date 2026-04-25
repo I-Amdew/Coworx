@@ -6,7 +6,12 @@
 private-local for real accounts.
 
 ## Login Handling
-Use credential-safe access or approved local-only credential handoff. Coworx does not store credential values, cookies, tokens, MFA answers, recovery codes, password-manager secrets, or browser profile data.
+Use credential-safe access or approved local-only credential handoff. Coworx may reference an ignored private secret file, keychain item, password-manager item, or vault handle when explicitly delegated. Do not store credential values, cookies, tokens, MFA answers, recovery codes, password-manager secrets, or browser profile data in this map.
+
+## Local Secret Store Reference
+Path or handle label only:
+Environment variable names only:
+Persistence explicitly delegated by:
 
 ## Approved Workflows
 

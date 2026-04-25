@@ -48,6 +48,8 @@ delegated by request / explicit approval / stage only
 ## Credential Handoff
 - Required: no / yes
 - Source: existing_session / password_manager / browser_autofill / os_keychain / local_env / private_file / oauth_connector / api_connector / vault_handle / user_manual_entry
+- Persist credentials for future approved use: no / yes, explicitly delegated
+- Persistence target: none / `.coworx-private/secrets/*.local.env` / os_keychain / password_manager / vault_handle
 - Secret value exposure: prohibited
 - Secret-visible screenshots/traces/videos: disabled / redacted / not applicable
 - Local secret path or env variable names only:
@@ -64,7 +66,7 @@ delegated by request / explicit approval / stage only
 ## Preconditions
 - Browser/app target is approved.
 - If credential entry is required, approved local credential handoff is configured.
-- No secrets, session tokens, cookies, MFA answers, or recovery codes may be captured, printed, logged, screenshot, traced, or stored.
+- No secrets, session tokens, cookies, MFA answers, or recovery codes may be captured, printed, logged, screenshot, traced, or stored outside approved local-only secret persistence.
 - Non-high-risk Level 3/4 actions have delegated authority or explicit approval.
 
 ## Allowed Actions

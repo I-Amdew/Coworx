@@ -37,6 +37,8 @@ Private by default applies to any task involving:
 
 Private local memory may be highly customized. It can record where the user's stuff lives, how to reach approved workflows, which account label or browser profile to use, which plugins or connectors are available, what outputs normally go where, and what prior work established. It still must not contain raw secrets.
 
+Ignored private secret storage is separate from private memory. Raw credential values may exist only in explicitly delegated local secret stores such as `.coworx-private/secrets/*.local.env`, OS keychain, password manager, or encrypted vault handles. Private memory may reference those stores by path or label but must not copy their values.
+
 Private memory belongs in:
 - `.coworx-private/`;
 - `.coworx-private/directives/`;

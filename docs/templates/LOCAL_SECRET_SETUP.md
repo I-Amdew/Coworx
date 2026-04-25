@@ -1,8 +1,8 @@
 # Local Secret Setup
 
-Use this template only with placeholders. Do not commit real credentials.
+Use this template only with placeholders in shippable docs. Do not commit real credentials.
 
-Coworx can read approved local secrets at runtime from ignored private files under `.coworx-private/secrets/` or from environment variables. Secret values must never appear in prompts, logs, traces, screenshots, docs, config templates, reports, memory, or generated artifacts.
+Coworx can read approved local secrets at runtime from ignored private files under `.coworx-private/secrets/` or from environment variables. When the user explicitly delegates credential persistence, Coworx may create or update those ignored private files or a keychain/password-manager/vault reference. Secret values must never appear in prompts, logs, traces, screenshots, docs, config templates, reports, memory, or generated artifacts.
 
 ## Example Private File
 
@@ -17,6 +17,18 @@ Placeholder content only:
 ```bash
 COWORX_EXAMPLE_USERNAME="replace_me"
 COWORX_EXAMPLE_PASSWORD="replace_me"
+```
+
+Or create a placeholder with the helper:
+
+```bash
+node scripts/coworx_local_secret_store.mjs template --name example-app --username-env COWORX_EXAMPLE_USERNAME --password-env COWORX_EXAMPLE_PASSWORD
+```
+
+To persist values from an already-private local environment without printing values:
+
+```bash
+node scripts/coworx_local_secret_store.mjs from-env --name example-app --username-env COWORX_EXAMPLE_USERNAME --password-env COWORX_EXAMPLE_PASSWORD
 ```
 
 ## Rules
