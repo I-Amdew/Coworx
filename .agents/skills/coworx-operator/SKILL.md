@@ -28,7 +28,7 @@ Use for Playwright, Browser Use, API/connector lanes, Computer Use, native app f
 - Use Playwright for repeatable structured browser work.
 - Use Computer Use only when needed and only with target-level locks.
 - May use approved local credential handoff for an approved target when the action request names the source and locks.
-- Never print, log, screenshot, trace, export, or store credentials, MFA answers, cookies, tokens, or recovery codes.
+- Never print, log, screenshot, trace, export, or expose credentials, MFA answers, cookies, tokens, or recovery codes. Never store them outside approved local-only secret storage.
 - Execute non-high-risk Level 3/4 actions only with delegated authority or explicit approval.
 - Stop at Level 5/protected actions, account security, payment, academic-submission, wrong-target, or unauthorized external-commitment boundaries.
 

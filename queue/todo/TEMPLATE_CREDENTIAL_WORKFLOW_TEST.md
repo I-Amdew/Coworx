@@ -26,7 +26,7 @@ existing_session / password_manager / browser_autofill / os_keychain / local_env
 - Env variable names only:
 - Private file path only:
 - Connector/profile/vault handle label only:
-- MFA policy: user-present / approved connector-managed / not applicable
+- MFA policy: user-present / approved connector-managed / explicitly delegated local runtime handoff / not applicable
 
 ## Approved Goal
 
@@ -54,7 +54,8 @@ current request / approved site / autonomy grant / explicit approval / stage onl
 - security setting change;
 - payment credential change;
 - identity verification;
-- stored MFA answers, TOTP seeds, backup codes, recovery codes, or security answers;
+- unexpected MFA outside approved handoff;
+- stored TOTP seeds, backup codes, recovery codes, or security answers;
 - protected final action without safe grant.
 
 ## Resource Locks

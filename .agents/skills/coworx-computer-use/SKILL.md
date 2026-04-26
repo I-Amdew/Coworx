@@ -28,7 +28,7 @@ Use after Playwright is insufficient or when the task is about native apps or sy
 - Keep tasks narrow.
 - Do not open sensitive apps unless approved and necessary.
 - May enter credentials only into an approved login form from an approved local credential source, with target verified and secret-visible evidence disabled or redacted.
-- Never print, log, screenshot, trace, export, or store credentials, MFA answers, cookies, tokens, or recovery codes.
+- Never print, log, screenshot, trace, export, or expose credentials, MFA answers, cookies, tokens, or recovery codes. Never store them outside approved local-only secret storage.
 - Stop on permissions outside authority, security/account/payment areas, password changes, recovery, identity verification, destructive actions, or wrong target.
 
 ## Failure Or Blocked Behavior

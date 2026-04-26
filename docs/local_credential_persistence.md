@@ -13,7 +13,8 @@ This is allowed only when:
 - the file stays under `.coworx-private/secrets/` or another ignored private secret path;
 - file permissions are restricted where the OS supports it;
 - secret values are never printed, logged, screenshot, traced, committed, placed in safe memory, or sent to subagents;
-- MFA answers, TOTP seeds, backup codes, recovery codes, security answers, cookies, session exports, and payment credentials are not stored this way.
+- MFA answer values are stored only when explicitly delegated for local runtime handoff on the approved workflow;
+- TOTP seeds, backup codes, recovery codes, security answers, cookies, session exports, and payment credentials are not stored this way.
 
 ## Preferred Mechanism
 
@@ -24,7 +25,7 @@ The safest automated path is `from-env`: the user or local environment provides 
 Example:
 
 ```bash
-node scripts/coworx_local_secret_store.mjs from-env --name schoology --username-env COWORX_SCHOOLOGY_USERNAME --password-env COWORX_SCHOOLOGY_PASSWORD
+node scripts/coworx_local_secret_store.mjs from-env --name example-app --username-env COWORX_EXAMPLE_USERNAME --password-env COWORX_EXAMPLE_PASSWORD
 ```
 
 This command prints only the output path and key names, never values.
@@ -32,7 +33,7 @@ This command prints only the output path and key names, never values.
 For setup without real values, create a placeholder file:
 
 ```bash
-node scripts/coworx_local_secret_store.mjs template --name schoology --username-env COWORX_SCHOOLOGY_USERNAME --password-env COWORX_SCHOOLOGY_PASSWORD
+node scripts/coworx_local_secret_store.mjs template --name example-app --username-env COWORX_EXAMPLE_USERNAME --password-env COWORX_EXAMPLE_PASSWORD --extra-env COWORX_EXAMPLE_MFA_ANSWERS_JSON
 ```
 
 ## Chat Handling

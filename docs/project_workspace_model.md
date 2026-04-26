@@ -51,7 +51,7 @@ Coworx may store login routes, approved account labels, browser profile names, p
 
 Coworx must not store raw passwords, 2FA codes, recovery codes, cookies, session files, API keys, private keys, credit cards, or hidden authentication tokens in shippable files, safe memory, logs, reports, prompts, screenshots, traces, or generated artifacts. Explicitly delegated raw login credentials may live only in ignored private secret storage or approved keychain/password-manager/vault mechanisms.
 
-Private local memory can be highly customized, but it still follows the no-secret-values-in-memory rule. It may say "use the Work Chrome profile and the university portal login route for courses" or "use `.coworx-private/secrets/schoology.local.env`"; it must not contain the actual password, cookie, or token.
+Private local memory can be highly customized, but it still follows the no-secret-values-in-memory rule. It may say "use the approved browser profile and approved workspace login route" or "use `.coworx-private/secrets/example-app.local.env`"; it must not contain the actual password, cookie, or token.
 
 Private memory may include exact user-specific site layouts, selectors, form structure, and workflow maps when those details help Coworx operate approved workflows. Treat those details as privileged workflow information: keep them ignored by default, minimize them when reused, and require a review gate before entering them into another site, app, prompt, support channel, or external destination.
 

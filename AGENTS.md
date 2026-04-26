@@ -580,6 +580,7 @@ Allowed credential-safe paths:
 - OS password manager or keychain prompts;
 - ignored local secret files under `.coworx-private/secrets/`;
 - approved environment variables;
+- explicitly delegated local runtime MFA handoff by variable or private-file reference when the workflow is approved;
 - encrypted vault handles;
 - OAuth or app connectors;
 - API tokens stored outside the repo and never printed;

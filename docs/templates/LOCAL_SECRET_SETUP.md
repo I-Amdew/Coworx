@@ -17,18 +17,19 @@ Placeholder content only:
 ```bash
 COWORX_EXAMPLE_USERNAME="replace_me"
 COWORX_EXAMPLE_PASSWORD="replace_me"
+COWORX_EXAMPLE_MFA_ANSWERS_JSON='["replace_me_if_applicable"]'
 ```
 
 Or create a placeholder with the helper:
 
 ```bash
-node scripts/coworx_local_secret_store.mjs template --name example-app --username-env COWORX_EXAMPLE_USERNAME --password-env COWORX_EXAMPLE_PASSWORD
+node scripts/coworx_local_secret_store.mjs template --name example-app --username-env COWORX_EXAMPLE_USERNAME --password-env COWORX_EXAMPLE_PASSWORD --extra-env COWORX_EXAMPLE_MFA_ANSWERS_JSON
 ```
 
 To persist values from an already-private local environment without printing values:
 
 ```bash
-node scripts/coworx_local_secret_store.mjs from-env --name example-app --username-env COWORX_EXAMPLE_USERNAME --password-env COWORX_EXAMPLE_PASSWORD
+node scripts/coworx_local_secret_store.mjs from-env --name example-app --username-env COWORX_EXAMPLE_USERNAME --password-env COWORX_EXAMPLE_PASSWORD --extra-env COWORX_EXAMPLE_MFA_ANSWERS_JSON
 ```
 
 ## Rules
@@ -38,7 +39,8 @@ node scripts/coworx_local_secret_store.mjs from-env --name example-app --usernam
 - Do not pass secret values as command-line arguments.
 - Scripts should read variables locally at runtime.
 - Disable or redact screenshots, videos, and traces while secrets are visible.
-- Do not store MFA answers, TOTP seeds, backup codes, recovery codes, or security answers in local secret files.
-- Use user-present MFA or an approved connector-managed MFA flow.
+- Store MFA answer values only when the user explicitly delegates that local runtime handoff for the approved workflow, and keep them only in ignored private secret storage or environment variables.
+- Do not store TOTP seeds, backup codes, recovery codes, or security answers in local secret files.
+- Stage unexpected MFA prompts. Use user-present MFA or an approved connector-managed MFA flow when local runtime MFA handoff is not explicitly delegated.
 - Store browser profiles and session state only in ignored private paths.
 - Disable raw traces, videos, and screenshots during secret entry. If accidental raw artifacts are created, keep them in ignored private paths only until they are redacted or deleted; never use raw secret-visible artifacts as evidence.

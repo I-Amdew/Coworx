@@ -47,6 +47,8 @@ Stage when:
 
 Block or require the user to act manually on credential export, cookie export, token export, password changes, account recovery, recovery code handling, security setting changes, payment credential changes, identity verification, suspicious login pages, wrong-domain login pages, academic submission, and other Level 5/protected actions.
 
+Unexpected MFA prompts are staged unless the directive names an approved user-present, connector-managed, or local runtime MFA handoff. TOTP seeds, backup codes, recovery codes, and security answers must never be persisted or copied into evidence.
+
 ## Memory
 
 Store:

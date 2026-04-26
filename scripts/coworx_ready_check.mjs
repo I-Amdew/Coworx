@@ -217,13 +217,15 @@ const requiredConcepts = [
   ["docs/templates/LOCAL_SECRET_SETUP.md", ".coworx-private/secrets/"],
   ["docs/templates/LOCAL_SECRET_SETUP.md", "Do not commit real credentials"],
   ["config/TEMPLATE_CREDENTIAL_HANDOFF.json", "COWORX_EXAMPLE_USERNAME"],
+  ["config/TEMPLATE_CREDENTIAL_HANDOFF.json", "mfa_answers_env"],
   ["config/TEMPLATE_CREDENTIAL_HANDOFF.json", "mfa_policy"],
-  ["config/TEMPLATE_CREDENTIAL_HANDOFF.json", "do_not_store_totp_seeds_backup_codes_recovery_codes_security_answers_or_mfa_answers"],
+  ["config/TEMPLATE_CREDENTIAL_HANDOFF.json", "do_not_store_totp_seeds_backup_codes_recovery_codes_or_security_answers"],
   ["config/TEMPLATE_CREDENTIAL_HANDOFF.json", "disable_or_redact_during_secret_entry"],
-  ["docs/templates/LOCAL_SECRET_SETUP.md", "Do not store MFA answers"],
+  ["docs/templates/LOCAL_SECRET_SETUP.md", "COWORX_EXAMPLE_MFA_ANSWERS_JSON"],
   ["docs/templates/LOCAL_SECRET_SETUP.md", "coworx_local_secret_store.mjs"],
   ["scripts/coworx_local_secret_store.mjs", "Coworx local secret store demo test passed"],
-  ["docs/credential_handoff_protocol.md", "MFA answers, TOTP seeds, backup codes, recovery codes, and security answers must not be stored"],
+  ["docs/credential_handoff_protocol.md", "MFA answer values may be used only through explicitly delegated local runtime handoff"],
+  ["docs/credential_handoff_protocol.md", "TOTP seeds, backup codes, recovery codes, and security answers must not be stored"],
   ["queue/todo/TEMPLATE_CREDENTIAL_WORKFLOW_TEST.md", "Credential Workflow Test Task"],
   ["evals/smoke_tests/credential_handoff_policy.md", "approved local env credential handoff"],
   ["docs/standby_mode.md", "Default interval is 5 minutes"],
@@ -280,22 +282,38 @@ const stalePatterns = [
   /approval (?:is )?given at action time/i,
   /explicit approval at action time/i,
   /approval at action time/i,
-  /must not enter passwords/i,
-  /always stop if login appears/i,
-  /credentials are always blocked/i,
-  /manual login only/i,
-  /never type credentials/i,
-  /never enter credentials/i,
-  /No credentials should be entered/i,
-  /User signed in manually/i,
-  /credential entry by Coworx/i,
-  /Treat credentials[^.\n]*Level 5/i,
-  /If login is required, ask the user to sign in manually/i,
-  /Stop on credentials/i,
-  /Do not use Playwright to enter credentials/i,
-  /COWORX_EXAMPLE_MFA_ANSWERS/i,
-  /mfa_answers_env/i,
 ];
+
+const staleCredentialPhrases = [
+  "must not enter passwords",
+  "always stop if login appears",
+  "credentials are always blocked",
+  "manual login only",
+  "never type credentials",
+  "never enter credentials",
+  "no credentials should be entered",
+  "user signed in manually",
+  "credential entry by coworx",
+  "if login is required, ask the user to sign in manually",
+  "stop on credentials",
+  "do not use playwright to enter credentials",
+];
+
+const staleCredentialLinePatterns = [
+  /treat credentials[^.\n]*level 5/i,
+];
+
+const credentialExposureContext = /\b(expos|stor|log|screenshot|trace|export|leak|print|commit|copy|capture|share|reveal|prompt|chat|repo|memory|evidence|artifact|cookie|token|recovery|security|payment|wrong-domain|wrong domain|wrong-app|wrong app|outside approved|unsupported|unsafe|without approved|not covered by approved)\b/i;
+const blanketCredentialRegex = /\b(credentials?|passwords?|login|mfa)\b/i;
+
+function isAllowedCredentialBlockingContext(line) {
+  const lower = line.toLowerCase();
+  return credentialExposureContext.test(line)
+    || lower.includes("wrong target")
+    || lower.includes("suspicious")
+    || lower.includes("account recovery")
+    || lower.includes("password change");
+}
 
 const scanRoots = [
   "AGENTS.md",
@@ -337,6 +355,22 @@ for (const file of semanticFiles) {
   for (const pattern of stalePatterns) {
     if (pattern.test(body)) failures.push(`${file} contains stale policy wording: ${pattern}`);
   }
+  body.split(/\r?\n/).forEach((line, index) => {
+    if (!blanketCredentialRegex.test(line)) return;
+    const normalized = line.toLowerCase();
+    for (const phrase of staleCredentialPhrases) {
+      if (!normalized.includes(phrase)) continue;
+      if (!isAllowedCredentialBlockingContext(line)) {
+        failures.push(`${file}:${index + 1} contains blanket credential-blocking wording: ${phrase}`);
+      }
+    }
+    for (const pattern of staleCredentialLinePatterns) {
+      if (!pattern.test(line)) continue;
+      if (!isAllowedCredentialBlockingContext(line)) {
+        failures.push(`${file}:${index + 1} contains blanket credential-blocking wording: ${pattern}`);
+      }
+    }
+  });
 }
 
 try {

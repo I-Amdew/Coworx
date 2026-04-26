@@ -7,11 +7,12 @@ Verify Coworx policy supports approved credentialed work without exposing secret
 - Approved existing session: proceed inside delegated authority.
 - Approved password manager autofill: proceed without revealing, copying, logging, screenshotting, tracing, exporting, or storing the secret.
 - approved local env credential handoff: proceed with variable names only and no printed values.
+- Approved local runtime MFA handoff: proceed only when explicitly delegated for the approved workflow and no values are printed.
 - Credentials pasted in chat only: create secure handoff instructions and do not echo values.
 - Wrong domain/app: stop.
 - Unexpected MFA prompt: stage.
 - User-present or approved connector-managed MFA: proceed after the user/connector completes it.
-- Stored MFA answers, TOTP seeds, backup codes, recovery codes, or security answers: block.
+- TOTP seeds, backup codes, recovery codes, or security answers: block.
 - Password change prompt: stop.
 - Account recovery prompt: stop.
 - Security settings prompt: stop.

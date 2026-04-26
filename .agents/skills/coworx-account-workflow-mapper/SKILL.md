@@ -26,7 +26,7 @@ Use after the user approves a credential-safe account workflow mapping task.
 
 ## Rules
 - Use credential-safe access only: user-controlled login, approved session/profile, connector, OAuth, keychain/password-manager prompt, ignored local secret file, environment variables, API token outside the repo, or vault handle.
-- Never request secrets in chat or store, print, screenshot, trace, export, or log credentials, MFA answers, cookies, tokens, or recovery codes.
+- Never request secrets in chat or print, screenshot, trace, export, log, or expose credentials, MFA answers, cookies, tokens, or recovery codes. Never store them outside approved local-only secret storage.
 - Store real user-specific maps only in ignored private memory unless the user asks for a sanitized export.
 - Execute non-high-risk Level 3/4 actions only with delegated authority or explicit approval.
 - Stage or block Level 5/protected actions, unauthorized sends/submits/schedules/invites/deletes/settings changes, purchases, or sensitive-data transmission.

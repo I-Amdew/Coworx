@@ -20,9 +20,9 @@ Use separate output paths for screenshots, traces, logs, and private artifacts.
 
 ## Credential Rules
 
-For credentialed browser work, prefer official connectors/API first when available. Prefer Playwright with an isolated approved browser profile or local environment variables when technically available.
+For credentialed browser work, prefer official connectors/API first when available. Prefer Playwright with an isolated approved browser profile, local environment variables, or ignored private secret files when technically available.
 
-Playwright may use approved local credential handoff for the approved target, but it must not put secret values in command-line arguments, traces, videos, screenshots, logs, prompts, reports, or storage committed to the repo. Prefer environment variables or ignored local files read inside the script. Store browser state only in ignored private paths. Do not commit storage state. Do not export cookies.
+Playwright may use approved local credential handoff for the approved target, but it must not put secret values in command-line arguments, traces, videos, screenshots, logs, prompts, reports, or storage committed to the repo. Prefer environment variables or ignored local files read inside the script. Disable or redact traces, videos, and screenshots during secret entry. Store browser state only in ignored private paths. Do not commit storage state. Do not export cookies.
 
 Use resource locks for account workflows. Verify the target domain before login. Stop if the page redirects to an unexpected domain or security flow.
 

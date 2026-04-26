@@ -20,7 +20,7 @@ shippable
 
 ## Acceptance Criteria
 - Accounts and login guidance permits use of already signed-in browser or app sessions.
-- Fresh login, reauthentication, 2FA, permission prompts, and secret handling remain stop conditions.
+- Fresh login, reauthentication, 2FA, permission prompts, and secret handling remain stop conditions unless covered by approved local-only handoff.
 - Reversible scoped account actions are allowed in signed-in sessions.
 - External commitments require delegated authority or explicit approval; irreversible and Level 5/protected actions still stage or block.
 
@@ -28,7 +28,7 @@ shippable
 - Inspected `AGENTS.md` for account and login restrictions.
 - Updated `AGENTS.md` to allow assigned, already-authenticated sessions while keeping secret-handling restrictions.
 - Refined signed-in session policy to allow reversible scoped account actions and stop on irreversible actions.
-- Clarified that manual, autofill, password-manager, SSO, OS credential prompts, approved sessions, connectors, and vault handles are supported credential-safe access paths, while Coworx still must not receive or enter login secrets.
+- Clarified that manual, autofill, password-manager, SSO, OS credential prompts, approved sessions, connectors, local-only handoff, and vault handles are supported credential-safe access paths, while Coworx still must not expose login secrets.
 
 ## Subagents
 None.
@@ -40,7 +40,7 @@ None.
 - `AGENTS.md` Accounts And Login section updated.
 
 ## Review
-Diff reviewed. Scope is limited to `AGENTS.md` account-session language and Coworx task/report artifacts. The edit does not permit credential storage or secret entry, and it adds financial/payment/private-information stop conditions.
+Diff reviewed. Scope is limited to `AGENTS.md` account-session language and Coworx task/report artifacts. The edit permits approved local-only credential handoff without exposing secrets, and it adds financial/payment/private-information stop conditions.
 
 ## Memory Updates
 None.

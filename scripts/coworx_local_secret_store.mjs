@@ -95,15 +95,23 @@ function template(options) {
   const name = assertSafeName(options.name);
   const usernameEnv = options["username-env"] || "COWORX_USERNAME";
   const passwordEnv = options["password-env"] || "COWORX_PASSWORD";
-  const path = writeSecretFile(name, [
+  const entries = [
     [usernameEnv, "REPLACE_LOCALLY_WITH_USERNAME"],
     [passwordEnv, "REPLACE_LOCALLY_WITH_PASSWORD"]
-  ], options);
+  ];
+  if (options["extra-env"]) {
+    for (const envName of options["extra-env"].split(",").map((item) => item.trim()).filter(Boolean)) {
+      entries.push([envName, "REPLACE_LOCALLY_IF_APPLICABLE"]);
+    }
+  }
+  const path = writeSecretFile(name, entries, options);
   console.log(JSON.stringify({
     ok: true,
     path,
     template_only: true,
-    replace_values_locally: true
+    replace_values_locally: true,
+    stored_keys: entries.map(([key]) => key),
+    values_printed: false
   }, null, 2));
 }
 
@@ -125,7 +133,7 @@ try {
   else {
     console.error(`Usage:
   node ${basename(process.argv[1])} from-env --name APP --username-env USER_ENV --password-env PASSWORD_ENV [--extra-env ENV_A,ENV_B] [--force true]
-  node ${basename(process.argv[1])} template --name APP [--username-env USER_ENV] [--password-env PASSWORD_ENV] [--force true]
+  node ${basename(process.argv[1])} template --name APP [--username-env USER_ENV] [--password-env PASSWORD_ENV] [--extra-env ENV_A,ENV_B] [--force true]
   node ${basename(process.argv[1])} demo-test`);
     process.exit(2);
   }

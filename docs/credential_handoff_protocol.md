@@ -45,7 +45,7 @@ Rules:
 - scripts must read secrets locally at runtime;
 - secret values must not be passed through command-line arguments;
 - raw screenshots, videos, and traces during secret entry must be disabled. If accidental raw artifacts are produced, keep them in ignored private paths only until they are redacted or deleted; never use raw secret-visible artifacts as evidence.
-- MFA answers, TOTP seeds, backup codes, recovery codes, and security answers must not be stored in local secret files or environment variables.
+- MFA answer values may be used only through explicitly delegated local runtime handoff for the approved workflow, and must stay in ignored private secret storage or environment variables. TOTP seeds, backup codes, recovery codes, and security answers must not be stored in local secret files or environment variables.
 
 ### D. User-Present Manual Secure Entry
 
@@ -61,7 +61,8 @@ Coworx must pause or block:
 - password changes;
 - account recovery;
 - recovery code handling;
-- stored MFA answers, TOTP seeds, backup codes, or security answers;
+- unexpected MFA prompts outside approved local runtime handoff;
+- stored TOTP seeds, backup codes, recovery codes, or security answers;
 - security setting changes;
 - payment credential changes;
 - identity verification flows;
