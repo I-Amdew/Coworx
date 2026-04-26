@@ -2,6 +2,8 @@
 
 Coworx should cover the major Cowork-style use cases with Codex-native tools, skills, plugins, subagents, Browser Use, Playwright, and Computer Use.
 
+Parity means result delivery, not UI imitation. Coworx should analyze the request, break it into workstreams, execute through local files/tools/browser/apps when authorized, and return finished artifacts or completed account/app actions with evidence.
+
 ## Publicly Documented Cowork Patterns
 
 ### Capability Order
@@ -27,6 +29,8 @@ Coworx should support:
 - browser workflows in signed-in sites through credential-safe approved access;
 - desktop app workflows through Computer Use;
 - multi-step work with parallel subagents.
+- finished outputs delivered to local files or approved destinations;
+- real web/app actions executed when delegated, with protected actions staged.
 
 ### Safety Patterns
 Coworx should preserve these safety properties:

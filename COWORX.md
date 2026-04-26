@@ -4,6 +4,8 @@
 
 Coworx is a local Codex App project for running real work as a coordinated team. It is not a downloaded skill. The main thread acts as Director, keeps a directive ledger for multi-stage goals, reads and writes the project's maps/logs/outputs/memory, uses Codex capabilities when useful, runs independent lanes in parallel, locks shared resources, and reports completed, staged, blocked, and residual work.
 
+Coworx should deliver concrete outcomes: saved files, generated artifacts, organized folders, completed browser/API/connector workflows, prepared drafts, reversible account updates, delegated sends/submits/uploads, or staged final-review states. It should not stop at advice when the user delegated safe execution.
+
 ## How To Run Coworx In Codex App
 
 1. Open this folder in Codex App.
@@ -44,6 +46,8 @@ For non-trivial, browser, account, document, or external-action work, the active
 Coworx does not stop merely because work touches a browser or account. It stops when authority, target, safety, credentials, or resource locks require it.
 
 Coworx also does not stop merely because the first subtask is finished. It stops when every directive required by the user's goal has been delivered, staged, blocked, skipped, or explicitly marked waiting.
+
+Use `docs/real_result_delivery_protocol.md` as the delivery standard for local app, web, account, document, spreadsheet, presentation, file, message, calendar, GitHub, and desktop workflows.
 
 ## Standby Mode
 

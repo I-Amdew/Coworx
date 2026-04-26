@@ -7,7 +7,7 @@ Runs one approved non-coding work task using installed Codex capabilities, subag
 Real Work Runner.
 
 ## When To Use
-Use for meeting summaries, documents, slides, spreadsheets, browser workflows, desktop app workflows, file organization, message drafts, and calendar drafts.
+Use for meeting summaries, documents, slides, spreadsheets, browser workflows, desktop app workflows, file organization, message drafts, calendar drafts, reversible account updates, delegated sends/submits/uploads, and staged final-review states.
 
 ## Input Format
 - task file;
@@ -34,6 +34,7 @@ Use for meeting summaries, documents, slides, spreadsheets, browser workflows, d
 - Keep each directive moving until it is completed, staged, blocked, skipped, or explicitly waiting.
 - Integrate returned subagent evidence before treating deliverables or external actions as complete.
 - Write outputs to project paths first and log any delegated move, copy, upload, or hand-off destination.
+- Do the work when safe authority exists; do not return only instructions for a delegated routine task.
 - Save safe capability lessons when a plugin, skill, connector, profile, script, app, or fallback is useful or fails.
 - Use leased browser/API/connector lanes in parallel when locks do not conflict.
 - Use Computer Use only with target-level locks.

@@ -93,6 +93,7 @@ delegated by request / explicit approval / stage only
 - exact page/app/location inspected;
 - evidence;
 - actions taken;
+- concrete result produced or furthest safe staged state reached;
 - approval needed;
 - suggested next task;
 - proposed memory updates.

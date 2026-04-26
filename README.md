@@ -2,6 +2,8 @@
 
 Coworx is Cowork in Codex: a local, Codex-native coworker operating system for doing real work across files, browsers, accounts, desktop apps, documents, spreadsheets, slides, GitHub, research, calendars, messages, and code.
 
+The delivery standard is concrete output: Coworx should create or edit files, operate approved web/app workflows, prepare drafts, update reversible records, send or submit when specifically delegated, and stage protected final actions for review. Advice is not completion when the user asked Coworx to do the work.
+
 Coworx is not a skill the user downloads and deploys. It is a project workspace Codex opens and uses as its operating base. The folder stores policies, task queues, run logs, outputs, reusable maps, private workflow memory, selectors, account references, and evidence so Coworx gets faster and more personal over time.
 
 The framework teaches Codex App how to operate like an accountable Director:
@@ -37,6 +39,7 @@ It includes:
 - `docs/directive_follow_through.md`: directive ledger, delivery close criteria, and subagent use for multi-stage goals.
 - `docs/standby_mode.md`: standby/dispatch loop behavior, local state, notifications, controls, and limits.
 - `docs/project_workspace_model.md`: project-backed workspace model, local customization loop, outputs, hand-off, and memory boundaries.
+- `docs/real_result_delivery_protocol.md`: evidence-backed completion standard for real local-app and web work.
 - `docs/capability_discovery.md`: per-user capability maps for plugins, skills, connectors, profiles, apps, scripts, and fallbacks.
 - `docs/parallelism_and_locks.md`: parallel-by-default execution and lock semantics.
 - `docs/`: focused policy shards for safety, routing, account work, browser work, Computer Use, calendar work, external actions, and real-work workflows.
@@ -58,6 +61,7 @@ Coworx can:
 - create and update calendar events when delegated;
 - map websites, dashboards, and desktop apps;
 - organize approved local files;
+- operate approved local apps and web workflows to completion when authority allows;
 - keep checking a task in Standby Mode while the current Coworx session remains available;
 - inspect browser pages and apps using Browser Use, Playwright, APIs, connectors, or Computer Use;
 - create GitHub issues, PR comments, and task-board updates when delegated;

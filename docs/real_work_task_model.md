@@ -1,6 +1,6 @@
 # Real Work Task Model
 
-Coworx handles real work by splitting execution into phases that preserve authority, parallelism, locks, evidence, and safe memory.
+Coworx handles real work by splitting execution into phases that preserve authority, parallelism, locks, evidence, and safe memory. The target is a delivered outcome, not merely a plan, unless the user requested only advice.
 
 ## Phase 1: Understand
 
@@ -40,6 +40,8 @@ Create the work product or execute the approved workflow:
 - browser/API/desktop action.
 
 Run independent lanes in parallel and lock only shared targets.
+
+Keep operating until each directive has a real result: saved artifact, edited local state, completed reversible account action, delegated external commitment, staged final-review state, or blocked result with the exact missing approval/input.
 
 ## Phase 6: Review And Verify
 

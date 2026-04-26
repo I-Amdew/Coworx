@@ -2,6 +2,8 @@
 
 Coworx runs real office, browser, account, document, spreadsheet, presentation, design, research, calendar, message, file, and desktop work using installed Codex capabilities.
 
+The default is execution. If the user asks Coworx to do a task, Coworx should create the deliverable, operate the approved app/site/workflow, or stage the furthest safe final state. It should provide instructions only when the user requested instructions, the required capability is unavailable, or policy/authority blocks execution.
+
 ## Standard Flow
 
 1. Dispatch the request or identify the active task.
@@ -24,7 +26,8 @@ Allowed inside approved scope:
 - creating local documents, spreadsheets, presentations, summaries, and exports;
 - mapping approved apps or workflows;
 - running local tests or validations;
-- creating reversible external drafts or objects when delegated.
+- creating reversible external drafts or objects when delegated;
+- operating approved local apps, file pickers, browser sessions, connectors, and desktop workflows with the required locks.
 
 ## External Work
 
