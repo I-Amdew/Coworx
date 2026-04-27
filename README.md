@@ -1,138 +1,175 @@
 # Coworx
 
-Coworx is an open source Cowork-style workspace for GPT and Codex users.
+**An open source Cowork-style workspace for GPT and Codex users.**
 
-It turns Codex from a chat window into a local coworker that can actually operate your computer, use your files, work through browser sessions, keep task state, check back in while you are away, and finish real work instead of stopping at instructions.
+Coworx is a local workflow system for Codex.
 
-Claude Cowork showed what people want: dispatch a task, let the agent use the computer, and get a useful result back in one continuous thread. Coworx brings that idea to the Codex world as a project you can own, inspect, customize, and run locally.
+The goal is pretty simple. I do not want the agent to optimize for one response. I want it to optimize for the actual deliverable.
 
-## What Coworx Does
+That means the job is not "answer this prompt." The job is "figure out what needs to happen, use the right tools, keep track of the work, and come back with the finished thing."
 
-Coworx is built for real computer work:
+## Why This Exists
 
-- use signed-in browser sessions like Chrome when a task depends on your actual account;
-- control desktop apps through Computer Use when buttons, file pickers, uploads, messages, or visual checks matter;
-- use connectors, skills, local scripts, Playwright, and APIs when those are the cleaner route;
-- create and edit docs, spreadsheets, PDFs, slides, reports, and code files;
-- check Schoology, calendars, dashboards, messages, GitHub, folders, and web apps when you give it permission;
-- download data once, then process it locally with many parallel agents instead of slowly reading one page at a time;
-- save safe workflow memory so repeated tasks get faster;
-- keep secrets out of chat and store only local private credential references;
-- stage risky final actions for review instead of blindly clicking the last button.
+Computer Use is useful, but raw Computer Use is not enough.
 
-The goal is simple: if you ask for work, Coworx should do the work.
+The useful part is not just that an agent can click around. The useful part is that it knows what task it is doing, what it already checked, which app matters, which browser profile is signed in, where the files are, what steps should happen next, and what counts as done.
 
-## Why It Exists
+Without that layer, Computer Use mostly feels like another way to run browser automation. Coworx is the layer around it.
 
-Most agent setups are still too chatty. They give steps, ask the user to click around, forget context between tasks, or get stuck at the exact moment where real work starts.
+It gives Codex a project base with task state, local memory, outputs, logs, workflow maps, account references, routing rules, and safety boundaries. The point is to make Codex feel less like a chat box and more like a coworker that can actually work through your setup.
 
-Coworx is designed around follow-through:
+## What Coworx Is
 
-- find the right app, file, account, or browser tab;
-- use the right tool for the job;
-- keep going through multi-step tasks;
-- report back with the actual output;
-- keep working quietly in standby mode;
-- handle new instructions mid-task without dropping the original goal.
+Coworx is a project-backed workspace.
 
-It is meant to be the open source answer for people who want Cowork-like dispatch and computer use, but want it in a GPT/Codex workflow they can control.
+You open it in Codex, and it gives the agent a place to work from:
 
-## Core Features
+- what the task is;
+- what files matter;
+- what apps and browser profiles exist;
+- what accounts are approved for the workflow;
+- what previous runs found;
+- where outputs should go;
+- what should be staged for review;
+- what the final result should look like.
 
-### Real App Work
+The more you use it, the more useful it gets, because it starts mapping how you actually do things.
 
-Coworx treats Computer Use as a first-class capability. It can use real browser profiles, native apps, file pickers, password-manager prompts, upload dialogs, document editors, and messaging apps when that is what the task needs.
+## What It Can Do
 
-### Standby Mode
+Coworx is built for real computer tasks, not just coding.
 
-Standby Mode lets Coworx keep working in a Dispatch-style thread while the current Codex session is active. It checks for updates, sends meaningful progress messages, stores incoming follow-up tasks, and avoids noisy "still working" spam.
+It can work across:
 
-### Account Work With Local Credentials
+- files and folders;
+- signed-in Chrome sessions;
+- desktop apps;
+- documents, PDFs, spreadsheets, and slides;
+- GitHub;
+- web apps and dashboards;
+- calendars;
+- messages and notification channels;
+- local scripts;
+- Codex skills and connectors;
+- Playwright and APIs;
+- Computer Use.
 
-Coworx can use approved signed-in sessions and local credential references. If you explicitly ask it to save a password, it uses hidden local capture, a private ignored file, keychain, password manager, or vault-style reference. It remembers the reference, not the password in chat.
+The route depends on the task. Sometimes the right answer is a script. Sometimes it is Playwright. Sometimes it is a connector. Sometimes it is literally opening Chrome and using the same UI you would use.
 
-### Parallel Work
+## Finish The Deliverable
 
-Coworx can split the job. One lane can use Chrome to download account data, then several local agents can process different sections at the same time. That makes big tasks much faster than one agent slowly working online.
+Coworx is built around finishing.
 
-### Real Output
+A good run should leave behind a real result:
 
-Coworx is judged by the thing it leaves behind: a finished file, a draft, a staged upload, a checked account summary, a report, a browser result, an action ledger, or a clear review point.
+- a file;
+- a report;
+- a draft;
+- a spreadsheet;
+- a staged upload;
+- a checked account summary;
+- a browser result;
+- a local artifact;
+- a clear review point.
 
-### Safety Boundaries
+If the user asked it to do the thing, a plan is not enough unless the action is blocked or unsafe.
 
-Coworx is meant to be useful, not reckless. It can act inside delegated authority, but it stages or blocks protected actions like payments, account security changes, password changes, identity verification, legal or medical submissions, destructive deletes, and other high-risk commitments.
+## Real App Work
 
-## Example Tasks
+Computer Use is treated as a first-class tool.
 
-Coworx is designed for tasks like:
+Coworx can use it for:
 
-- "Check my four core classes and tell me what is due today."
-- "Use my signed-in browser to get the formula sheet, read my local textbook, and build a final review prompt."
-- "Fill out this document from the downloaded sources and keep the same formatting."
-- "Watch this task in standby mode and text me when the output is ready."
-- "Download the report from the dashboard, split it up, summarize the important parts, and make a final doc."
-- "Create the draft, attach the right file, and stop before final submit."
-- "Save this login locally so future approved tasks can sign in without asking again."
+- signed-in browser profiles;
+- file pickers;
+- upload dialogs;
+- Google Docs or Word;
+- messaging apps;
+- password-manager prompts;
+- native desktop apps;
+- visual saved-state checks.
 
-## How It Works
+The important part is that Coworx does not treat the GUI as a dead end. If the task needs a real app, it should use the real app.
 
-Coworx is a project-backed workspace. Instead of being only a prompt or a single skill, it gives Codex a local operating base:
+## Standby Mode
 
-- instructions for how to act;
-- templates for task requests and results;
-- local memory for safe workflow lessons;
-- private ignored storage for account-specific state;
-- scripts for readiness checks, standby mode, credential references, and real-work drills;
-- docs for Computer Use, browser work, credentials, dispatch mode, parallelism, and external actions.
+Coworx also has a standby system that is meant to feel more like dispatch.
 
-You open this project in Codex, ask for work, and Coworx gives Codex a stronger operating system for getting it done.
+You can leave a task running while the Codex session is alive. Coworx keeps state, checks for new inbound messages, works through the next step, and sends back useful updates.
+
+The conversation style is supposed to be simple:
+
+- quick acknowledgement;
+- task kicked off;
+- quiet while normal work is happening;
+- message back for real milestones or blockers;
+- final result when the output is ready.
+
+It can be wired to local inbox/outbox files, desktop notifications, Messages/iMessage, Discord, or another adapter.
+
+## Local Credentials
+
+Coworx can work with accounts if you approve the workflow.
+
+It can use existing signed-in sessions, browser autofill, password managers, keychain, connector auth, vault handles, or ignored local secret files.
+
+If you tell Coworx to save a password, it uses hidden local capture. It stores the credential in private ignored storage and remembers only the reference. It does not save the password in chat or normal project memory.
+
+## Parallel Work
+
+One of the bigger ideas is that the slow online part should be as short as possible.
+
+For example, if a site has a lot of data, Coworx should use one locked Computer Use or browser lane to download or export it. Then it should release that GUI lane and use multiple local agents to process the downloaded pieces in parallel.
+
+That is much faster than having one agent sit in the website reading page after page while everything else waits.
+
+## Safety Without Making It Useless
+
+Coworx is supposed to be useful. That means it should act when it has permission.
+
+It can draft, edit, attach files, create outputs, update reversible things, and work through approved apps and accounts.
+
+It still stages or blocks high-risk actions:
+
+- payments;
+- account security changes;
+- password changes;
+- identity verification;
+- legal, medical, or financial submissions;
+- destructive deletes;
+- credential, cookie, or token export;
+- protected final submissions.
+
+The idea is not to make the agent timid. The idea is to make it capable without letting it silently cross lines it should not cross.
+
+## What Is In The Repo
+
+The repo includes the Coworx operating base:
+
+- agent instructions;
+- workflow docs;
+- action templates;
+- local memory templates;
+- standby mode;
+- credential reference helpers;
+- readiness checks;
+- regression tests;
+- Computer Use and browser routing rules.
+
+Your private runtime data is not supposed to be committed. Files under `.coworx-private/` stay local.
 
 ## Getting Started
 
-Run the readiness check:
+Open this project in Codex and ask Coworx to do a real task.
 
-```bash
-node scripts/coworx_ready_check.mjs
-```
-
-Try standby mode without touching real accounts:
-
-```bash
-node scripts/coworx_standby.mjs demo-test
-```
-
-Create a local password reference with hidden input:
+For local credential capture:
 
 ```bash
 node scripts/coworx_local_secret_store.mjs capture --name example-app --target example.com --account-label example-account
 ```
 
-Private runtime files live under `.coworx-private/` and are ignored by git.
-
-## What Gets Committed
-
-Commit the framework, docs, templates, scripts, tests, and sanitized examples.
-
-Do not commit:
-
-- passwords;
-- MFA values;
-- cookies or tokens;
-- account screenshots;
-- browser sessions;
-- private task outputs;
-- personal account maps;
-- webhook URLs;
-- phone numbers;
-- private traces or recordings.
-
-Coworx is built so the useful system can be open source while your real account data stays local.
-
-## Open Source
+## License
 
 Coworx is open source under the Apache License 2.0.
 
-Use it, fork it, adapt it, and build better Cowork-style workflows for GPT and Codex users.
-
-Coworx is not affiliated with Anthropic, Claude, OpenAI, or Codex. It is an independent open source project for local agent workflows.
+Coworx is an independent project. It is not affiliated with Anthropic, Claude, OpenAI, or Codex.
