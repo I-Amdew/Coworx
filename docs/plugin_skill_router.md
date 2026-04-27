@@ -10,10 +10,10 @@ Coworx is the project-backed workspace. Installed Codex skills, plugins, MCP too
 4. Identify authority source, target resources, privacy class, and locks.
 5. Identify work type: browser, native app, file, document, spreadsheet, presentation, design, GitHub, media, automation, research, coding, review, or mixed.
 6. Prefer the most direct available connector, plugin, MCP tool, skill, script, or profile when it helps complete the directive with evidence.
-7. Use Browser Use for Codex in-app/current/local/file-backed/public targets.
-8. Use Playwright for repeatable structured browser checks and approved isolated profiles.
+7. Use Browser Use for Codex in-app/current/local/file-backed/public targets and quick unauthenticated checks.
+8. Use Playwright or Playwright Interactive for repeatable structured browser checks, persistent browser work, approved isolated profiles, and long authenticated workflows where Browser Use would repeatedly ask for permission or lose state.
 9. Use APIs/connectors for credentialed account work when available.
-10. Use Computer Use for native apps, real browser profiles, system dialogs, visual checks, simulators, and GUI-only tasks.
+10. Use Computer Use for native apps, real browser profiles, file pickers, system dialogs, password-manager prompts, approved messaging apps, visual checks, simulators, and GUI-only tasks.
 11. Staff independent lanes in parallel.
 12. Record tool choice, action level, authority, locks, evidence, outputs, capability result, and any memory updates in the run log.
 
@@ -38,8 +38,10 @@ Coworx is the project-backed workspace. Installed Codex skills, plugins, MCP too
 | Slides | Presentations plugin | local outline draft | Local deck creation is Level 2. |
 | Spreadsheet | Spreadsheets plugin | CSV/local script | Local workbook creation is Level 2. |
 | PDF | PDF skill | local extraction/render tools | Keep sensitive PDFs in private paths. |
-| Browser task | Browser Use for in-app/current/local/public targets | Playwright for repeatable automation | Credentialed work prefers connectors or approved isolated profiles. |
-| Native app task | Computer Use | Screenshot skill for read-only evidence | Use target-level locks. |
+| Browser task | Browser Use for in-app/current/local/public targets | Playwright or Playwright Interactive for repeatable or persistent automation | Credentialed work prefers connectors, approved isolated profiles, or Computer Use with a real profile. |
+| Long signed-in browser workflow | Connector/API if available | Playwright Interactive with approved persistent profile, then Computer Use for real profile GUI | Avoid Browser Use when it repeatedly prompts or cannot preserve the needed session. |
+| Native app or GUI-only task | Computer Use | Screenshot skill for read-only evidence | Use target-level locks. |
+| File picker or visual upload | Structured file input or connector/API | Computer Use | Verify selected filename and stage final submit when protected. |
 | GitHub | GitHub plugin skills | `gh-*` standalone skills | Comments, PRs, merges, and settings follow action levels. |
 | Figma/design | Figma plugin and Figma skills | screenshots/context export | Write operations require task authority. |
 | Messaging/calendar | Connector/API/browser lane | Computer Use for real profiles | Sends/invites/schedules are Level 4 when delegated or explicitly approved. |
@@ -57,6 +59,7 @@ Coworx is the project-backed workspace. Installed Codex skills, plugins, MCP too
 8. For account workflows, use credential-safe access and write user-specific maps to ignored private memory.
 9. For calendar and messaging, stage when authority, target, recipients, or content are unclear.
 10. Do not use plugins or skills to bypass action levels, locks, or credential rules.
+11. Do not turn a solvable GUI step into user instructions. Escalate to Computer Use when it is the capability that can complete the delegated work safely.
 
 ## Auto-Execution Defaults
 

@@ -53,6 +53,20 @@ No sends, submits, publishes, invites, schedules, uploads, deletes, settings cha
 ## Steps
 1.
 
+## Rundown Surface Checklist
+Use this when the goal is a school-day, work-day, course, project, or tomorrow summary.
+
+- User-requested date:
+- Site-reported date:
+- Account home/dashboard checked:
+- Course/project list checked:
+- Todo/assigned work checked:
+- Calendar/upcoming events checked:
+- Announcements/recent updates checked:
+- Inbox/notifications checked if relevant:
+- Stale or excluded items:
+- Confidence and missing authoritative source:
+
 ## Stop Conditions
 - Login required outside approved local-only handoff.
 - MFA required outside approved local-only handoff.

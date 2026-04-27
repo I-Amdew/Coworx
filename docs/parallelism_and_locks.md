@@ -38,6 +38,33 @@ Good parallel waves include:
 - drafting a document while a verifier checks source evidence;
 - one implementation owner per disjoint file set while a reviewer maps risk;
 - Computer Use on one locked GUI target while non-GUI lanes continue elsewhere.
+- one Computer Use lane downloading a signed-in export while local agents prepare parsers, followed by many local shard readers after the artifact is saved.
+
+## Download Once, Fan Out Locally
+
+For large signed-in site work, the fastest safe route is often:
+
+1. assign one Operator lane to the site or app;
+2. acquire the real browser, account workflow, file picker, and active focus locks needed for extraction;
+3. download, export, print to PDF, save HTML, copy approved page data, or otherwise capture the source artifact;
+4. save private user/account data under `.coworx-private/` or another ignored private path;
+5. release the Computer Use or browser locks as soon as the artifact is verified;
+6. split, index, or convert the artifact locally;
+7. spawn many read-only local agents over disjoint shards;
+8. fan results back to the Director for synthesis, verification, and any later staged external action.
+
+Use this pattern for course calendars, LMS assignment lists, downloaded chapter PDFs, dashboards, reports, spreadsheets, cloud-doc exports, message archives, transcript files, and research source bundles.
+
+Do not keep one GUI/browser lane slowly reading a site page by page when the data can be safely exported once and processed locally. The GUI lane should be short and lock-heavy. The local processing wave should be broad and lock-light.
+
+Respect privacy and permissions:
+
+- do not download or export data outside the user's grant;
+- store signed-in account exports in ignored private paths by default;
+- do not send downloaded private data to subagents that do not need it;
+- shard by file, page range, row range, course, thread, or source;
+- give each local agent a read-only shard and a narrow return envelope;
+- keep secrets, cookies, tokens, raw auth headers, and credential artifacts out of exports, logs, prompts, traces, screenshots, and reports.
 
 ## Restricted By Target
 

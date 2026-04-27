@@ -17,7 +17,26 @@
     "state_path": ".coworx-private/standby/state.json",
     "config_path": ".coworx-private/standby/config.json",
     "status_path": ".coworx-private/standby/status.md",
-    "events_path": ".coworx-private/standby/events.ndjson"
+    "events_path": ".coworx-private/standby/events.ndjson",
+    "outbox_path": ".coworx-private/standby/outbox.ndjson",
+    "inbox_path": ".coworx-private/standby/inbox.ndjson",
+    "inbox_dir": ".coworx-private/standby/inbox/",
+    "task_queue_dir": ".coworx-private/standby/tasks/"
+  },
+  "conversation_style": {
+    "mode": "dispatch_thread",
+    "quick_acknowledgement": true,
+    "kickoff_message": true,
+    "milestone_updates_only": true,
+    "keep_checking_inbound_while_working": true,
+    "no_permission_nagging": true,
+    "use_computer_use_notifier_when_configured": true,
+    "default_update_shape": [
+      "acknowledge the task and what Coworx is starting",
+      "say the task is kicked off and list concrete work items when useful",
+      "send heads-up only for real blockers or local-only manual steps",
+      "send done message with outputs, evidence, staged actions, and remaining user needs"
+    ]
   },
   "notifications": {
     "first_time_setup_required": true,
@@ -41,10 +60,80 @@
       "max_runtime_reached"
     ],
     "quiet_cycles": true,
-    "verbose_mode": false
+    "verbose_mode": false,
+    "outbound_notification_targets": [
+      {
+        "id": "local_status_file",
+        "type": "local_status_file",
+        "enabled": true,
+        "path": ".coworx-private/standby/status.md",
+        "stores_private_data": false
+      },
+      {
+        "id": "local_outbox_file",
+        "type": "local_outbox_file",
+        "enabled": true,
+        "path": ".coworx-private/standby/outbox.ndjson",
+        "stores_private_data": false,
+        "purpose": "Queue meaningful messages for an approved notifier lane such as desktop notification, Discord, Messages/iMessage, or SMS/email."
+      }
+    ],
+    "inbound_task_sources": [
+      {
+        "id": "local_inbox_file",
+        "type": "local_inbox_file",
+        "enabled": true,
+        "path": ".coworx-private/standby/inbox.ndjson",
+        "private": true
+      },
+      {
+        "id": "local_inbox_directory",
+        "type": "local_inbox_directory",
+        "enabled": true,
+        "path": ".coworx-private/standby/inbox/",
+        "private": true
+      }
+    ],
+    "queued_task_storage": [
+      {
+        "id": "private_standby_task_queue",
+        "type": "local_task_queue_directory",
+        "enabled": true,
+        "path": ".coworx-private/standby/tasks/",
+        "purpose": "Store inbound new tasks for Director review while the active standby task continues."
+      }
+    ],
+    "adapter_status": {
+      "local_status_file": "always_available",
+      "local_outbox_file": "always_available",
+      "desktop_notification": "requires_local_os_permission",
+      "messages_or_imessage_if_available": "requires_Computer_Use_action_request_and_app_lock",
+      "discord_private_channel_or_webhook": "requires_private_webhook_or_connector_config",
+      "sms_or_email_if_later_configured": "requires_private_adapter_config"
+    }
   },
   "safety": {
     "use_existing_coworx_authority_model": true,
+    "permission_prompt_policy": {
+      "remote_reply_can_approve": [
+        "ordinary_Level_1_to_4_non_protected_actions_already_recorded_in_the_active_directive"
+      ],
+      "local_only_manual_action_needed": [
+        "macOS_privacy_permission_prompt",
+        "Codex_tool_permission_prompt",
+        "password_manager_unlock_prompt",
+        "MFA_prompt_outside_approved_handoff"
+      ],
+      "hard_block": [
+        "account_security_change",
+        "password_change",
+        "payment_prompt",
+        "identity_verification",
+        "credential_export",
+        "cookie_or_token_export",
+        "Level_5_protected_action"
+      ]
+    },
     "protected_final_actions_require_pause_or_approval": [
       "sending_messages",
       "submitting_forms",

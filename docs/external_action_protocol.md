@@ -21,6 +21,10 @@ Credentialed login does not by itself authorize final external actions. Login ma
 
 Protected final actions must be staged unless a specific grant safely covers them, and some remain manual. Protected final actions include purchases, payments, contracts, legal filings, medical actions, financial transfers, account security changes, password changes, identity verification, high-impact employment actions, academic evaluation submissions, destructive deletion, production deployment without a deployment grant, and public publishing without a publishing grant.
 
+Academic LMS workflows should separate mechanics from academic authorship. Navigating the course site, downloading a template, exporting a user-authored file, selecting a file in a picker, attaching it, and reaching the review state are ordinary mechanics when delegated and allowed. Taking an assessment, generating graded work as the user, or making the final academic evaluation submission is protected unless a narrow, policy-consistent grant covers that exact final action.
+
+When the user asks for an academic workflow that includes both safe mechanics and protected authorship/submission, do the safe mechanics first. The lane should identify the assignment, source materials, required file, formatting constraints, blank sections, and upload route. Then it should stop at the authorship or final-submit boundary with evidence. Do not convert the whole request into instructions if Coworx can safely operate the LMS, file system, document tooling, or file picker up to the boundary.
+
 ## Authority Packet
 
 Before a lane acts, record:
@@ -38,6 +42,34 @@ Before a lane acts, record:
 - expiration;
 - prohibited actions;
 - rollback or undo notes if available.
+
+## Autonomous Credentialed Action Gate
+
+Before a credentialed lane performs a Level 3 or Level 4 external action under an autonomy grant, run an action gate packet through `scripts/coworx_autonomous_action_gate.mjs`.
+
+The packet must include:
+
+- target app or domain;
+- approved domains;
+- account label;
+- credential handoff source type and non-secret source reference;
+- action level;
+- exact action class;
+- authority source and autonomy grant;
+- allowed actions from the grant;
+- whether the action is final;
+- destination and data clarity for final actions;
+- commit lock status for Level 4;
+- protected action flags if any;
+- secret exposure flags, all false.
+
+Gate decisions:
+
+- `proceed`: run the authorized action and save evidence;
+- `stage`: prepare the work and stop at the review or commit point;
+- `block`: do not touch the external target beyond safe read-only context.
+
+The gate is not a substitute for target verification. The Operator must still verify the live app or site before credential entry, final write, upload, send, submit, invite, publish, or settings change.
 
 ## Commit Lock
 
@@ -65,6 +97,8 @@ Only the Director or an explicitly assigned lane may hold a commit lock.
 ## Default Behavior
 
 Draft first when facts, recipients, authority, or risk are unclear. Act when authority is clear and policy allows it. Stop at the final button only when the final action is not delegated or explicitly approved.
+
+For GUI-only external workflows, use Computer Use with locks before falling back to instructions. Stop with instructions only after Coworx has produced or staged the artifact, tried the appropriate connector/API/browser route, and either used or ruled out Computer Use for a concrete reason.
 
 ## Final Reporting
 

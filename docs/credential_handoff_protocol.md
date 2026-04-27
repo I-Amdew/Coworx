@@ -31,9 +31,13 @@ Coworx may trigger an approved autofill, password-manager, or keychain flow when
 
 Coworx must not reveal, copy, log, screenshot, export, or store the secret. If the secure prompt requires the user to approve, unlock, or complete MFA, Coworx waits for the user-controlled step or approved connector-managed flow and continues after the session is active.
 
+When Computer Use is available, approved autofill and keychain prompts are normal execution routes for real account work. Coworx should verify the target app/domain, disable or avoid secret-visible evidence, acquire the app/profile/account lock, trigger the local autofill or keychain flow, and continue after the session is active. It should not stop with instructions merely because the route uses a real browser profile or password manager.
+
 ### C. Local-Only Secret File Or Environment Variable
 
 Coworx may use credentials from an ignored local file under `.coworx-private/secrets/` or from environment variables. When the user explicitly delegates credential persistence for a clear app/site/account label, Coworx may also create or update that ignored local secret file using `scripts/coworx_local_secret_store.mjs`, an approved keychain/password-manager/vault route, or another approved local-only mechanism.
+
+If the user says to save a password, the preferred local-file route is `scripts/coworx_local_secret_store.mjs capture`. It prompts for values locally with hidden terminal input, writes a `.local.env` file under `.coworx-private/secrets/`, and creates a non-secret credential reference packet. The secret value must not be put in chat, prompts, reports, logs, screenshots, traces, or committed files.
 
 Rules:
 
@@ -47,11 +51,28 @@ Rules:
 - raw screenshots, videos, and traces during secret entry must be disabled. If accidental raw artifacts are produced, keep them in ignored private paths only until they are redacted or deleted; never use raw secret-visible artifacts as evidence.
 - MFA answer values may be used only through explicitly delegated local runtime handoff for the approved workflow, and must stay in ignored private secret storage or environment variables. TOTP seeds, backup codes, recovery codes, and security answers must not be stored in local secret files or environment variables.
 
-### D. User-Present Manual Secure Entry
+Runtime use of local secret files requires a credential source resolver. The resolver may read only the named approved private file or environment variables for the approved target, and it must pass secret values directly to the local login/autofill executor without printing them, placing them in command-line arguments, sending them to subagents, or writing them to logs, events, status files, reports, screenshots, traces, or prompts. Evidence may name the resolver, target, account label, env variable names, or private file path, but never the values.
+
+### D. Approved Local Credential Source Reference
+
+Sometimes the user's existing setup already has a private local credential source, such as a local skill file, password-manager handle, keychain item, vault handle, or connector-managed auth record. Coworx may save a private credential packet that references that source without copying the secret into Coworx.
+
+Rules:
+
+- the reference must be local, user approved, and scoped to the target account workflow;
+- the packet may contain the source label or local source path, but not the secret values;
+- the source must be read only by the local executor at runtime;
+- the executor must verify the approved domain or app before using the credential source;
+- if the source file itself contains secrets, do not copy its contents into route memory, shippable docs, logs, prompts, reports, screenshots, traces, or subagent messages;
+- if the source is missing, stale, or on the wrong domain, stop and stage for the user instead of guessing.
+
+Use this pattern for migration from another local agent's credentialed workflow into Coworx: preserve the route, locks, domain checks, and stop conditions, then create a private source-reference packet.
+
+### E. User-Present Manual Secure Entry
 
 If no safe local handoff exists, Coworx pauses and asks the user to complete login manually in the approved app/browser. Coworx then continues after the user confirms the session is signed in.
 
-### E. Unsupported Or Unsafe Credential Handling
+### F. Unsupported Or Unsafe Credential Handling
 
 Coworx must pause or block:
 
@@ -80,6 +101,8 @@ Coworx must pause or block:
 7. Enter credentials locally from the approved source.
 8. Clear the clipboard if used.
 9. Resume evidence collection only after secrets are no longer visible.
+
+For unattended or standby work, these checks must be in the Operator action request before the cycle begins. A later remote `approve` reply may authorize only the pending non-protected action already recorded in the directive ledger; it may not authorize a new credential source, a new domain, credential export, recovery flow, security setting, payment prompt, or identity verification.
 
 ## Evidence Rules
 

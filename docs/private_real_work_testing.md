@@ -27,6 +27,7 @@ Use approved credential-safe access: user-controlled login, approved session, de
 ## Allowed Private Tests
 
 - Summarize a signed-in dashboard.
+- Create a read-only school, work, or calendar rundown by combining multiple signed-in surfaces.
 - Draft or send a routine message when delegated.
 - Draft, create, or invite to a calendar event when delegated.
 - Create a local report from user-approved account data.
@@ -73,3 +74,16 @@ Before committing framework improvements:
 3. Search for names, emails, account IDs, message bodies, meeting details, dashboard values, screenshots, traces, cookies, tokens, and credentials.
 4. Convert useful lessons into generic templates or playbooks.
 5. Commit only sanitized framework files.
+
+## Real Drill Acceptance
+
+A real account drill should prove a useful user task, not only that a GUI tool can click. For read-only account work, acceptable drills include:
+
+- finding the user's active course or project list from a signed-in site;
+- building a tomorrow rundown from todos, events, calendar entries, and recent announcements;
+- locating an LMS assignment, template, local document, and upload route while stopping before protected academic authorship or submission;
+- identifying stale or irrelevant dashboard items and excluding them from the answer;
+- recording whether the site, local system date, and user-requested date disagree;
+- saving a private result and a sanitized public lesson.
+
+Calculator and other safe native app checks are still useful for Computer Use availability, but they do not prove real account competence.

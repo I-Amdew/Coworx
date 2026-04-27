@@ -1,6 +1,8 @@
 # Computer Use Policy
 
-Computer Use is for native apps, real browser profiles, visual-only workflows, system dialogs, simulators, file pickers, and GUI tasks that Browser Use, Playwright, connectors, APIs, or local files cannot handle cleanly.
+Computer Use is for native apps, real browser profiles, visual-only workflows, system dialogs, simulators, file pickers, password-manager prompts, approved messaging apps, and GUI tasks that Browser Use, Playwright, connectors, APIs, or local files cannot handle cleanly.
+
+Coworx should leverage Computer Use heavily for real work on the user's computer when it is the capability that can actually finish the task. It is restricted because it controls shared GUI state, not because it is exceptional. If a delegated routine workflow is blocked only by a file picker, native app, real browser profile, visible saved-state check, or password-manager/autofill prompt, use Computer Use with target locks before asking the user to do it manually.
 
 Computer Use is the restricted lane because it may share the physical screen, mouse, keyboard, clipboard, menus, dialogs, active app focus, browser profile state, and app-local state.
 
@@ -36,6 +38,8 @@ Before typing, it must verify the target domain/app visually and/or structurally
 
 Stop if the flow changes into account recovery, password reset, security settings, payment settings, identity verification, wrong target, wrong account, unexpected MFA, security prompt, account recovery prompt, or password-change prompt.
 
+For signed-in school, work, docs, calendar, messaging, LMS, and similar account workflows, prefer the user's approved real Chrome profile when the job depends on existing cookies, extensions, password manager state, or file picker behavior. Browser Use remains useful for public or local pages, but it is not the default for long signed-in workflows.
+
 ### Before Credential Entry
 
 1. Confirm approved site/app.
@@ -47,6 +51,46 @@ Stop if the flow changes into account recovery, password reset, security setting
 7. Enter credentials locally.
 8. Clear clipboard if used.
 9. Resume evidence collection only after secrets are no longer visible.
+
+## Password Manager And Autofill
+
+Computer Use may trigger browser autofill, a password manager, or OS keychain only for the approved target and account label. It must not inspect, copy, reveal, or export the stored secret. If the password manager requires a local unlock, Touch ID, device password, or user approval prompt that is not already covered by an approved local handoff, stop as local-only manual action needed.
+
+An autofill execution packet should record:
+
+- approved target domain or app;
+- approved account label;
+- credential source type, such as `browser_autofill`, `password_manager`, `os_keychain`, `private_file`, `local_env`, or `vault_handle`;
+- target locks, including app/window/profile/account workflow and clipboard if used;
+- screenshot/trace policy set to disabled or redacted during secret entry;
+- evidence resumes only after secret fields are no longer visible;
+- wrong-domain, recovery, security, payment, identity, or unexpected MFA stop conditions.
+
+## Credentialed Chrome Action Flow
+
+For an approved Chrome account workflow:
+
+1. open or focus Chrome with the approved profile;
+2. verify the domain or app identity before any credential action;
+3. prefer existing session state or browser/password-manager autofill before local secret typing;
+4. if using a private file, env var, vault, keychain, or local skill reference, keep the source reference private and never copy the secret value;
+5. run `scripts/coworx_autonomous_action_gate.mjs` before Level 3 or Level 4 action under autonomy;
+6. proceed only when the gate says `proceed`;
+7. stage when the gate says `stage`, such as a final send, submit, upload, publish, invite, or protected action boundary;
+8. block when the gate says `block`, such as wrong domain, credential export, account recovery, identity verification, security changes, or exposed secrets.
+
+## File Pickers And Uploads
+
+For file picker work, Computer Use should:
+
+1. verify the requested source file exists before opening the picker;
+2. acquire `desktop_resource:file_picker` and active focus locks;
+3. select the exact absolute path requested by the directive;
+4. verify the app or browser shows the correct filename or attachment state;
+5. stage the final submit/upload click unless delegated authority covers it and it is not protected;
+6. write an action result with source path, target UI, and evidence.
+
+File picker friction is not by itself a reason to stop. Stop only when Computer Use is unavailable, the wrong target appears, the source file is uncertain, or final submission is outside authority.
 
 ## Safe First Tests
 

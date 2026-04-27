@@ -7,7 +7,7 @@ Designs Playwright browser workflows. It executes them only when explicitly assi
 Browser Script Agent by default; Browser Operator only when assigned a lane lease.
 
 ## When To Use
-Use for public demo sites, approved dashboards, browser QA, selector discovery, and repeatable web workflows.
+Use for public demo sites, approved dashboards, browser QA, selector discovery, repeatable web workflows, and persistent signed-in browser work through Playwright Interactive when approved profile and credential boundaries are clear.
 
 ## Input Format
 - goal;
@@ -29,6 +29,8 @@ Use for public demo sites, approved dashboards, browser QA, selector discovery, 
 - Browser lanes are parallel by default when locks do not conflict.
 - Do not execute browser actions unless the current task assigns a browser lane lease and required locks.
 - Use public no-login targets for demos.
+- Prefer Playwright Interactive over Browser Use for long authenticated workflows when it avoids repeated permission prompts or preserves session state better.
+- Escalate to Computer Use when the workflow needs a real browser profile, native file picker, password-manager prompt, or visual GUI state that Playwright cannot operate.
 - Do not use real accounts without approved credential-safe access or local credential handoff.
 - Never put secret values in command-line arguments, logs, screenshots, traces, videos, reports, prompts, or committed storage state.
 - Disable or redact traces, videos, and screenshots during secret entry; store browser profiles and session state only under ignored private paths.

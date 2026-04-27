@@ -38,6 +38,30 @@ It must not learn, print, screenshot, trace, export, commit, or copy passwords, 
 6. Coworx writes private logs, screenshots, traces, and maps when user-specific data is involved.
 7. Coworx writes only sanitized improvements to shippable framework files.
 
+## Read-Only Rundown Flow
+
+Some useful account tasks are not a single page scrape. A school-day rundown, work dashboard summary, or "what do I need to do tomorrow" request usually requires Coworx to combine several signed-in surfaces.
+
+For these tasks, Coworx should:
+
+1. confirm the account/site from the visible signed-in session or approved connector;
+2. identify the user's requested date using an explicit absolute date;
+3. record the date source separately when the website labels a different day as "today";
+4. inspect the surfaces that naturally answer the question, such as course lists, dashboard todos, upcoming events, announcements, recent updates, calendars, inboxes, and relevant file tabs;
+5. distinguish scheduled events, due items, general announcements, and stale overdue noise;
+6. produce the private answer in an ignored path when it contains personal account data;
+7. produce a sanitized public result that names only the capability, surfaces checked, blockers, and generic lessons;
+8. update a private workflow map with useful navigation steps, selectors, tabs, stop conditions, and date quirks.
+
+Do not treat the first visible account page as enough evidence when the request asks for a plan, rundown, course list, or tomorrow view. The answer should say which surfaces were checked, which ones were stale or ambiguous, and whether a better authoritative source is still needed.
+
+Example accepted private outcome:
+
+- courses checked: course menu or dashboard;
+- work checked: todo panel, upcoming events, calendar, recent updates;
+- date handling: user-requested date and app-reported date recorded separately;
+- confidence: high for visible LMS items, lower for complete bell schedule if the LMS does not show period-by-period class times.
+
 ## Real Action Flow
 
 Coworx can take real non-high-risk Level 3/4 actions when delegated authority or explicit approval covers the exact action class and target.

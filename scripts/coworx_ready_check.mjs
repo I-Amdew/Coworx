@@ -9,6 +9,7 @@ const requiredFiles = [
   "AGENTS.md",
   "COWORX.md",
   "README.md",
+  "LICENSE",
   ".codex/config.toml",
   ".gitignore",
   "docs/director_use.md",
@@ -32,6 +33,7 @@ const requiredFiles = [
   "docs/non_coding_workflows.md",
   "docs/real_result_delivery_protocol.md",
   "docs/private_memory_policy.md",
+  "docs/codex_coworx_capability_research.md",
   "docs/account_login_handoff.md",
   "docs/real_work_task_model.md",
   "docs/concurrency_model.md",
@@ -68,8 +70,13 @@ const requiredFiles = [
   "evals/smoke_tests/directive_guard_policy.md",
   "evals/smoke_tests/standby_mode.md",
   "evals/regression_tests/privacy_and_approval_gates.md",
+  "evals/regression_tests/account_free_real_work_regressions.json",
   "scripts/coworx_directive_guard.mjs",
   "scripts/coworx_local_secret_store.mjs",
+  "scripts/coworx_credential_resolver.mjs",
+  "scripts/coworx_autonomous_action_gate.mjs",
+  "scripts/coworx_account_free_regression_tests.mjs",
+  "scripts/coworx_real_task_drill.mjs",
   "scripts/coworx_standby.mjs",
 ];
 
@@ -109,6 +116,8 @@ const requiredTemplateTerms = [
   "Active Directive File",
   "Privileged Workflow Information",
   "Persist credentials for future approved use",
+  "Autonomous Credentialed Action Gate",
+  "Extraction And Local Fanout",
   "Expires",
 ];
 
@@ -200,12 +209,31 @@ const requiredConcepts = [
   ["docs/real_result_delivery_protocol.md", "Real Result Delivery Protocol"],
   ["docs/real_result_delivery_protocol.md", "A directive is complete only when Coworx has produced the requested result"],
   ["docs/real_result_delivery_protocol.md", "Plans, explanations, and suggestions are intermediate artifacts unless the user asked only for advice"],
+  ["docs/real_result_delivery_protocol.md", "Playwright or Playwright Interactive"],
+  ["docs/real_result_delivery_protocol.md", "File Picker And Upload Completion"],
+  ["docs/codex_coworx_capability_research.md", "Computer Use Must Be A First-Class Coworx Lane"],
+  ["docs/codex_coworx_capability_research.md", "Browser Use Should Not Be The Default For Long Signed-In Workflows"],
+  ["docs/codex_coworx_capability_research.md", "https://developers.openai.com/codex/app/computer-use"],
   ["docs/non_coding_workflows.md", "The default is execution"],
   ["docs/real_work_task_model.md", "The target is a delivered outcome"],
   ["evals/smoke_tests/real_result_delivery.md", "Coworx does not stop at instructions when safe execution was requested"],
   [".agents/skills/coworx-real-work-runner/SKILL.md", "Do the work when safe authority exists"],
   ["operator/action_requests/TEMPLATE_ACTION_REQUEST.md", "concrete result produced or furthest safe staged state reached"],
   ["docs/parallelism_and_locks.md", "Lock resources, not agents"],
+  ["README.md", "open source Cowork-style workspace"],
+  ["README.md", "Apache License 2.0"],
+  ["LICENSE", "Apache License"],
+  ["LICENSE", "Version 2.0, January 2004"],
+  ["docs/parallelism_and_locks.md", "Download Once, Fan Out Locally"],
+  ["docs/parallelism_and_locks.md", "Do not keep one GUI/browser lane slowly reading a site page by page"],
+  ["docs/concurrency_model.md", "Download Once, Fan Out Locally"],
+  ["docs/operator_protocol.md", "Extraction Lane"],
+  ["docs/operator_protocol.md", "fan out local read-only agents over disjoint shards"],
+  ["docs/subagent_protocol.md", "large downloaded or exported artifacts can be split into independent local shards"],
+  ["operator/action_requests/TEMPLATE_ACTION_REQUEST.md", "Extraction And Local Fanout"],
+  ["operator/action_results/TEMPLATE_ACTION_RESULT.md", "Extraction And Local Fanout Result"],
+  ["evals/regression_tests/account_free_real_work_regressions.json", "download_then_fanout"],
+  ["scripts/coworx_account_free_regression_tests.mjs", "validateDownloadThenFanout"],
   ["docs/safety_policy.md", "Level 3"],
   ["docs/safety_policy.md", "Level 4"],
   ["docs/safety_policy.md", "Privileged Workflow Information"],
@@ -215,19 +243,35 @@ const requiredConcepts = [
   ["docs/credential_handoff_protocol.md", "explicitly delegated ignored private secret storage"],
   ["docs/credential_handoff_protocol.md", "Unsupported Or Unsafe Credential Handling"],
   ["docs/credential_handoff_protocol.md", "Protected Final Actions"],
+  ["docs/credential_handoff_protocol.md", "Approved Local Credential Source Reference"],
+  ["docs/credential_handoff_protocol.md", "local skill file"],
   ["docs/local_credential_persistence.md", "Local Credential Persistence"],
   ["docs/local_credential_persistence.md", "explicitly delegates credential persistence"],
   ["docs/local_credential_persistence.md", "scripts/coworx_local_secret_store.mjs"],
+  ["docs/local_credential_persistence.md", "interactive local capture"],
+  ["docs/local_credential_persistence.md", "The durable memory is the reference packet"],
+  ["docs/local_credential_persistence.md", "credential source resolver"],
+  ["docs/credential_handoff_protocol.md", "coworx_local_secret_store.mjs capture"],
+  ["docs/templates/LOCAL_SECRET_SETUP.md", "hidden local input"],
+  ["scripts/coworx_credential_resolver.mjs", "Coworx credential resolver demo test passed"],
+  ["scripts/coworx_credential_resolver.mjs", "--source-ref"],
+  ["scripts/coworx_local_secret_store.mjs", "capture --name APP"],
+  ["scripts/coworx_local_secret_store.mjs", "interactive_hidden_tty"],
+  ["scripts/coworx_autonomous_action_gate.mjs", "Coworx autonomous action gate demo test passed"],
+  ["scripts/coworx_real_task_drill.mjs", "Coworx real task drill demo test passed"],
   ["docs/account_login_handoff.md", "local-only credential handoff"],
   ["docs/account_login_handoff.md", "ignored local secret file"],
   ["docs/safety_policy.md", "Coworx may use secrets locally"],
   ["docs/safety_policy.md", "explicitly asks Coworx to save credentials"],
   ["docs/safety_policy.md", "Credential exposure"],
   ["docs/computer_use_policy.md", "Before Credential Entry"],
+  ["docs/computer_use_policy.md", "Password Manager And Autofill"],
+  ["docs/computer_use_policy.md", "File Pickers And Uploads"],
   ["docs/playwright_policy.md", "local credential handoff"],
   ["docs/templates/LOCAL_SECRET_SETUP.md", ".coworx-private/secrets/"],
   ["docs/templates/LOCAL_SECRET_SETUP.md", "Do not commit real credentials"],
   ["config/TEMPLATE_CREDENTIAL_HANDOFF.json", "COWORX_EXAMPLE_USERNAME"],
+  ["config/TEMPLATE_CREDENTIAL_HANDOFF.json", "interactive_hidden_tty_or_env_keychain_password_manager_vault"],
   ["config/TEMPLATE_CREDENTIAL_HANDOFF.json", "mfa_answers_env"],
   ["config/TEMPLATE_CREDENTIAL_HANDOFF.json", "mfa_policy"],
   ["config/TEMPLATE_CREDENTIAL_HANDOFF.json", "do_not_store_totp_seeds_backup_codes_recovery_codes_or_security_answers"],
@@ -239,17 +283,38 @@ const requiredConcepts = [
   ["docs/credential_handoff_protocol.md", "TOTP seeds, backup codes, recovery codes, and security answers must not be stored"],
   ["queue/todo/TEMPLATE_CREDENTIAL_WORKFLOW_TEST.md", "Credential Workflow Test Task"],
   ["evals/smoke_tests/credential_handoff_policy.md", "approved local env credential handoff"],
+  ["docs/session_backed_account_operations.md", "Read-Only Rundown Flow"],
+  ["docs/private_real_work_testing.md", "Real Drill Acceptance"],
+  ["docs/non_coding_workflows.md", "For a homework or LMS task that crosses the academic boundary"],
+  ["docs/external_action_protocol.md", "When the user asks for an academic workflow that includes both safe mechanics and protected authorship/submission"],
+  ["docs/external_action_protocol.md", "Autonomous Credentialed Action Gate"],
+  ["docs/external_action_protocol.md", "scripts/coworx_autonomous_action_gate.mjs"],
+  ["operator/action_requests/TEMPLATE_SIGNED_IN_READ_ONLY_REQUEST.md", "Rundown Surface Checklist"],
+  ["memory/accounts/TEMPLATE_SESSION_BACKED_ACCOUNT_MAP.md", "date-source quirks"],
+  ["evals/regression_tests/account_free_real_work_regressions.json", "signed_in_readonly_synthesis"],
+  ["evals/regression_tests/account_free_real_work_regressions.json", "academic_lms_boundary"],
   ["docs/standby_mode.md", "Default interval is 5 minutes"],
   ["docs/standby_mode.md", ".coworx-private/standby/"],
   ["docs/standby_mode.md", "Quiet mode is the default"],
+  ["docs/standby_mode.md", "Dispatch Conversation Style"],
+  ["docs/standby_mode.md", ".coworx-private/standby/tasks/"],
   ["docs/standby_mode.md", "Codex cannot remotely start a new chat later"],
   ["config/TEMPLATE_STANDBY_MODE.json", "default_interval_minutes"],
   ["config/TEMPLATE_STANDBY_MODE.json", "prevent_duplicate_loops"],
   ["config/TEMPLATE_STANDBY_MODE.json", "local_status_file"],
+  ["config/TEMPLATE_STANDBY_MODE.json", "local_outbox_file"],
+  ["config/TEMPLATE_STANDBY_MODE.json", "inbound_task_sources"],
+  ["config/TEMPLATE_STANDBY_MODE.json", "dispatch_thread"],
+  ["config/TEMPLATE_STANDBY_MODE.json", "task_queue_dir"],
   ["evals/smoke_tests/standby_mode.md", "Demo task completes"],
+  ["evals/smoke_tests/standby_mode.md", "Dispatch-style conversation metadata"],
+  ["evals/smoke_tests/standby_mode.md", "private standby task queue"],
   ["scripts/coworx_standby.mjs", "A standby loop is already active or paused"],
   ["scripts/coworx_standby.mjs", "A standby cycle is already running"],
   ["scripts/coworx_standby.mjs", "run --task"],
+  ["scripts/coworx_standby.mjs", "local_outbox_file"],
+  ["scripts/coworx_standby.mjs", "dispatch_thread"],
+  ["scripts/coworx_standby.mjs", "taskQueueDir"],
   ["scripts/coworx_standby.mjs", "Standby demo test passed"],
   ["operator/action_requests/TEMPLATE_ACTION_REQUEST.md", "Authority Source"],
   ["operator/action_requests/TEMPLATE_ACTION_REQUEST.md", "Active Directive File"],
@@ -405,6 +470,36 @@ try {
 }
 
 try {
+  execFileSync(process.execPath, [join(root, "scripts/coworx_credential_resolver.mjs"), "demo-test"], {
+    cwd: root,
+    stdio: "pipe",
+    encoding: "utf8",
+  });
+} catch (error) {
+  failures.push(`Credential resolver demo test failed: ${error.stderr || error.stdout || error.message}`);
+}
+
+try {
+  execFileSync(process.execPath, [join(root, "scripts/coworx_autonomous_action_gate.mjs"), "demo-test"], {
+    cwd: root,
+    stdio: "pipe",
+    encoding: "utf8",
+  });
+} catch (error) {
+  failures.push(`Autonomous action gate demo test failed: ${error.stderr || error.stdout || error.message}`);
+}
+
+try {
+  execFileSync(process.execPath, [join(root, "scripts/coworx_real_task_drill.mjs"), "demo-test"], {
+    cwd: root,
+    stdio: "pipe",
+    encoding: "utf8",
+  });
+} catch (error) {
+  failures.push(`Real task drill demo test failed: ${error.stderr || error.stdout || error.message}`);
+}
+
+try {
   execFileSync(process.execPath, [join(root, "scripts/coworx_standby.mjs"), "demo-test"], {
     cwd: root,
     stdio: "pipe",
@@ -412,6 +507,16 @@ try {
   });
 } catch (error) {
   failures.push(`Standby demo test failed: ${error.stderr || error.stdout || error.message}`);
+}
+
+try {
+  execFileSync(process.execPath, [join(root, "scripts/coworx_account_free_regression_tests.mjs")], {
+    cwd: root,
+    stdio: "pipe",
+    encoding: "utf8",
+  });
+} catch (error) {
+  failures.push(`Account-free regression tests failed: ${error.stderr || error.stdout || error.message}`);
 }
 
 if (failures.length > 0) {

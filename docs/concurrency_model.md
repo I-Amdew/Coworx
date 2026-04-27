@@ -26,3 +26,11 @@ The Coordinator or Director must:
 ## Practical Pattern
 
 Run research, drafting, browser checks, API calls, file reads, tests, and review in parallel. Use locks only when a lane will mutate or commit the same target. Use Computer Use only for GUI work that cannot be handled structurally. The practical goal is elapsed-time speed with explicit collision control: keep the critical path local, fan out everything independent, and fan results back into Director-owned integration and verification.
+
+## Download Once, Fan Out Locally
+
+When source data lives behind a signed-in site or GUI, do not make one Operator read everything online if export or download is available. Use one locked Computer Use, browser, connector, or API lane to obtain the artifact, verify the file, then release the lock and split the local data into shards.
+
+After download, local processing is parallel by default. Assign independent agents to page ranges, row ranges, sections, source files, courses, threads, or folders. Each agent should return structured findings and evidence from its shard only. The Director integrates the shard results and decides whether another GUI/account action is needed.
+
+This pattern keeps the scarce resource, the signed-in GUI/account lane, on the critical extraction path only. It turns slow online reading into fast local file processing.

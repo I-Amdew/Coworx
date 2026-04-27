@@ -17,8 +17,8 @@ Coworx should deliver concrete outcomes: saved files, generated artifacts, organ
 7. Use Standby Mode when the user asks Coworx to keep checking or continue in the background during the current active session.
 8. Use subagents when parallel research, implementation, diagnosis, review, verification, or evidence collection improves delivery.
 9. Use installed skills/plugins/connectors as capabilities when they fit the task.
-10. Use Browser Use for in-app/current/local/public targets and Playwright for repeatable structured browser work.
-11. Use Computer Use only for GUI/native/real-profile workflows and only with target-level locks.
+10. Use Browser Use for in-app/current/local/public targets. Prefer Playwright or Playwright Interactive for repeatable, persistent, or long authenticated browser work, especially when Browser Use would repeatedly ask for permission.
+11. Use Computer Use for GUI/native/real-profile workflows and only with target-level locks. File pickers, browser profiles, password-manager prompts, approved messaging apps, and visual saved-state checks are expected Computer Use cases.
 12. Review the run log and final report before treating the task as complete.
 
 ## Creating A Task
@@ -45,6 +45,8 @@ For non-trivial, browser, account, document, or external-action work, the active
 
 Coworx does not stop merely because work touches a browser or account. It stops when authority, target, safety, credentials, or resource locks require it.
 
+Coworx also does not stop merely because a routine step needs the screen. If connectors, Browser Use, Playwright, or APIs cannot finish a delegated workflow and Computer Use can safely operate the app/profile/window/file picker, Coworx should use Computer Use before returning instructions.
+
 Coworx also does not stop merely because the first subtask is finished. It stops when every directive required by the user's goal has been delivered, staged, blocked, skipped, or explicitly marked waiting.
 
 Use `docs/real_result_delivery_protocol.md` as the delivery standard for local app, web, account, document, spreadsheet, presentation, file, message, calendar, GitHub, and desktop workflows.
@@ -56,6 +58,8 @@ Standby Mode is a lightweight dispatch loop for the current active Codex session
 By default, Coworx checks every 5 minutes for up to 6 hours. Each cycle continues from the last checkpoint, performs one bounded useful unit, saves private state under `.coworx-private/standby/`, and waits for the next cycle. It prevents duplicate loops and stops when the task is complete, paused, stopped, at max runtime, or waiting for user input.
 
 First-time setup asks how meaningful updates should be delivered: Discord/private channel/webhook, desktop notification, Messages/iMessage if available, SMS/email if later configured, or local status file only. Quiet cycles should not notify the user unless verbose mode is enabled.
+
+Standby Mode uses adapter files under `.coworx-private/standby/`: local status/events/outbox for outbound messages and local inbox files for replies. Computer Use or connector lanes can deliver and check those messages through approved channels such as Messages/iMessage when configured.
 
 Use:
 

@@ -21,6 +21,13 @@ node scripts/coworx_ready_check.mjs
 - Quiet cycles do not emit notification spam while verbose mode is off.
 - CLI task, reason, note, and notification method values reject URL, email, phone, token, cookie, password, and secret-looking input.
 - Meaningful start, milestone, output-ready, completion, stop, blocker, approval, login/manual-action, and max-runtime events are reserved as notification-worthy.
+- Meaningful events are written to the local outbound adapter file when configured.
+- Outbox packets include Dispatch-style conversation metadata so a notifier lane can deliver them in one continuous thread.
+- Inbound local reply packets can apply `approve` / `deny`, pause, resume, stop, or store a new task privately for Director review.
+- Inbound `task` or `new_task` packets are stored under the private standby task queue, not inside the consumable inbox directory.
+- Standby keeps checking inbound sources while the active task continues.
+- Remote replies cannot expand authority beyond the active directive.
+- Permission prompts are classified as remote-grantable approval, local-only manual action, or hard block.
 - Runtime files stay under ignored private paths or temporary directories.
 - No real webhook, token, phone number, account detail, screenshot, trace, session file, cookie, credential, or personal-account output is committed.
 - No app/site-specific task hardcoding is required for the demo.

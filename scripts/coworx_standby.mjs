@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync, mkdtempSync, rmSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, join } from "node:path";
 import { tmpdir } from "node:os";
 
@@ -9,6 +9,10 @@ const defaultStatePath = join(defaultStateDir, "state.json");
 const defaultConfigPath = join(defaultStateDir, "config.json");
 const defaultStatusPath = join(defaultStateDir, "status.md");
 const defaultEventsPath = join(defaultStateDir, "events.ndjson");
+const defaultOutboxPath = join(defaultStateDir, "outbox.ndjson");
+const defaultInboxPath = join(defaultStateDir, "inbox.ndjson");
+const defaultInboxDir = join(defaultStateDir, "inbox");
+const defaultTaskQueueDir = join(defaultStateDir, "tasks");
 const version = 1;
 const allowedNotificationMethods = new Set([
   "local_status_file",
@@ -35,6 +39,8 @@ const meaningfulEvents = new Set([
   "outputs_ready",
   "max_runtime_reached",
   "config_initialized",
+  "task_received",
+  "task_started",
 ]);
 
 function nowIso() {
@@ -101,6 +107,10 @@ function statePaths(flags = {}) {
     configPath: flags["config-path"] ? isAbsolute(flags["config-path"]) ? flags["config-path"] : join(root, flags["config-path"]) : join(stateDir, "config.json"),
     statusPath: flags["status-path"] ? isAbsolute(flags["status-path"]) ? flags["status-path"] : join(root, flags["status-path"]) : join(stateDir, "status.md"),
     eventsPath: flags["events-path"] ? isAbsolute(flags["events-path"]) ? flags["events-path"] : join(root, flags["events-path"]) : join(stateDir, "events.ndjson"),
+    outboxPath: flags["outbox-path"] ? isAbsolute(flags["outbox-path"]) ? flags["outbox-path"] : join(root, flags["outbox-path"]) : join(stateDir, "outbox.ndjson"),
+    inboxPath: flags["inbox-path"] ? isAbsolute(flags["inbox-path"]) ? flags["inbox-path"] : join(root, flags["inbox-path"]) : join(stateDir, "inbox.ndjson"),
+    inboxDir: flags["inbox-dir"] ? isAbsolute(flags["inbox-dir"]) ? flags["inbox-dir"] : join(root, flags["inbox-dir"]) : join(stateDir, "inbox"),
+    taskQueueDir: flags["task-queue-dir"] ? isAbsolute(flags["task-queue-dir"]) ? flags["task-queue-dir"] : join(root, flags["task-queue-dir"]) : join(stateDir, "tasks"),
     lockDir: join(stateDir, "active.lock"),
     lockMetaPath: join(stateDir, "active.lock", "metadata.json"),
     cycleLockDir: join(stateDir, "cycle.lock"),
@@ -140,16 +150,90 @@ function defaultConfig() {
       "sms_or_email_if_later_configured",
       "local_status_file_only",
     ],
+    notification_adapters: {
+      outbound: [
+        {
+          id: "local_status_file",
+          type: "local_status_file",
+          enabled: true,
+          purpose: "Always update the private status file."
+        },
+        {
+          id: "local_outbox_file",
+          type: "local_outbox_file",
+          enabled: true,
+          purpose: "Append meaningful standby messages for a local or Computer Use notifier lane to deliver."
+        }
+      ],
+      inbound: [
+        {
+          id: "local_inbox_file",
+          type: "local_inbox_file",
+          enabled: true,
+          purpose: "Read normalized replies or new task packets written by a local or Computer Use inbox lane."
+        },
+        {
+          id: "local_inbox_directory",
+          type: "local_inbox_directory",
+          enabled: true,
+          purpose: "Read one JSON packet per reply from an approved inbox adapter."
+        }
+      ]
+    },
+    conversation_style: {
+      mode: "dispatch_thread",
+      quick_acknowledgement: true,
+      kickoff_message: true,
+      milestone_updates_only: true,
+      keep_checking_inbound_while_working: true,
+      no_permission_nagging: true,
+      use_computer_use_notifier_when_configured: true,
+      tone: "short, direct, useful, not chatty",
+      default_update_shape: [
+        "acknowledge the task and what will be done",
+        "say the task is kicked off and list the concrete work items",
+        "send heads-up only for real blockers or local-only manual steps",
+        "send done message with outputs and remaining staged actions"
+      ]
+    },
+    permission_prompt_policy: {
+      remote_reply_can_approve: [
+        "ordinary Level 1 to 4 actions already covered by the active directive and not protected"
+      ],
+      local_only_manual_action_needed: [
+        "macOS privacy permission prompts",
+        "Codex tool permission prompts",
+        "password manager unlock prompts",
+        "MFA prompts that are not covered by an approved local handoff"
+      ],
+      hard_block: [
+        "account security changes",
+        "password changes",
+        "payment prompts",
+        "identity verification",
+        "credential export",
+        "cookies or token export",
+        "Level 5 protected actions"
+      ]
+    },
   };
 }
 
 function ensureConfig(paths) {
   ensureDir(paths.stateDir);
   const existing = readJson(paths.configPath);
-  if (existing) return existing;
+  if (existing) return normalizeConfig(existing);
   const config = defaultConfig();
   writeJson(paths.configPath, config);
   appendEvent(paths, { type: "config_initialized", message: "Standby notification config initialized with local status file only." }, true);
+  return config;
+}
+
+function normalizeConfig(config) {
+  const defaults = defaultConfig();
+  if (!config.notification_adapters) config.notification_adapters = defaults.notification_adapters;
+  if (!config.permission_prompt_policy) config.permission_prompt_policy = defaults.permission_prompt_policy;
+  if (!config.conversation_style) config.conversation_style = defaults.conversation_style;
   return config;
 }
 
@@ -159,6 +243,188 @@ function appendEvent(paths, event, force = false, state = null) {
   if (!force && quiet && !verbose && !meaningfulEvents.has(event.type)) return;
   ensureDir(paths.stateDir);
   appendFileSync(paths.eventsPath, `${JSON.stringify({ at: nowIso(), ...event })}\n`);
+}
+
+function adapterPath(paths, adapter, fallbackPath) {
+  if (!adapter?.path) return fallbackPath;
+  return isAbsolute(adapter.path) ? adapter.path : join(root, adapter.path);
+}
+
+function configuredAdapters(config, direction) {
+  const adapters = config?.notification_adapters?.[direction];
+  if (Array.isArray(adapters)) return adapters.filter((adapter) => adapter.enabled !== false);
+  if (direction === "outbound" && Array.isArray(config?.notifications?.outbound_notification_targets)) {
+    return config.notifications.outbound_notification_targets.filter((adapter) => adapter.enabled !== false);
+  }
+  if (direction === "inbound" && Array.isArray(config?.notifications?.inbound_task_sources)) {
+    return config.notifications.inbound_task_sources.filter((adapter) => adapter.enabled !== false);
+  }
+  return [];
+}
+
+function appendOutbox(paths, config, state, type, message) {
+  const adapters = configuredAdapters(config, "outbound");
+  const outboxAdapters = adapters.filter((adapter) => adapter.type === "local_outbox_file");
+  if (outboxAdapters.length === 0) return;
+  for (const adapter of outboxAdapters) {
+    const path = adapterPath(paths, adapter, paths.outboxPath);
+    ensureDir(dirname(path));
+    appendFileSync(path, `${JSON.stringify({
+      at: nowIso(),
+      adapter: adapter.id || adapter.type,
+      type,
+      message,
+      task_id: state.task_id || null,
+      cycle_count: state.cycle_count || 0,
+      conversation_style: config?.conversation_style?.mode || "dispatch_thread",
+      delivery_hint: "deliver through the configured approved channel when available",
+      expects_reply: ["approval_needed", "login_needed", "blocker"].includes(type)
+    })}\n`);
+  }
+}
+
+function approvalGate(state) {
+  const pending = state.pending_approval;
+  if (!pending) return { ok: false, reason: "no pending approval" };
+  if (typeof pending.status !== "string") {
+    return { ok: false, reason: "pending approval is missing actionable status" };
+  }
+  const status = pending.status.toLowerCase();
+  if (!["pending", "requested", "waiting", "needs_approval"].includes(status)) {
+    return { ok: false, reason: `pending approval is not actionable: ${status}` };
+  }
+  const actionLevel = Number.parseInt(String(pending.action_level ?? pending.actionLevel ?? ""), 10);
+  if (!Number.isFinite(actionLevel) || actionLevel < 1 || actionLevel > 4) {
+    return { ok: false, reason: "pending approval must be a non-protected Level 1 to 4 action" };
+  }
+  if (pending.protected !== false && pending.non_protected !== true) {
+    return { ok: false, reason: "pending approval must explicitly be non-protected" };
+  }
+  if (pending.level5 === true) {
+    return { ok: false, reason: "protected actions cannot be approved through standby replies" };
+  }
+  if (!pending.directive_id && !pending.directiveId) {
+    return { ok: false, reason: "pending approval is missing directive id" };
+  }
+  if (!pending.action_id && !pending.actionId) {
+    return { ok: false, reason: "pending approval is missing action id" };
+  }
+  return { ok: true, pending };
+}
+
+function applyApprovalDecision(state, command, note = null) {
+  assertSafeLabel(note, "--note");
+  const gate = approvalGate(state);
+  if (!gate.ok) {
+    state.approval_decision = { decision: "ignored", requested_decision: command, reason: gate.reason, at: nowIso() };
+    state.current_status = `${command} ignored: ${gate.reason}`;
+    return { applied: false, reason: gate.reason };
+  }
+  state.approval_decision = { decision: command, note: note || null, at: nowIso() };
+  state.pending_approval = {
+    ...gate.pending,
+    status: command === "approve" ? "approved" : "denied",
+    decided_at: state.approval_decision.at
+  };
+  state.user_input_needed = false;
+  if (state.stop_pause_state === "needs_input") state.stop_pause_state = "running";
+  state.current_status = `${command} recorded`;
+  state.next_cycle = state.active ? nextCycleFrom(state.interval_minutes) : null;
+  return { applied: true };
+}
+
+function normalizeInboundPacket(value, source) {
+  if (typeof value === "string") {
+    return { command: value.trim().toLowerCase(), source };
+  }
+  if (!value || typeof value !== "object") return null;
+  const command = String(value.command || value.type || "").trim().toLowerCase();
+  if (!command) return null;
+  return { ...value, command, source };
+}
+
+function readInboundPackets(paths, config) {
+  const adapters = configuredAdapters(config, "inbound");
+  const packets = [];
+  for (const adapter of adapters) {
+    if (adapter.type === "local_inbox_file") {
+      const path = adapterPath(paths, adapter, paths.inboxPath);
+      if (!existsSync(path)) continue;
+      const body = readFileSync(path, "utf8");
+      writeFileSync(path, "");
+      for (const line of body.split(/\n+/).map((item) => item.trim()).filter(Boolean)) {
+        try {
+          packets.push(normalizeInboundPacket(JSON.parse(line), adapter.id || adapter.type));
+        } catch {
+          packets.push(normalizeInboundPacket(line, adapter.id || adapter.type));
+        }
+      }
+    } else if (adapter.type === "local_inbox_directory") {
+      const dir = adapterPath(paths, adapter, paths.inboxDir);
+      if (!existsSync(dir)) continue;
+      for (const file of readdirSync(dir).filter((name) => name.endsWith(".json")).sort()) {
+        const path = join(dir, file);
+        try {
+          packets.push(normalizeInboundPacket(JSON.parse(readFileSync(path, "utf8")), adapter.id || adapter.type));
+        } finally {
+          unlinkSync(path);
+        }
+      }
+    }
+  }
+  return packets.filter(Boolean);
+}
+
+function processInboundPackets(paths, state, config) {
+  const packets = readInboundPackets(paths, config);
+  if (packets.length === 0) return;
+  ensureDir(paths.inboxDir);
+  for (const packet of packets) {
+    const note = packet.note || packet.message || null;
+    if (["approve", "deny"].includes(packet.command)) {
+      const decision = applyApprovalDecision(state, packet.command, note);
+      if (decision.applied) {
+        appendEvent(paths, { type: "approval_received", message: `Inbound ${packet.command} received from ${packet.source}.` }, true, state);
+      } else {
+        appendEvent(paths, { type: "blocker", message: `Inbound ${packet.command} ignored from ${packet.source}: ${decision.reason}` }, true, state);
+      }
+    } else if (packet.command === "pause") {
+      state.stop_pause_state = "paused";
+      state.current_status = "paused by inbound reply";
+      appendEvent(paths, { type: "standby_paused", message: `Inbound pause received from ${packet.source}.` }, true, state);
+    } else if (packet.command === "resume") {
+      if (state.active) {
+        state.stop_pause_state = "running";
+        state.current_status = "running";
+        state.next_cycle = nextCycleFrom(state.interval_minutes);
+      }
+      appendEvent(paths, { type: "standby_resumed", message: `Inbound resume received from ${packet.source}.` }, true, state);
+    } else if (packet.command === "stop") {
+      state.active = false;
+      state.stop_pause_state = "stopped";
+      state.current_status = "stopped by inbound reply";
+      state.next_cycle = null;
+      appendEvent(paths, { type: "standby_stopped", message: `Inbound stop received from ${packet.source}.` }, true, state);
+      releaseActiveLock(paths);
+    } else if (packet.command === "new_task" || packet.command === "task") {
+      ensureDir(paths.taskQueueDir);
+      const privateTaskPath = join(paths.taskQueueDir, `task-${nowIso().replace(/[:.]/g, "")}.json`);
+      writeJson(privateTaskPath, {
+        received_at: nowIso(),
+        source: packet.source,
+        text: packet.text || packet.task || packet.message || "",
+        status: "received_private_needs_director_review",
+        rule: "Inbound text is private task data. It does not expand the active directive, authority, recipients, destinations, or safety rules until the Director updates the directive ledger."
+      });
+      state.inbound_task_count = Number(state.inbound_task_count || 0) + 1;
+      state.last_inbound_task_path = privateTaskPath;
+      state.current_checkpoint = `inbound task received and stored privately at ${privateTaskPath}`;
+      appendEvent(paths, { type: "task_received", message: "Inbound task received and stored for Director review." }, true, state);
+      appendOutbox(paths, config, state, "task_received", "Got it. I saved the new task privately for Director review and I am still working the active task.");
+    } else {
+      appendEvent(paths, { type: "blocker", message: `Unsupported inbound standby command from ${packet.source}: ${packet.command}` }, true, state);
+    }
+  }
 }
 
 function renderStatus(state, config) {
@@ -179,6 +445,7 @@ function renderStatus(state, config) {
 - Notification Method: ${config.notification_method}
 - Notification Configured: ${config.configured ? "yes" : "no"}
 - Notification Setup Needed: ${state.notification_setup_needed ? "yes" : "no"}
+- Inbound Tasks Waiting For Director Review: ${state.inbound_task_count || 0}
 
 Runtime files under .coworx-private/standby/ are private local state and should not be committed.
 `;
@@ -270,6 +537,9 @@ function notify(paths, state, config, type, message) {
     state.last_meaningful_update = nowIso();
   }
   appendEvent(paths, { type, message }, meaningful, state);
+  if (meaningful) {
+    appendOutbox(paths, config, state, type, message);
+  }
   saveState(paths, state, config);
 }
 
@@ -308,6 +578,11 @@ function startStandby(flags) {
     last_meaningful_update: null,
     user_input_needed: false,
     stop_pause_state: "running",
+    inbound_adapter_status: "enabled",
+    outbound_adapter_status: "enabled",
+    conversation_style: config.conversation_style,
+    inbound_task_count: 0,
+    last_inbound_task_path: null,
     verbose: flags.verbose === true || config.verbose === true,
     quiet_by_default: config.quiet_by_default !== false,
     current_checkpoint: "standby loop started; waiting for first bounded cycle",
@@ -359,6 +634,7 @@ function runCycle(flags) {
   try {
     const state = loadState(paths);
     if (!state) throw new Error("No standby state exists. Start standby first.");
+    processInboundPackets(paths, state, config);
     if (!state.active) {
       saveState(paths, state, config);
       console.log("Standby is not active.");
@@ -468,6 +744,9 @@ function inactiveState(config) {
     last_meaningful_update: null,
     user_input_needed: false,
     stop_pause_state: "stopped",
+    conversation_style: config.conversation_style,
+    inbound_task_count: 0,
+    last_inbound_task_path: null,
     verbose: config.verbose === true,
     quiet_by_default: config.quiet_by_default !== false,
     current_checkpoint: null,
@@ -496,6 +775,8 @@ function initConfig(flags) {
     config.notification_method = flags.method;
     config.configured = true;
   }
+  ensureDir(paths.inboxDir);
+  ensureDir(paths.taskQueueDir);
   if (flags.verbose !== undefined) config.verbose = flags.verbose === true;
   writeJson(paths.configPath, config);
   appendEvent(paths, { type: "config_initialized", message: `Standby notifications configured for ${config.notification_method}.` }, true);
@@ -523,6 +804,14 @@ function demoTest() {
     expectThrows("unsafe note label", () => assertSafeLabel("token=abc123", "--note"));
     expectThrows("unsafe reason label", () => assertSafeLabel("555-555-5555", "--reason"));
     startStandby(flags);
+    const outboxPath = join(tempDir, "outbox.ndjson");
+    if (!readFileSync(outboxPath, "utf8").includes("standby_started")) {
+      throw new Error("meaningful standby start was not written to local outbox");
+    }
+    const firstOutbox = readFileSync(outboxPath, "utf8");
+    if (!firstOutbox.includes("dispatch_thread")) {
+      throw new Error("standby outbox did not include dispatch conversation style metadata");
+    }
     let duplicateRejected = false;
     try {
       startStandby(flags);
@@ -538,11 +827,83 @@ function demoTest() {
     if (state.cycle_count !== 0) {
       throw new Error("non-forced cycle ran before next_cycle");
     }
+    appendFileSync(join(tempDir, "inbox.ndjson"), `${JSON.stringify({ command: "task", text: "demo follow up task" })}\n`);
     runCycle({ "state-path": statePath, demo: true, force: true });
+    state = readJson(statePath);
+    if (state.inbound_task_count !== 1 || !state.last_inbound_task_path || !existsSync(state.last_inbound_task_path)) {
+      throw new Error("inbound task was not stored in the private standby task queue");
+    }
+    if (!state.last_inbound_task_path.includes(`${join(tempDir, "tasks")}`)) {
+      throw new Error("inbound task was stored in the inbox instead of the private task queue");
+    }
+    state.user_input_needed = true;
+    state.stop_pause_state = "needs_input";
+    writeJson(statePath, state);
+    appendFileSync(join(tempDir, "inbox.ndjson"), `${JSON.stringify({ command: "approve", note: "demo approval" })}\n`);
+    runCycle({ "state-path": statePath, demo: true, force: true });
+    state = readJson(statePath);
+    if (state.approval_decision?.decision !== "ignored" || state.stop_pause_state !== "needs_input") {
+      throw new Error("unsolicited inbound approval was not ignored");
+    }
+    state.pending_approval = {
+      directive_id: "D-demo",
+      action_id: "A-demo",
+      action_level: 2,
+      status: "pending"
+    };
+    writeJson(statePath, state);
+    appendFileSync(join(tempDir, "inbox.ndjson"), `${JSON.stringify({ command: "approve", note: "demo approval" })}\n`);
+    runCycle({ "state-path": statePath, demo: true, force: true });
+    state = readJson(statePath);
+    if (state.approval_decision?.decision !== "ignored" || state.stop_pause_state !== "needs_input") {
+      throw new Error("missing protected marker was not ignored");
+    }
+    state.pending_approval = {
+      directive_id: "D-demo",
+      action_id: "A-demo",
+      action_level: 2,
+      protected: "true",
+      status: "pending"
+    };
+    writeJson(statePath, state);
+    appendFileSync(join(tempDir, "inbox.ndjson"), `${JSON.stringify({ command: "approve", note: "demo approval" })}\n`);
+    runCycle({ "state-path": statePath, demo: true, force: true });
+    state = readJson(statePath);
+    if (state.approval_decision?.decision !== "ignored" || state.stop_pause_state !== "needs_input") {
+      throw new Error("string protected marker was not ignored");
+    }
+    state.pending_approval = {
+      directive_id: "D-demo",
+      action_id: "A-demo",
+      action_level: 2,
+      protected: false
+    };
+    writeJson(statePath, state);
+    appendFileSync(join(tempDir, "inbox.ndjson"), `${JSON.stringify({ command: "approve", note: "demo approval" })}\n`);
+    runCycle({ "state-path": statePath, demo: true, force: true });
+    state = readJson(statePath);
+    if (state.approval_decision?.decision !== "ignored" || state.stop_pause_state !== "needs_input") {
+      throw new Error("missing actionable status was not ignored");
+    }
+    state.pending_approval = {
+      directive_id: "D-demo",
+      action_id: "A-demo",
+      action_level: 2,
+      protected: false,
+      status: "pending"
+    };
+    writeJson(statePath, state);
+    appendFileSync(join(tempDir, "inbox.ndjson"), `${JSON.stringify({ command: "approve", note: "demo approval" })}\n`);
+    runCycle({ "state-path": statePath, demo: true, force: true });
+    state = readJson(statePath);
+    if (state.approval_decision?.decision !== "approve" || state.stop_pause_state !== "running") {
+      throw new Error("inbound approval did not resume standby state");
+    }
     runCycle({ "state-path": statePath, demo: true, force: true });
     runCycle({ "state-path": statePath, demo: true, force: true });
     state = readJson(statePath);
     const events = readFileSync(join(tempDir, "events.ndjson"), "utf8");
+    const outbox = readFileSync(outboxPath, "utf8");
     if (state.active !== false || state.stop_pause_state !== "completed") {
       throw new Error("demo task did not complete");
     }
@@ -551,6 +912,9 @@ function demoTest() {
     }
     if (events.includes("quiet_cycle")) {
       throw new Error("quiet cycle spam was recorded while verbose mode was off");
+    }
+    if (outbox.includes("quiet_cycle")) {
+      throw new Error("quiet cycle spam was written to local outbox while verbose mode was off");
     }
     console.log("Standby demo test passed.");
   } finally {
@@ -614,12 +978,7 @@ async function main() {
     });
   } else if (command === "approve" || command === "deny") {
     mutateState(flags, (state) => {
-      assertSafeLabel(flags.note, "--note");
-      state.approval_decision = { decision: command, note: flags.note || null, at: nowIso() };
-      state.user_input_needed = false;
-      if (state.stop_pause_state === "needs_input") state.stop_pause_state = "running";
-      state.current_status = `${command} recorded`;
-      state.next_cycle = state.active ? nextCycleFrom(state.interval_minutes) : null;
+      applyApprovalDecision(state, command, flags.note || null);
     });
   } else if (command === "demo-test") demoTest();
   else usage(1);

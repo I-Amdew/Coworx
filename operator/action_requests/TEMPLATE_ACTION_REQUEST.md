@@ -21,6 +21,16 @@ Confirm exact account/app/site if relevant.
 
 ## Data Allowed To Read Or Capture
 
+## Extraction And Local Fanout
+- Use download once, fan out locally: no / yes
+- Source artifact target path:
+- Expected artifact type: html / pdf / docx / csv / xlsx / json / zip / screenshot_bundle / other
+- Private storage required: no / yes
+- Verification required: filename / size / page_count / row_count / section_count / checksum / visual_check / other
+- Planned shard key: file / page_range / row_range / section / course / thread / source / other
+- Local fanout lanes after extraction:
+- GUI/account locks released before fanout: no / yes / not applicable
+
 ## Privileged Workflow Information
 - Required: no / yes
 - Private storage path:
@@ -39,6 +49,17 @@ Describe anything that would send, submit, upload, invite, schedule, publish, de
 ## Authority Source
 delegated by request / explicit approval / stage only
 
+## Autonomous Credentialed Action Gate
+- Required: no / yes
+- Gate script: `scripts/coworx_autonomous_action_gate.mjs`
+- Gate packet path:
+- Gate decision: not_run / proceed / stage / block
+- Autonomy grant name:
+- Exact action class:
+- Final action: no / yes
+- Commit lock confirmed: no / yes / not applicable
+- Values printed: no
+
 ## Active Directive File
 - Path:
 - Directive IDs:
@@ -47,12 +68,30 @@ delegated by request / explicit approval / stage only
 
 ## Credential Handoff
 - Required: no / yes
-- Source: existing_session / password_manager / browser_autofill / os_keychain / local_env / private_file / oauth_connector / api_connector / vault_handle / user_manual_entry
+- Source: existing_session / password_manager / browser_autofill / os_keychain / local_env / private_file / local_skill_ref / oauth_connector / api_connector / vault_handle / user_manual_entry
+- Credential source resolver: not required / env_only / private_file_only / local_skill_ref / password_manager_label / browser_autofill / os_keychain / oauth_connector / api_connector / vault_handle
 - Persist credentials for future approved use: no / yes, explicitly delegated
 - Persistence target: none / `.coworx-private/secrets/*.local.env` / os_keychain / password_manager / vault_handle
+- Non-secret source reference:
 - Secret value exposure: prohibited
 - Secret-visible screenshots/traces/videos: disabled / redacted / not applicable
 - Local secret path or env variable names only:
+
+## Computer Use Execution
+- Required: no / yes
+- Reason: native_app / real_browser_profile / file_picker / system_dialog / password_manager_or_autofill / messaging_app / visual_verification / other
+- Preferred real browser profile:
+- App/window/profile/account locks:
+- Clipboard lock required: no / yes
+- File picker lock required: no / yes
+- Secret-visible evidence policy: disabled / redacted / not applicable
+- Post-action verification required:
+
+## Standby Reply Channel
+- Remote reply channel: none / local_inbox_file / desktop_notification / messages_or_imessage / discord_webhook / sms_email / connector
+- Inbound replies may approve only existing staged non-protected directive actions: yes / no
+- New inbound task text requires Director review before authority expands: yes
+- Permission prompt policy: remote-grantable / local-only-manual-action / hard-block
 
 ## Approval
 - Status: not required / requested / granted / denied

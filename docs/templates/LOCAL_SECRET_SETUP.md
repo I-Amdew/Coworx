@@ -26,6 +26,14 @@ Or create a placeholder with the helper:
 node scripts/coworx_local_secret_store.mjs template --name example-app --username-env COWORX_EXAMPLE_USERNAME --password-env COWORX_EXAMPLE_PASSWORD --extra-env COWORX_EXAMPLE_MFA_ANSWERS_JSON
 ```
 
+To securely save a password through hidden local input:
+
+```bash
+node scripts/coworx_local_secret_store.mjs capture --name example-app --target example.com --account-label example-account
+```
+
+The command stores values under `.coworx-private/secrets/`, creates a non-secret credential reference packet, and prints only paths and key names.
+
 To persist values from an already-private local environment without printing values:
 
 ```bash
@@ -37,6 +45,7 @@ node scripts/coworx_local_secret_store.mjs from-env --name example-app --usernam
 - Keep the file under `.coworx-private/secrets/`.
 - Do not copy values into chat.
 - Do not pass secret values as command-line arguments.
+- Use hidden local capture, environment variables, keychain, password manager, or vault handles for real values.
 - Scripts should read variables locally at runtime.
 - Disable or redact screenshots, videos, and traces while secrets are visible.
 - Store MFA answer values only when the user explicitly delegates that local runtime handoff for the approved workflow, and keep them only in ignored private secret storage or environment variables.

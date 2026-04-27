@@ -4,6 +4,7 @@ import { basename, join } from "node:path";
 
 const root = process.cwd();
 const secretsDir = join(root, ".coworx-private", "secrets");
+const referenceDir = join(root, ".coworx-private", "operator", "credential_packets");
 
 function parseArgs(argv) {
   const command = argv[2];
@@ -41,6 +42,52 @@ function assertSafeName(name) {
   return slug;
 }
 
+function assertEnvKey(key) {
+  const text = String(key || "");
+  if (!/^[A-Z_][A-Z0-9_]*$/.test(text)) {
+    throw new Error(`Invalid env key: ${text || "(empty)"}`);
+  }
+  return text;
+}
+
+function defaultKey(prefix, suffix) {
+  return `COWORX_${slugify(prefix).replace(/-/g, "_").toUpperCase()}_${suffix}`;
+}
+
+function writeCredentialReference(name, secretPath, entries, options = {}) {
+  mkdirSync(referenceDir, { recursive: true });
+  chmodSync(referenceDir, 0o700);
+  const slug = assertSafeName(name);
+  const target = options.target || slug;
+  const accountLabel = options["account-label"] || slug;
+  const referencePath = join(referenceDir, `${Date.now()}-${slug}.json`);
+  writeFileSync(referencePath, `${JSON.stringify({
+    schema_version: 1,
+    created_at: new Date().toISOString(),
+    target,
+    account_label: accountLabel,
+    source_type: "private_file",
+    source_path: secretPath,
+    stored_keys: entries.map(([key]) => key),
+    values_printed: false,
+    values_embedded: false,
+    executor_rule: "Read values only inside an approved local executor after verifying the target app/domain and account label.",
+    evidence_rule: "Evidence may cite this packet path, source path, source type, target, account label, and key names only. Never include values.",
+    stop_conditions: [
+      "wrong_domain_or_app",
+      "account_recovery",
+      "password_change",
+      "security_settings",
+      "payment_settings",
+      "identity_verification",
+      "credential_cookie_or_token_export",
+      "unexpected_mfa_outside_approved_handoff"
+    ]
+  }, null, 2)}\n`, { encoding: "utf8", mode: 0o600 });
+  chmodSync(referencePath, 0o600);
+  return referencePath;
+}
+
 function writeSecretFile(name, entries, options = {}) {
   mkdirSync(secretsDir, { recursive: true });
   chmodSync(secretsDir, 0o700);
@@ -51,6 +98,8 @@ function writeSecretFile(name, entries, options = {}) {
     throw new Error(`Secret file already exists: ${path}. Pass --force true to replace it.`);
   }
 
+  for (const [key] of entries) assertEnvKey(key);
+
   const lines = [
     "# Coworx local secret file. Ignored by git.",
     "# Do not paste these values into chat, logs, screenshots, traces, or committed files.",
@@ -60,6 +109,13 @@ function writeSecretFile(name, entries, options = {}) {
   writeFileSync(path, lines.join("\n"), { encoding: "utf8", mode: 0o600 });
   chmodSync(path, 0o600);
   return path;
+}
+
+function printResult(result) {
+  console.log(JSON.stringify({
+    ...result,
+    values_printed: false
+  }, null, 2));
 }
 
 function fromEnv(options) {
@@ -83,36 +139,121 @@ function fromEnv(options) {
   }
 
   const path = writeSecretFile(options.name, entries, options);
-  console.log(JSON.stringify({
+  const referencePath = writeCredentialReference(options.name, path, entries, options);
+  printResult({
     ok: true,
     path,
+    reference_path: referencePath,
     stored_keys: entries.map(([key]) => key),
-    values_printed: false
-  }, null, 2));
+  });
 }
 
 function template(options) {
   const name = assertSafeName(options.name);
-  const usernameEnv = options["username-env"] || "COWORX_USERNAME";
-  const passwordEnv = options["password-env"] || "COWORX_PASSWORD";
+  const usernameEnv = assertEnvKey(options["username-env"] || defaultKey(name, "USERNAME"));
+  const passwordEnv = assertEnvKey(options["password-env"] || defaultKey(name, "PASSWORD"));
   const entries = [
     [usernameEnv, "REPLACE_LOCALLY_WITH_USERNAME"],
     [passwordEnv, "REPLACE_LOCALLY_WITH_PASSWORD"]
   ];
   if (options["extra-env"]) {
     for (const envName of options["extra-env"].split(",").map((item) => item.trim()).filter(Boolean)) {
-      entries.push([envName, "REPLACE_LOCALLY_IF_APPLICABLE"]);
+      entries.push([assertEnvKey(envName), "REPLACE_LOCALLY_IF_APPLICABLE"]);
     }
   }
   const path = writeSecretFile(name, entries, options);
-  console.log(JSON.stringify({
+  printResult({
     ok: true,
     path,
     template_only: true,
     replace_values_locally: true,
     stored_keys: entries.map(([key]) => key),
-    values_printed: false
-  }, null, 2));
+  });
+}
+
+function requireTty() {
+  if (!process.stdin.isTTY || !process.stdout.isTTY) {
+    throw new Error("interactive capture requires a TTY. Use from-env or template when running non-interactively.");
+  }
+}
+
+function promptHidden(prompt) {
+  requireTty();
+  return new Promise((resolve, reject) => {
+    const stdin = process.stdin;
+    const wasRaw = stdin.isRaw;
+    let value = "";
+    const cleanup = () => {
+      stdin.off("data", onData);
+      if (stdin.setRawMode) stdin.setRawMode(Boolean(wasRaw));
+      stdin.pause();
+    };
+    const finish = () => {
+      cleanup();
+      process.stdout.write("\n");
+      resolve(value);
+    };
+    const onData = (chunk) => {
+      const text = String(chunk);
+      for (const char of text) {
+        if (char === "\u0003") {
+          cleanup();
+          process.stdout.write("\n");
+          reject(new Error("Secret capture cancelled."));
+          return;
+        }
+        if (char === "\r" || char === "\n") {
+          finish();
+          return;
+        }
+        if (char === "\u007f" || char === "\b") {
+          value = value.slice(0, -1);
+          continue;
+        }
+        value += char;
+      }
+    };
+    process.stdout.write(prompt);
+    stdin.setEncoding("utf8");
+    if (stdin.setRawMode) stdin.setRawMode(true);
+    stdin.resume();
+    stdin.on("data", onData);
+  });
+}
+
+async function capture(options) {
+  const name = assertSafeName(options.name);
+  const usernameKey = assertEnvKey(options["username-env"] || defaultKey(name, "USERNAME"));
+  const passwordKey = assertEnvKey(options["password-env"] || defaultKey(name, "PASSWORD"));
+  const entries = [];
+
+  const username = await promptHidden(`Enter username for ${name} (${usernameKey}, input hidden): `);
+  if (!username) throw new Error("Username cannot be empty.");
+  entries.push([usernameKey, username]);
+
+  const password = await promptHidden(`Enter password for ${name} (${passwordKey}, input hidden): `);
+  if (!password) throw new Error("Password cannot be empty.");
+  const confirmPassword = await promptHidden(`Re-enter password for ${name}: `);
+  if (password !== confirmPassword) throw new Error("Password entries did not match. Nothing was saved.");
+  entries.push([passwordKey, password]);
+
+  if (options["extra-env"]) {
+    for (const envName of options["extra-env"].split(",").map((item) => item.trim()).filter(Boolean)) {
+      const key = assertEnvKey(envName);
+      const value = await promptHidden(`Enter optional secret for ${name} (${key}, leave blank to skip): `);
+      if (value) entries.push([key, value]);
+    }
+  }
+
+  const path = writeSecretFile(name, entries, options);
+  const referencePath = writeCredentialReference(name, path, entries, options);
+  printResult({
+    ok: true,
+    path,
+    reference_path: referencePath,
+    stored_keys: entries.map(([key]) => key),
+    capture_method: "interactive_hidden_tty",
+  });
 }
 
 function demoTest() {
@@ -120,7 +261,12 @@ function demoTest() {
     ["COWORX_DEMO_USERNAME", "demo-user"],
     ["COWORX_DEMO_PASSWORD", "demo-password"]
   ], { force: "true" });
+  const referencePath = writeCredentialReference("demo-local-secret-store", path, [
+    ["COWORX_DEMO_USERNAME", "demo-user"],
+    ["COWORX_DEMO_PASSWORD", "demo-password"]
+  ], { target: "demo.example", "account-label": "demo-account" });
   rmSync(path, { force: true });
+  rmSync(referencePath, { force: true });
   console.log("Coworx local secret store demo test passed.");
 }
 
@@ -128,11 +274,13 @@ const { command, options } = parseArgs(process.argv);
 
 try {
   if (command === "from-env") fromEnv(options);
+  else if (command === "capture") await capture(options);
   else if (command === "template") template(options);
   else if (command === "demo-test") demoTest();
   else {
     console.error(`Usage:
   node ${basename(process.argv[1])} from-env --name APP --username-env USER_ENV --password-env PASSWORD_ENV [--extra-env ENV_A,ENV_B] [--force true]
+  node ${basename(process.argv[1])} capture --name APP [--target DOMAIN_OR_APP] [--account-label LABEL] [--username-env USER_ENV] [--password-env PASSWORD_ENV] [--extra-env ENV_A,ENV_B] [--force true]
   node ${basename(process.argv[1])} template --name APP [--username-env USER_ENV] [--password-env PASSWORD_ENV] [--extra-env ENV_A,ENV_B] [--force true]
   node ${basename(process.argv[1])} demo-test`);
     process.exit(2);

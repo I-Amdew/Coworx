@@ -17,6 +17,18 @@ Persistence explicitly delegated by:
 
 ## Read-Only Maps
 
+For rundown-style requests, record the separate surfaces that must be checked:
+
+- account home or dashboard:
+- course or project list:
+- todos or assigned work:
+- calendar or upcoming events:
+- announcements or recent updates:
+- inbox or notifications:
+- authoritative schedule source:
+- stale-noise filters:
+- date-source quirks:
+
 ## Draft And Prep Workflows
 
 ## External Actions Requiring Approval

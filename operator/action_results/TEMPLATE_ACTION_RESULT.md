@@ -31,6 +31,51 @@ success / partial / blocked
 
 ## Actions Taken
 
+## Extraction And Local Fanout Result
+- Used: no / yes
+- Source artifact path:
+- Artifact verified:
+- Verification method:
+- Private storage used:
+- Shard key:
+- Shards created:
+- Local fanout lanes started:
+- GUI/account locks released before local processing:
+
+## Computer Use Or File Picker Result
+- Used: no / yes
+- Locks held:
+- Source artifact path:
+- File selected or attached:
+- Visible target verified:
+- Final action clicked: no / yes
+- If not clicked, staged review state:
+
+## Standby Adapter Result
+- Outbound adapter used:
+- Inbound packets processed:
+- Remote approval applied:
+- New task text stored privately:
+- Permission prompt classification:
+
+## Credential Runtime Result
+- Credential source type:
+- Resolver used:
+- Secret values exposed: no
+- Secret-visible evidence avoided or redacted:
+- Target verified after login:
+
+## Autonomous Credentialed Action Gate Result
+- Gate script:
+- Gate packet:
+- Decision:
+- Autonomy grant:
+- Exact action class:
+- Final action:
+- Commit lock:
+- Reason if staged or blocked:
+- Values printed: no
+
 ## Approval Needed
 
 ## Operator Lease

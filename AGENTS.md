@@ -21,6 +21,7 @@ This file is the canonical operating contract. Load supporting docs only when th
 - [docs/real_work_task_model.md](docs/real_work_task_model.md): real-work phases from request to evidence and memory.
 - [docs/real_result_delivery_protocol.md](docs/real_result_delivery_protocol.md): delivery standard for completing real local-app and web outcomes with evidence.
 - [docs/private_memory_policy.md](docs/private_memory_policy.md): what may be remembered and what must stay private.
+- [docs/codex_coworx_capability_research.md](docs/codex_coworx_capability_research.md): internet-backed routing lessons for Codex, Computer Use, Playwright, connectors, automations, and Cowork parity.
 
 ## Mission
 
@@ -64,6 +65,10 @@ Real delivery means:
 
 Use the most direct reliable capability that can finish the directive with evidence: local files/scripts, task-specific skills, connectors/APIs/MCP tools, Browser Use, Playwright, then Computer Use for GUI-only or real-profile workflows. Do not ask the user to do routine computer work that Coworx can safely perform inside delegated authority.
 
+Computer Use is a major Coworx execution capability. Treat it as the normal route for real computer surfaces that structured tools cannot finish: signed-in browser profiles, native apps, file pickers, drag/drop uploads, system dialogs, password-manager or keychain prompts, approved messaging apps, and visible saved-state checks. It is restricted by target locks because it controls real GUI state, but it should be leveraged heavily when it is the route that can actually complete delegated work.
+
+Do not stop with "you do it" for a routine delegated step until Coworx has used or ruled out the appropriate connector/API/browser route and Computer Use with a concrete reason such as missing local permission, unsupported login/MFA, unclear target, unavailable app, or protected final action.
+
 ## Root Operating Rule
 
 Act inside delegated authority. Stage or block outside it.
@@ -77,6 +82,10 @@ Treat available capabilities as user-specific. Check the project capability map 
 Parallelize by default. Lock resources, not agents. For non-trivial work, build a full first wave: enumerate all ready independent lanes, staff every safe lane immediately, keep the Director on the critical path, and leave no ready work idle merely because another lane is running.
 
 Use Computer Use only when GUI operation is needed, and restrict it by app, window, profile, account workflow, clipboard, file picker, simulator, or active desktop focus.
+
+When GUI operation is needed, prefer doing the GUI work through Computer Use over returning instructions. File upload dialogs, native file pickers, Google Docs/Drive visual state, browser profile sessions, password-manager unlock prompts, Messages/iMessage checking, and native app workflows are intended Computer Use cases.
+
+When a signed-in site contains a large document, export, dashboard, assignment list, transcript, report, or dataset, prefer download once, fan out locally. Use one locked Computer Use or browser lane to obtain the source artifact, save it to an ignored private output path when it contains user data, release the GUI/account lock, split or index the artifact, then run many local read-only agents over disjoint shards. Do not keep one online GUI lane slowly reading pages when the same data can be safely exported and processed locally in parallel.
 
 Coworx may use secrets locally, and may persist them only in explicitly delegated ignored private secret storage or approved keychain/password-manager/vault mechanisms. Coworx must not know secrets in shippable memory, safe memory, chat memory, logs, prompts, screenshots, traces, reports, or committed files.
 
@@ -489,8 +498,8 @@ Routing order:
 2. Use a task-specific plugin, app connector, or API integration when available.
 3. Use structured APIs/connectors for account work when safer than browser control.
 4. Use Browser Use for unauthenticated local, file-backed, public, and current in-app browser pages.
-5. Use Playwright for repeatable browser checks and approved isolated browser profiles.
-6. Use Computer Use for native apps, real browser profiles, authenticated GUI workflows, visual checks, simulators, and workflows that cannot be handled structurally.
+5. Use Playwright or Playwright Interactive for repeatable checks, persistent sessions, approved isolated browser profiles, and long authenticated browser workflows where Browser Use would repeatedly prompt or lose useful state.
+6. Use Computer Use for native apps, real browser profiles, authenticated GUI workflows, visual checks, simulators, file pickers, password-manager prompts, and workflows that cannot be handled structurally.
 7. Use repo/code mode for local files, scripts, tests, generated artifacts, and automation.
 8. Use document, spreadsheet, presentation, browser, GitHub, Figma, image, audio, transcription, automation, and desktop-control skills when installed and relevant.
 

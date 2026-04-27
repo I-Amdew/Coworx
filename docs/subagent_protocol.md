@@ -7,6 +7,7 @@ Subagents are active Coworx teammates used to improve delivery of the directive 
 Use a subagent when it can materially improve true delivery:
 
 - independent research, source gathering, or codebase exploration can run in parallel;
+- large downloaded or exported artifacts can be split into independent local shards;
 - the implementation can be split into disjoint owned files, modules, artifacts, or worktrees;
 - review, verification, evidence collection, or diagnosis can proceed while the Director continues critical-path work;
 - a browser/API/connector lane can operate under a clear lease and lock;
@@ -35,6 +36,7 @@ Ready work should not remain idle just because another subagent is running. Leav
 - review and verification;
 - evidence collection;
 - memory proposals.
+- read-only shard processing after an Operator has downloaded or exported a source artifact.
 
 ## Not Allowed
 

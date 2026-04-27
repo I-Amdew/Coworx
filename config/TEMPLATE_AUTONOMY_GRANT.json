@@ -8,6 +8,26 @@
     "create_follow_up_meetings_from_user_instruction",
     "copy_attendees_from_user_named_source_meeting"
   ],
+  "credentialed_action_gate": {
+    "required_for_level_3_and_4": true,
+    "gate_script": "scripts/coworx_autonomous_action_gate.mjs",
+    "approved_domains": [
+      "calendar.example.com"
+    ],
+    "allowed_credential_sources": [
+      "existing_session",
+      "password_manager",
+      "browser_autofill",
+      "os_keychain",
+      "private_file",
+      "local_env",
+      "local_skill_ref",
+      "oauth_connector",
+      "api_connector",
+      "vault_handle"
+    ],
+    "secret_values_must_remain_local": true
+  },
   "stage_for_approval": [
     "invite_uncertain_attendees",
     "delete_events",
@@ -38,4 +58,3 @@
   ],
   "review_or_expiration": "YYYY-MM-DD or one_task"
 }
-
