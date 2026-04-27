@@ -17,6 +17,10 @@
 ## Browser Actions
 
 ## Computer Use Actions
+Include queue request id, active lease id, target locks, release time, and release evidence when Computer Use was used.
+
+## Standby / Dispatch / Waits
+List private standby config/status/outbox/inbox/wait paths, channel adapter labels, temporary automation ids, check cadence, and cleanup status. Do not include private message bodies, webhooks, phone numbers, tokens, account identifiers, or real channel exports.
 
 ## External Actions
 List sends, submissions, uploads, schedules, invites, deletes, moves, settings changes, merges, deploys, or permission changes. If none, write `None`.

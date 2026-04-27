@@ -38,6 +38,37 @@
       "send done message with outputs, evidence, staged actions, and remaining user needs"
     ]
   },
+  "dispatch_setup": {
+    "first_time_setup_required_for_remote_channels": true,
+    "approved_channel_label": "private_local_status_file_or_configured_channel_label",
+    "approved_account_or_sender_label": "non_secret_label_only",
+    "inbound_scope": "new_task_packets_only_until_director_review",
+    "remote_replies_can_approve_existing_actions": false,
+    "remote_replies_can_create_task_packets": true,
+    "max_remote_action_level": 2,
+    "approval_command_shape": "approve ACTION_ID",
+    "private_config_path": ".coworx-private/standby/config.json",
+    "private_outbox_path": ".coworx-private/standby/outbox.ndjson",
+    "private_inbox_path": ".coworx-private/standby/inbox.ndjson",
+    "private_task_queue_path": ".coworx-private/standby/tasks/",
+    "required_setup_questions": [
+      "Where should meaningful updates be sent?",
+      "Which account, sender, channel, webhook, connector, browser profile, or app route is approved?",
+      "May inbound replies approve existing staged non-protected actions, create task packets, both, or neither?",
+      "What is the maximum remote action level?",
+      "What exact approval command should be accepted?",
+      "Should normal cycles stay quiet or send verbose updates?"
+    ],
+    "never_store_in_public_files": [
+      "webhook_urls",
+      "phone_numbers",
+      "account_identifiers",
+      "private_message_bodies",
+      "tokens",
+      "cookies",
+      "credentials"
+    ]
+  },
   "notifications": {
     "first_time_setup_required": true,
     "default_method": "local_status_file",
@@ -111,6 +142,25 @@
       "discord_private_channel_or_webhook": "requires_private_webhook_or_connector_config",
       "sms_or_email_if_later_configured": "requires_private_adapter_config"
     }
+  },
+  "temporary_waits": {
+    "private_wait_dir": ".coworx-private/standby/waits/",
+    "default_interval_minutes": 5,
+    "minimum_interval_minutes": 1,
+    "use_codex_automations_when_available": true,
+    "temporary_automation_cleanup": "delete_disable_or_mark_retired_when_done",
+    "release_locks_while_waiting": true,
+    "required_fields": [
+      "directive_id",
+      "condition",
+      "next_check_time",
+      "interval",
+      "max_runtime_or_expiration",
+      "owner_thread",
+      "resource_lock",
+      "private_state_path",
+      "cleanup_action"
+    ]
   },
   "safety": {
     "use_existing_coworx_authority_model": true,

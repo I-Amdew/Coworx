@@ -53,10 +53,22 @@ success / partial / blocked
 
 ## Standby Adapter Result
 - Outbound adapter used:
+- Outbound path privacy class:
+- Outbound path:
 - Inbound packets processed:
 - Remote approval applied:
+- Remote reply expanded authority: no
 - New task text stored privately:
 - Permission prompt classification:
+
+## Temporary Wait Or Automation Result
+- Used: no / yes
+- Wait id or path:
+- Checks performed:
+- Condition met: no / yes
+- Expired/stopped/blocked:
+- Automation cleanup status:
+- Cleanup evidence:
 
 ## Credential Runtime Result
 - Credential source type:
@@ -81,6 +93,8 @@ success / partial / blocked
 ## Operator Lease
 - Lease file:
 - Final status:
+- Released at:
+- Release evidence:
 
 ## Suggested Next Task
 

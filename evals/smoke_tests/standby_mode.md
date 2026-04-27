@@ -31,3 +31,5 @@ node scripts/coworx_ready_check.mjs
 - Runtime files stay under ignored private paths or temporary directories.
 - No real webhook, token, phone number, account detail, screenshot, trace, session file, cookie, credential, or personal-account output is committed.
 - No app/site-specific task hardcoding is required for the demo.
+- Public demo outbox fixtures are allowed only for fake local state. Real dispatch outbox, inbox, channel config, and queued tasks must stay under `.coworx-private/standby/` or another ignored private path.
+- Temporary waits record condition, interval, expiration, private state path, and cleanup status; any Codex Automation created for a one-time wait is deleted, disabled, or marked retired after completion, expiration, stop, or block.

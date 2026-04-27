@@ -19,7 +19,11 @@ Last Checked:
 
 ## Blocked
 
+Blocked or staged work must still name the concrete artifact produced, private output path, or furthest safe staged state. Do not close with instructions only when a safe artifact or review point could have been produced.
+
 ## Evidence
+
+Include at least one concrete evidence item for every completed directive: file path, staged state, command/check, screenshot/rendered artifact, link/id, diff, or action result. For real dispatch work, cite ignored `.coworx-private/standby/` paths or sanitized summaries, not public outbox files containing private channel content.
 
 ## Prompt Injection Checks
 

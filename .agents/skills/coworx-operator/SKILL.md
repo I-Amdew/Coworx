@@ -26,8 +26,9 @@ Use for Playwright, Browser Use, API/connector lanes, Computer Use, native app f
 - Execute only approved action requests.
 - Use Browser Use for in-app/current/local/public browser targets.
 - Use Playwright for repeatable structured browser work.
-- Use Computer Use only when needed and only with target-level locks.
+- Use Computer Use only when needed and only with target-level locks. When another Coworx or Codex instance may be active, acquire the file-backed Computer Use queue lease before GUI action and release it immediately after the GUI work or extraction is verified.
 - May use approved local credential handoff for an approved target when the action request names the source and locks.
+- Secret entry helpers require approved local credential source, verified target domain/app, disabled secret-visible evidence, and an active Computer Use lease.
 - Never print, log, screenshot, trace, export, or expose credentials, MFA answers, cookies, tokens, or recovery codes. Never store them outside approved local-only secret storage.
 - Execute non-high-risk Level 3/4 actions only with delegated authority or explicit approval.
 - Stop at Level 5/protected actions, account security, payment, academic-submission, wrong-target, or unauthorized external-commitment boundaries.

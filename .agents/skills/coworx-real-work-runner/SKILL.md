@@ -37,7 +37,9 @@ Use for meeting summaries, documents, slides, spreadsheets, browser workflows, d
 - Do the work when safe authority exists; do not return only instructions for a delegated routine task.
 - Save safe capability lessons when a plugin, skill, connector, profile, script, app, or fallback is useful or fails.
 - Use leased browser/API/connector lanes in parallel when locks do not conflict.
-- Use Computer Use only with target-level locks.
+- Use Computer Use only with target-level locks and the file-backed queue lease when another Coworx or Codex instance may be active.
+- If a task is waiting on a queue, render, export, upload, or other external condition, create a private wait item or temporary automation and clean it up when done.
+- If the same approved workflow repeatedly needs manual credentials, suggest a one-time local-only credential source upgrade without asking for secrets in chat.
 - Draft external communications and calendar events when authority is unclear; send, invite, or schedule when delegated authority or explicit approval covers the action and it is not Level 5/protected.
 - Keep private task logs and user-specific memory out of shippable files.
 

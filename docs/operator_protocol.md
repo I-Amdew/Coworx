@@ -42,6 +42,16 @@ Use only for native apps, real browser profiles, visual GUI tasks, simulators, s
 
 Computer Use lanes require target-level locks for app/window/profile/account workflow and any clipboard, file picker, simulator, or active-focus dependency.
 
+When another Coworx or Codex instance may be active, the lane must also use the file-backed Computer Use lease queue before the first GUI action:
+
+```bash
+node scripts/coworx_computer_use_queue.mjs request --task "..." --owner "..." --locks "..."
+node scripts/coworx_computer_use_queue.mjs acquire --request-id REQUEST_ID
+node scripts/coworx_computer_use_queue.mjs release --lease-id LEASE_ID
+```
+
+The active lease is global for the real desktop even though the request records narrow target locks. This prevents two agents from fighting over focus, mouse, keyboard, clipboard, dialogs, and browser profile state. If the lane downloads or exports data, release the lease after verifying the local artifact and continue with local read-only processing.
+
 Computer Use is the normal fallback when a delegated task needs a real user computer surface: signed-in browser profiles, Chrome extensions, native apps, password-manager prompts, file pickers, drag/drop uploads, system dialogs, visual save-state checks, or messaging apps. The Operator should escalate to Computer Use after connector/API/Browser Use/Playwright routes fail or cannot see the needed surface, rather than returning routine instructions to the user.
 
 For long signed-in web work, the default Computer Use browser target should be the user's approved Chrome profile when available. The Operator should not route those workflows through the in-app Browser Use lane just because it is a browser task; Browser Use lacks the user's normal signed-in profile, extensions, and local app integration.
@@ -86,6 +96,10 @@ Standby Mode may operate browser, API, connector, app, and Computer Use lanes wh
 Standby Mode must pause before protected final actions, unexpected permission prompts, unclear targets, login/MFA/manual action needs, or any condition that would normally stage or block an Operator lane.
 
 Standby Mode may also run approved notification adapters. Outbound adapters deliver meaningful events from `.coworx-private/standby/outbox.ndjson`. Inbound adapters write normalized replies to `.coworx-private/standby/inbox.ndjson` or `.coworx-private/standby/inbox/*.json`. Computer Use notification adapters require the same target locks as any other GUI lane.
+
+Private dispatch channels need a setup record before use. An Operator must verify the approved channel/account label, adapter path, remote approval scope, and stop conditions before delivering outbox messages or consuming inbound approvals. Real channel content stays in ignored private standby paths; public output paths may contain only fake demo outboxes or sanitized summaries.
+
+Temporary waits should be recorded as wait items or Codex Automations when available and authorized. A wait Operator checks only when due, releases GUI/account locks between checks, and records cleanup when the temporary automation is deleted, disabled, or retired.
 
 Remote replies are limited to the active directive. They can approve or deny a pending non-protected Level 1 to 4 action that was already staged, pause/resume/stop standby, or submit private new task text for Director review. They cannot add recipients, change destinations, broaden authority, bypass local OS permissions, or authorize Level 5/protected actions.
 

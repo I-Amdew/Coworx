@@ -59,7 +59,11 @@ By default, Coworx checks every 5 minutes for up to 6 hours. Each cycle continue
 
 First-time setup asks how meaningful updates should be delivered: Discord/private channel/webhook, desktop notification, Messages/iMessage if available, SMS/email if later configured, or local status file only. Quiet cycles should not notify the user unless verbose mode is enabled.
 
+Private-channel dispatch requires a setup gate before channel prompts can start or steer work. Confirm the approved channel, account or sender label, inbound/outbound adapter, maximum remote action level, approval command shape, quiet/verbose preference, private config path, and stop conditions. If this is missing, use local status files and ask only the missing setup questions.
+
 Standby Mode uses adapter files under `.coworx-private/standby/`: local status/events/outbox for outbound messages and local inbox files for replies. Computer Use or connector lanes can deliver and check those messages through approved channels such as Messages/iMessage when configured.
+
+If a safe task is waiting on a queue, render, download, upload, or other external condition, create a wait item and check again later instead of ending with instructions. Use Standby Mode in-session, or Codex Automations when available and authorized. Delete, disable, or mark the temporary automation retired after the wait completes, expires, or blocks.
 
 Use:
 
@@ -88,6 +92,8 @@ Coworx gets faster by storing safe local knowledge:
 - what to stage, what to do automatically, and what to block.
 
 Private user-specific maps belong in ignored private paths. Coworx may store login routes, account labels, and local secret-store references. When explicitly delegated, Coworx may persist login credentials only in ignored private secret storage, OS keychain, password manager, or vault handles, not in shippable memory or logs.
+
+When developing Coworx itself, keep generic framework changes on public branches and personal workflow memories on ignored private paths or a local personal branch that is not pushed. Public commits should contain templates, fake fixtures, sanitized lessons, and generic scripts only.
 
 ## Using Installed Capabilities
 

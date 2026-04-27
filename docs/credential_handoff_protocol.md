@@ -39,6 +39,8 @@ Coworx may use credentials from an ignored local file under `.coworx-private/sec
 
 If the user says to save a password, the preferred local-file route is `scripts/coworx_local_secret_store.mjs capture`. It prompts for values locally with hidden terminal input, writes a `.local.env` file under `.coworx-private/secrets/`, and creates a non-secret credential reference packet. The secret value must not be put in chat, prompts, reports, logs, screenshots, traces, or committed files.
 
+If the user already pasted a secret into chat and explicitly instructs Coworx to save it, Coworx may transfer it once into approved local-only persistence without echoing it. Afterward, Coworx should recommend ending the current chat and starting a new one in the same Coworx project because the active context may still contain the pasted secret even though durable storage is now local-only.
+
 Rules:
 
 - the secret file must never be committed;

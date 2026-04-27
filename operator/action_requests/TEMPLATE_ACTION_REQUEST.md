@@ -89,9 +89,23 @@ delegated by request / explicit approval / stage only
 
 ## Standby Reply Channel
 - Remote reply channel: none / local_inbox_file / desktop_notification / messages_or_imessage / discord_webhook / sms_email / connector
+- Dispatch setup record path:
+- Outbound adapter path:
+- Inbound adapter path:
+- Real dispatch channels use ignored private `.coworx-private/standby/` paths, not public `outputs/` paths: yes / no / not applicable
 - Inbound replies may approve only existing staged non-protected directive actions: yes / no
 - New inbound task text requires Director review before authority expands: yes
 - Permission prompt policy: remote-grantable / local-only-manual-action / hard-block
+
+## Temporary Wait Or Automation
+- Required: no / yes
+- Wait condition:
+- Check interval:
+- Max runtime or expires:
+- Mechanism: standby_cycle / codex_automation / connector_monitor / api_poll / computer_use_check
+- Private state path:
+- Automation cleanup required: delete / disable / mark_retired / not_applicable
+- Locks released while waiting: yes / no / not_applicable
 
 ## Approval
 - Status: not required / requested / granted / denied
@@ -113,6 +127,8 @@ delegated by request / explicit approval / stage only
 ## Required Resource Locks
 - Browser Use/Playwright: lock only shared write targets.
 - Computer Use: lock target app/window/profile/account workflow and any clipboard, file picker, simulator, or active-focus dependency.
+- Computer Use queue lease: not required / requested / acquired / released
+- Computer Use release evidence path/status:
 
 ## Steps
 1.

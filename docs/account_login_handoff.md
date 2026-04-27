@@ -25,6 +25,8 @@ The secret value must never enter chat, logs, repo files, memory, screenshots, t
 
 When explicitly delegated, Coworx may create or update an ignored private secret file with `scripts/coworx_local_secret_store.mjs` or store a non-secret reference to a keychain/password-manager/vault item. Coworx may enter approved credentials into the approved login form when the credential source is local-only and the target domain/app, account label, authority source, and account workflow lock are confirmed. If no safe local handoff exists, Coworx asks the user to complete login manually and then continues after confirmation.
 
+If repeated approved work keeps stopping on the same manual login, Coworx may offer to set up local-only credential persistence for that specific workflow. If the user already pasted a secret and explicitly asks to save it, transfer it once without echoing the value, then recommend ending this chat and starting a new one in the same project.
+
 ## Allowed After Login Or Connector Authorization
 
 - read approved pages;

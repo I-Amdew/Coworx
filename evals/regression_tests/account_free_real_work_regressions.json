@@ -154,8 +154,8 @@
       "expect": "pass",
       "route": {
         "kind": "local_skill_ref",
-        "domain": "portal.plsas.org",
-        "approved_domain": "portal.plsas.org",
+        "domain": "portal.approved.example",
+        "approved_domain": "portal.approved.example",
         "decision": "proceed",
         "secret_reference": "skill-ref://isd719-login",
         "source_reference_type": "local_skill_ref",
@@ -220,8 +220,8 @@
       "expect": "fail",
       "route": {
         "kind": "local_skill_ref",
-        "domain": "portal.plsas.org",
-        "approved_domain": "portal.plsas.org",
+        "domain": "portal.approved.example",
+        "approved_domain": "portal.approved.example",
         "decision": "proceed",
         "secret_reference": "skill-ref://isd719-login",
         "source_reference_type": "local_skill_ref",
@@ -369,6 +369,90 @@
         "destination_clear": true,
         "data_clear": true,
         "confirmed_commit_lock": false
+      }
+    }
+  ],
+  "dispatch_channel_setup": [
+    {
+      "name": "configured_private_channel_stores_inbound_tasks_privately",
+      "expect": "pass",
+      "result": {
+        "channel": {
+          "type": "messages_or_imessage",
+          "setup_configured": true,
+          "approved_account_or_sender_label": "demo-private-channel",
+          "max_remote_action_level": 2
+        },
+        "storage": {
+          "config_path": ".coworx-private/standby/config.json",
+          "outbox_path": ".coworx-private/standby/outbox.ndjson",
+          "inbox_path": ".coworx-private/standby/inbox.ndjson",
+          "task_queue_path": ".coworx-private/standby/tasks/"
+        },
+        "inbound": {
+          "new_task_expands_authority": false,
+          "remote_approval_applied": true,
+          "pending_action_recorded": true,
+          "protected_action_approved": false
+        }
+      }
+    },
+    {
+      "name": "remote_channel_without_setup_is_rejected",
+      "expect": "fail",
+      "result": {
+        "channel": {
+          "type": "discord_webhook",
+          "setup_configured": false,
+          "approved_account_or_sender_label": "",
+          "max_remote_action_level": 4
+        },
+        "storage": {
+          "config_path": "outputs/reports/standby-config.json",
+          "outbox_path": "outputs/reports/outbox.ndjson",
+          "inbox_path": "outputs/reports/inbox.ndjson",
+          "task_queue_path": "outputs/reports/tasks/"
+        },
+        "inbound": {
+          "new_task_expands_authority": true,
+          "remote_approval_applied": true,
+          "pending_action_recorded": false,
+          "protected_action_approved": true
+        }
+      }
+    }
+  ],
+  "temporary_waits": [
+    {
+      "name": "temporary_automation_wait_cleans_up_after_completion",
+      "expect": "pass",
+      "result": {
+        "wait": {
+          "directive_id": "D-wait",
+          "condition": "demo export ready",
+          "interval_minutes": 1,
+          "private_state_path": ".coworx-private/standby/waits/demo.json",
+          "locks_released_while_waiting": true,
+          "temporary_automation_created": true,
+          "status": "completed",
+          "cleanup_status": "deleted"
+        }
+      }
+    },
+    {
+      "name": "wait_that_holds_gui_lock_and_leaves_automation_alive_is_rejected",
+      "expect": "fail",
+      "result": {
+        "wait": {
+          "directive_id": "D-wait",
+          "condition": "demo export ready",
+          "interval_minutes": 0,
+          "private_state_path": "outputs/reports/wait.json",
+          "locks_released_while_waiting": false,
+          "temporary_automation_created": true,
+          "status": "completed",
+          "cleanup_status": "active"
+        }
       }
     }
   ],

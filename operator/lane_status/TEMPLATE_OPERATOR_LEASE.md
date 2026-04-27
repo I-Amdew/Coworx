@@ -45,3 +45,9 @@ Computer Use
 - Release after writing the action result.
 - Release immediately on any stop condition.
 - Do not start another Computer Use session against the same target-level lock while this lease is active.
+
+## Release Evidence
+- Released at:
+- Action result path:
+- Queue status path:
+- Final lease status:

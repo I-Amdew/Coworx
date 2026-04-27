@@ -173,6 +173,37 @@ function checkLedger(options) {
   if (!result.ok) process.exit(1);
 }
 
+function validateCloseout(options) {
+  const { absolute, ledger } = loadLedger(options.ledger);
+  const failures = [];
+  const terminal = new Set(["completed", "staged", "blocked", "skipped", "waiting"]);
+  const directives = ledger.directives || [];
+  if (directives.length === 0) failures.push("Directive ledger has no directives");
+
+  for (const directive of directives) {
+    const id = directive.id || "(missing id)";
+    const status = normalize(directive.status);
+    if (!terminal.has(status)) {
+      failures.push(`Directive ${id} is not terminal or explicitly waiting: ${directive.status || "(missing)"}`);
+    }
+    if (status === "completed" && (!Array.isArray(directive.evidence) || directive.evidence.length === 0)) {
+      failures.push(`Completed directive ${id} lacks evidence`);
+    }
+    if (["staged", "blocked", "waiting"].includes(status) && !directive.next_action && !directive.blocker && !directive.reason) {
+      failures.push(`${directive.status} directive ${id} lacks next_action, blocker, or reason`);
+    }
+  }
+
+  const result = {
+    ok: failures.length === 0,
+    ledger: absolute,
+    directives_checked: directives.length,
+    failures
+  };
+  console.log(JSON.stringify(result, null, 2));
+  if (!result.ok) process.exit(1);
+}
+
 function demoTest() {
   mkdirSync(privateDirectiveDir, { recursive: true });
   const ledgerPath = join(privateDirectiveDir, "demo-directive-guard.json");
@@ -201,8 +232,13 @@ function demoTest() {
     "--privileged-info",
     "yes"
   ]);
+  const ledger = JSON.parse(readFileSync(ledgerPath, "utf8"));
+  ledger.directives[0].status = "completed";
+  ledger.directives[0].evidence = [{ type: "check", value: "demo evidence" }];
+  writeJson(ledgerPath, ledger);
+  const closeoutPass = runCloseoutForDemo(["closeout", "--ledger", ledgerPath]);
 
-  if (!pass.ok || targetFail.ok || privilegedFail.ok) {
+  if (!pass.ok || targetFail.ok || privilegedFail.ok || !closeoutPass.ok) {
     throw new Error("Directive guard demo test failed");
   }
 
@@ -211,6 +247,33 @@ function demoTest() {
   }
 
   console.log("Directive guard demo test passed.");
+}
+
+function runCloseoutForDemo(args) {
+  const savedArgv = process.argv;
+  const savedExit = process.exit;
+  const savedLog = console.log;
+  let output = "";
+  let exitCode = 0;
+  try {
+    process.argv = [savedArgv[0], savedArgv[1], ...args];
+    process.exit = (code = 0) => {
+      exitCode = code;
+      throw new Error(`exit:${code}`);
+    };
+    console.log = (value) => {
+      output = value;
+    };
+    const { options } = parseArgs(process.argv);
+    validateCloseout(options);
+  } catch (error) {
+    if (!String(error.message || "").startsWith("exit:")) throw error;
+  } finally {
+    process.argv = savedArgv;
+    process.exit = savedExit;
+    console.log = savedLog;
+  }
+  return { ok: exitCode === 0, output };
 }
 
 function runCheckForDemo(args) {
@@ -245,11 +308,13 @@ const { command, options } = parseArgs(process.argv);
 try {
   if (command === "init") initLedger(options);
   else if (command === "check") checkLedger(options);
+  else if (command === "closeout") validateCloseout(options);
   else if (command === "demo-test") demoTest();
   else {
     console.error(`Usage:
   node ${basename(process.argv[1])} init --task TASK --request TEXT [--target TARGET] [--max-action-level N]
   node ${basename(process.argv[1])} check --ledger PATH --directive D1 --action-level N --action TEXT --target TARGET
+  node ${basename(process.argv[1])} closeout --ledger PATH
   node ${basename(process.argv[1])} demo-test`);
     process.exit(2);
   }

@@ -35,9 +35,10 @@ Examples:
 ```bash
 node scripts/coworx_directive_guard.mjs init --task demo --request "Summarize the approved report"
 node scripts/coworx_directive_guard.mjs check --ledger .coworx-private/directives/demo.json --directive D1 --action-level 1 --action "summarize report" --target "local file"
+node scripts/coworx_directive_guard.mjs closeout --ledger .coworx-private/directives/demo.json
 ```
 
-The guard is intentionally conservative. It does not replace Director judgment, but it catches missing ledgers, missing directive IDs, action-level drift, target drift, and privileged-info review gaps.
+The guard is intentionally conservative. It does not replace Director judgment, but it catches missing ledgers, missing directive IDs, action-level drift, target drift, privileged-info review gaps, non-terminal directives, and completed directives without evidence.
 
 ## Prompt Injection Checks
 

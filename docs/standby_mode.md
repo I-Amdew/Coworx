@@ -54,6 +54,21 @@ If Standby Mode has not been configured before, ask the user how they want meani
 
 Start with `local_status_file` when no safer configured notifier exists. More notification methods can be added later without changing the standby state model.
 
+## Dispatch Setup Gate
+
+Do not treat `start standby mode` or an inbound private-channel message as enough configuration for remote dispatch. Before relying on a private channel, Coworx must confirm or create a private setup record with:
+
+- update destination and adapter type;
+- approved account, sender, recipient, webhook, connector, browser profile, or app route label;
+- inbound scope: new task packets, approval of existing staged actions, both, or neither;
+- maximum remote action level and exact approval command shape;
+- private config, inbox, outbox, and queued-task paths;
+- quiet/verbose preference;
+- default interval and max runtime;
+- stop conditions for wrong channel, wrong account, wrong recipient, login/MFA, account security, payment, identity, protected final action, or unclear target.
+
+If any required setup is missing, ask only the missing questions or fall back to local status files. Store real channel identifiers, webhooks, handles, phone numbers, and personal message content only in ignored private state.
+
 ## Notifications
 
 Quiet mode is the default. Do not notify every 5 minutes unless verbose mode is enabled.
@@ -110,15 +125,23 @@ Conversation shape:
 Good standby messages are short and concrete:
 
 - `Got it. I am checking the four core classes now and will list only what is due today.`
-- `Task kicked off. I am checking Schoology, the calendar, and submitted status, then I will report back here.`
+- `Task kicked off. I am checking the approved portal, the calendar, and submitted status, then I will report back here.`
 - `Heads up. The file picker needs a local permission, so I staged the upload and saved the file path.`
-- `Done. The report is saved in Downloads and the Schoology page is staged at the review point.`
+- `Done. The report is saved in Downloads and the approved portal page is staged at the review point.`
 
 Do not send filler messages for every polling interval. Do not ask for permission repeatedly. Classify the blocker once, stage what can be staged, and keep doing any safe independent work.
 
 For "check in from anywhere" behavior, configure an outbound notifier and an inbound source. The base implementation writes outbox and inbox files. A Computer Use notifier lane can deliver outbox messages through Messages/iMessage, Discord, desktop notification, or another approved channel, then check that same channel for replies and write normalized packets back to the standby inbox.
 
 Incoming `task` or `new_task` packets are not treated as immediate authority. They are written to `.coworx-private/standby/tasks/` and surfaced to the Director while the current task continues. The Director can then merge, queue, reject, or start the new directive under the normal authority and lock rules.
+
+## Temporary Waits
+
+When an active directive is waiting on a queue, export, render, build, upload processing, external availability, or approval window, Standby Mode may create a private wait item and check at the next useful interval. Use one minute only for imminent short waits, five minutes for normal standby polling, and longer intervals for slow or low-priority systems.
+
+If Codex Automations are available and the wait should continue beyond the current active session, Coworx may create a temporary automation inside delegated authority. Temporary automations must record the directive id, condition, interval, expiration, private state path, and cleanup rule. When the condition is met, expired, stopped, or blocked, delete, disable, or mark the automation retired and log the cleanup evidence.
+
+Do not hold GUI, browser profile, account, or file locks while waiting. Save the checkpoint, release the lock, and reacquire only for the due check.
 
 ## Controls
 

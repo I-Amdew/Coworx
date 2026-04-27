@@ -224,6 +224,47 @@ function validateAutonomousActionGate(packet) {
   return failures;
 }
 
+function validateDispatchChannelSetup(result) {
+  const failures = [];
+  const channel = result?.channel || {};
+  const storage = result?.storage || {};
+  const inbound = result?.inbound || {};
+  const remote = channel.type && !["local_status_file", "local_inbox_file"].includes(channel.type);
+
+  if (remote && channel.setup_configured !== true) failures.push("remote dispatch channel lacks setup record");
+  if (remote && !channel.approved_account_or_sender_label) failures.push("remote dispatch channel lacks approved account/sender label");
+  if (remote && Number(channel.max_remote_action_level || 0) > 4) failures.push("remote dispatch channel allows invalid action level");
+  for (const key of ["config_path", "outbox_path", "inbox_path", "task_queue_path"]) {
+    const value = String(storage[key] || "");
+    if (!value.startsWith(".coworx-private/")) failures.push(`${key} must be an ignored private path`);
+  }
+  if (inbound.new_task_expands_authority === true) failures.push("inbound task text expanded authority");
+  if (inbound.remote_approval_applied && inbound.pending_action_recorded !== true) {
+    failures.push("remote approval applied without a pending recorded action");
+  }
+  if (inbound.protected_action_approved === true) failures.push("remote approval approved a protected action");
+  return failures;
+}
+
+function validateTemporaryWait(result) {
+  const failures = [];
+  const wait = result?.wait || {};
+  if (!wait.directive_id) failures.push("temporary wait lacks directive id");
+  if (!wait.condition) failures.push("temporary wait lacks condition");
+  if (Number(wait.interval_minutes || 0) < 1) failures.push("temporary wait interval must be at least one minute");
+  if (!String(wait.private_state_path || "").startsWith(".coworx-private/")) {
+    failures.push("temporary wait private state path must be ignored");
+  }
+  if (wait.locks_released_while_waiting !== true) failures.push("temporary wait must release locks while waiting");
+  if (["completed", "expired", "stopped", "blocked"].includes(String(wait.status || "")) && !wait.cleanup_status) {
+    failures.push("terminal temporary wait lacks cleanup status");
+  }
+  if (wait.temporary_automation_created && !["deleted", "disabled", "retired"].includes(String(wait.cleanup_status || ""))) {
+    failures.push("temporary automation was not deleted, disabled, or retired");
+  }
+  return failures;
+}
+
 function assertFixtureExpectations(section, cases, validator) {
   const failures = [];
   for (const testCase of cases || []) {
@@ -319,6 +360,8 @@ const failures = [
   ...assertFixtureExpectations("download_then_fanout", fixtures.download_then_fanout, validateDownloadThenFanout),
   ...assertFixtureExpectations("credential_routing", fixtures.credential_routing, validateCredentialRoute),
   ...assertFixtureExpectations("autonomous_action_gate", fixtures.autonomous_action_gate, validateAutonomousActionGate),
+  ...assertFixtureExpectations("dispatch_channel_setup", fixtures.dispatch_channel_setup, validateDispatchChannelSetup),
+  ...assertFixtureExpectations("temporary_waits", fixtures.temporary_waits, validateTemporaryWait),
   ...assertFixtureExpectations("signed_in_readonly_synthesis", fixtures.signed_in_readonly_synthesis, validateSignedInReadonlySynthesis),
   ...assertFixtureExpectations("academic_lms_boundary", fixtures.academic_lms_boundary, validateAcademicLmsBoundary),
   ...runStandbyAccountFreeCheck(),

@@ -30,11 +30,47 @@ Use specific locks such as:
 
 Do not run another Computer Use lane against the same locked target. If isolation is unclear, serialize.
 
+## File-Backed Lease Queue
+
+Before using Computer Use in a workspace where another Coworx or Codex instance may be active, reserve and acquire the desktop lease with `scripts/coworx_computer_use_queue.mjs`.
+
+The queue is intentionally local and private:
+
+- path: `.coworx-private/computer-use/`;
+- active lease: `.coworx-private/computer-use/active.lock/lease.json`;
+- pending and reserved work: `.coworx-private/computer-use/requests/*.json`;
+- status for humans and other agents: `.coworx-private/computer-use/status.md`.
+
+Required flow:
+
+1. Create a request or reservation with the task, owner, target locks, and expected duration.
+2. Acquire the active lease before the first Computer Use tool call.
+3. Renew the lease during long GUI work.
+4. Release the lease immediately when GUI work ends or a stop condition appears.
+5. Move downloaded or copied data into ignored private files, then process it locally without holding the GUI lease.
+
+Example:
+
+```bash
+node scripts/coworx_computer_use_queue.mjs request \
+  --task "Extract approved portal export" \
+  --owner "codex-resume-polish" \
+  --locks "computer_app:Chrome,browser_profile:Chrome:approved,account_workflow:approved-portal,desktop_resource:active_window_focus" \
+  --duration-minutes 10
+
+node scripts/coworx_computer_use_queue.mjs acquire --request-id REQUEST_ID
+node scripts/coworx_computer_use_queue.mjs release --lease-id LEASE_ID
+```
+
+Use `reserve --start ...` or `reserve --start-in-minutes ...` for a future timeslot. A waiting agent should do non-GUI work while queued instead of polling the desktop.
+
 ## Credential Entry
 
 Computer Use can type credentials into an approved login form only from an approved local credential source.
 
 Before typing, it must verify the target domain/app visually and/or structurally. It must disable screenshots, videos, and traces during secret entry where possible, redact any screenshot that could show secrets, never print typed secret values, never paste credentials into unrelated windows, and never use credentials on a mismatched domain/app.
+
+If using `scripts/coworx_type_secret_to_front_app.mjs` as the local executor, non-dry-run use requires an active Computer Use queue lease id and an allowed host. The helper reads only ignored private secret files, checks the active Chrome host, requires the lease to include active-focus control, types through local system events, clears the clipboard, and prints only key/domain/lease metadata.
 
 Stop if the flow changes into account recovery, password reset, security settings, payment settings, identity verification, wrong target, wrong account, unexpected MFA, security prompt, account recovery prompt, or password-change prompt.
 

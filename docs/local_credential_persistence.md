@@ -50,9 +50,15 @@ Coworx should not ask the user to paste credentials into chat. If the user asks 
 
 If the user has already pasted a secret into chat, Coworx should avoid repeating it and should route the user toward a local secret file, password manager, keychain, vault handle, or environment-variable handoff.
 
-If the user already volunteered a login secret in chat and explicitly asks Coworx to save or use it, Coworx may perform a one-time transfer into approved local-only secret persistence without echoing the value. Prefer a local environment, keychain, password manager, vault, or private file handoff when available. The secret must not appear in responses, logs, commits, reports, screenshots, traces, generated artifacts, or subagent prompts.
+If the user already volunteered a login secret in chat and explicitly asks Coworx to save or use it, Coworx may perform a one-time transfer into approved local-only secret persistence without echoing the value. Prefer a local environment, keychain, password manager, vault, or private file handoff when available. The secret must not appear in responses, logs, commits, reports, screenshots, traces, generated artifacts, or subagent prompts. After the transfer, recommend that the user end this chat and start a new one in the same Coworx project so the active model context no longer contains the pasted secret.
 
 The autonomy goal is that, after the local secret store or keychain reference exists, future approved tasks can proceed through login without asking again, subject to normal target checks, locks, MFA limits, and action-level policy.
+
+## Repeated Workflow Upgrade Prompt
+
+When a workflow repeatedly blocks on the same approved login or manual credential step, Coworx may ask once whether the user wants to configure a local-only credential source for that specific app/site/account label. The prompt should name the workflow, the safe source options, and the stop conditions. It should not ask the user to paste credentials into chat.
+
+If the user declines, record a private failure or lesson only if useful and do not nag on every run. If the user accepts, use hidden local capture, keychain, password manager, vault, connector auth, browser autofill, or environment variables, then remember only the non-secret reference.
 
 ## Remembered Reference
 

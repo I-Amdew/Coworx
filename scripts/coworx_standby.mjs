@@ -180,6 +180,36 @@ function defaultConfig() {
         }
       ]
     },
+    dispatch_setup: {
+      configured: false,
+      setup_required_for_remote_prompts: true,
+      approved_channel_label: null,
+      approved_account_or_sender_label: null,
+      max_remote_action_level: 2,
+      remote_replies_can_approve_existing_actions: false,
+      remote_replies_can_create_task_packets: false,
+      approval_command_shape: "approve ACTION_ID",
+      private_config_path: ".coworx-private/standby/config.json",
+      private_outbox_path: ".coworx-private/standby/outbox.ndjson",
+      private_inbox_path: ".coworx-private/standby/inbox.ndjson",
+      private_task_queue_path: ".coworx-private/standby/tasks/",
+      required_setup_questions: [
+        "Where should meaningful updates be sent?",
+        "Which account, sender, channel, webhook, connector, browser profile, or app route is approved?",
+        "May inbound replies approve existing staged non-protected actions, create task packets, both, or neither?",
+        "What is the maximum remote action level?",
+        "What exact approval command should be accepted?",
+        "Should normal cycles stay quiet or send verbose updates?"
+      ]
+    },
+    temporary_waits: {
+      private_wait_dir: ".coworx-private/standby/waits/",
+      default_interval_minutes: 5,
+      minimum_interval_minutes: 1,
+      use_codex_automations_when_available: true,
+      temporary_automation_cleanup: "delete_disable_or_mark_retired_when_done",
+      release_locks_while_waiting: true
+    },
     conversation_style: {
       mode: "dispatch_thread",
       quick_acknowledgement: true,
@@ -234,6 +264,8 @@ function normalizeConfig(config) {
   if (!config.notification_adapters) config.notification_adapters = defaults.notification_adapters;
   if (!config.permission_prompt_policy) config.permission_prompt_policy = defaults.permission_prompt_policy;
   if (!config.conversation_style) config.conversation_style = defaults.conversation_style;
+  if (!config.dispatch_setup) config.dispatch_setup = defaults.dispatch_setup;
+  if (!config.temporary_waits) config.temporary_waits = defaults.temporary_waits;
   return config;
 }
 
@@ -266,6 +298,7 @@ function appendOutbox(paths, config, state, type, message) {
   const adapters = configuredAdapters(config, "outbound");
   const outboxAdapters = adapters.filter((adapter) => adapter.type === "local_outbox_file");
   if (outboxAdapters.length === 0) return;
+  const safeMessage = redactOutboundMessage(message);
   for (const adapter of outboxAdapters) {
     const path = adapterPath(paths, adapter, paths.outboxPath);
     ensureDir(dirname(path));
@@ -273,7 +306,7 @@ function appendOutbox(paths, config, state, type, message) {
       at: nowIso(),
       adapter: adapter.id || adapter.type,
       type,
-      message,
+      message: safeMessage,
       task_id: state.task_id || null,
       cycle_count: state.cycle_count || 0,
       conversation_style: config?.conversation_style?.mode || "dispatch_thread",
@@ -281,6 +314,37 @@ function appendOutbox(paths, config, state, type, message) {
       expects_reply: ["approval_needed", "login_needed", "blocker"].includes(type)
     })}\n`);
   }
+}
+
+function looksSensitiveText(value) {
+  const text = String(value || "");
+  const digitCount = (text.match(/\d/g) || []).length;
+  const unsafePatterns = [
+    /https?:\/\//i,
+    /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i,
+    /\b(?:token|secret|password|cookie|api[_ -]?key|webhook|phone|address)\b\s*[:=]/i,
+    /\b[A-Za-z0-9_-]{32,}\b/,
+  ];
+  return digitCount >= 10 || unsafePatterns.some((pattern) => pattern.test(text));
+}
+
+function redactOutboundMessage(message) {
+  if (!looksSensitiveText(message)) return message;
+  return "[private details omitted; see the local Coworx standby status file]";
+}
+
+function dispatchSetupConfigured(config) {
+  return config?.dispatch_setup?.configured === true;
+}
+
+function sourceAllowsApproval(config, source) {
+  const adapters = configuredAdapters(config, "inbound");
+  const adapter = adapters.find((candidate) => (candidate.id || candidate.type) === source);
+  if (!adapter) return false;
+  if (adapter.type === "local_inbox_file" || adapter.type === "local_inbox_directory") return true;
+  return dispatchSetupConfigured(config)
+    && adapter.can_approve_existing_actions === true
+    && config.dispatch_setup?.remote_replies_can_approve_existing_actions === true;
 }
 
 function approvalGate(state) {
@@ -382,6 +446,11 @@ function processInboundPackets(paths, state, config) {
   for (const packet of packets) {
     const note = packet.note || packet.message || null;
     if (["approve", "deny"].includes(packet.command)) {
+      if (!sourceAllowsApproval(config, packet.source)) {
+        state.approval_decision = { decision: "ignored", requested_decision: packet.command, reason: "inbound source is not configured to approve actions", at: nowIso() };
+        appendEvent(paths, { type: "blocker", message: `Inbound ${packet.command} ignored from ${packet.source}: source is not approval-enabled.` }, true, state);
+        continue;
+      }
       const decision = applyApprovalDecision(state, packet.command, note);
       if (decision.applied) {
         appendEvent(paths, { type: "approval_received", message: `Inbound ${packet.command} received from ${packet.source}.` }, true, state);
@@ -445,6 +514,7 @@ function renderStatus(state, config) {
 - Notification Method: ${config.notification_method}
 - Notification Configured: ${config.configured ? "yes" : "no"}
 - Notification Setup Needed: ${state.notification_setup_needed ? "yes" : "no"}
+- Dispatch Setup Configured: ${dispatchSetupConfigured(config) ? "yes" : "no"}
 - Inbound Tasks Waiting For Director Review: ${state.inbound_task_count || 0}
 
 Runtime files under .coworx-private/standby/ are private local state and should not be committed.
@@ -573,7 +643,8 @@ function startStandby(flags) {
     interval_minutes: intervalMinutes,
     max_runtime_hours: maxRuntimeHours,
     current_status: "running",
-    notification_setup_needed: config.configured !== true,
+    notification_setup_needed: config.configured !== true || !dispatchSetupConfigured(config),
+    required_setup_questions: config.dispatch_setup?.required_setup_questions || [],
     cycle_count: 0,
     last_meaningful_update: null,
     user_input_needed: false,
@@ -605,7 +676,7 @@ function startStandby(flags) {
     demo_task: flags.demo ? demoTask() : null,
   };
   if (state.notification_setup_needed) {
-    state.current_status = "running; notification setup needed";
+    state.current_status = "running; dispatch/notification setup needed";
   }
   notify(paths, state, config, "standby_started", `Standby Mode started for task: ${task}`);
   console.log(renderStatus(state, config));
@@ -740,6 +811,7 @@ function inactiveState(config) {
     max_runtime_hours: 6,
     current_status: "not started",
     notification_setup_needed: config.configured !== true,
+    required_setup_questions: config.dispatch_setup?.required_setup_questions || [],
     cycle_count: 0,
     last_meaningful_update: null,
     user_input_needed: false,
@@ -774,6 +846,11 @@ function initConfig(flags) {
     }
     config.notification_method = flags.method;
     config.configured = true;
+    if (flags.method === "local_status_file" || flags.method === "local_status_file_only") {
+      config.dispatch_setup.configured = true;
+      config.dispatch_setup.remote_replies_can_approve_existing_actions = false;
+      config.dispatch_setup.remote_replies_can_create_task_packets = true;
+    }
   }
   ensureDir(paths.inboxDir);
   ensureDir(paths.taskQueueDir);

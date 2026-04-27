@@ -15,6 +15,8 @@
 ## Acceptance Criteria
 -
 
+Plan-only completion is not acceptable unless the user asked only for advice. A directive that is safe to execute must end with a concrete artifact, external result, verified staged state, or explicit blocked reason with evidence.
+
 ## Directive Ledger
 
 ## Active Directive File
@@ -42,3 +44,10 @@ External entry/transmission allowed: no / stage for approval / yes by directive
 - final report;
 - reviewer verdict;
 - memory updates or proposals.
+
+## Closeout Fail Conditions
+- any ready directive is unowned;
+- any completed directive lacks evidence;
+- a blocked/staged directive lacks an artifact, private output path, or concrete staged state when one was safe to produce;
+- private dispatch content, credentials, account details, screenshots, traces, or real user outputs appear in shippable paths;
+- Computer Use leases or shared-resource locks remain active without a waiting/blocker reason.

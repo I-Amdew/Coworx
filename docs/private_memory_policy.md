@@ -49,6 +49,8 @@ Private memory belongs in:
 
 These paths are ignored by `.gitignore`.
 
+For a public Coworx repository, personal workflow memory may also live on a local personal branch that is not pushed. Treat that branch like private memory: never merge or publish it until real account routes, selectors, outputs, screenshots, traces, names, message content, and credential references have been sanitized or removed.
+
 ## Sanitizing For Submission
 Before committing or publishing Coworx:
 1. Remove private logs and screenshots.

@@ -194,3 +194,59 @@ Examples of Computer Use locks:
 - `desktop_resource:active_window_focus`
 
 Release locks as soon as the action is complete, evidence is saved, GUI state is stable, and the lane no longer needs that resource.
+
+## Cross-Thread Air Traffic
+
+Multiple Codex threads may run Coworx against the same project. Keep each thread's directive ledger, waits, and private outputs separate, but coordinate shared objects with specific locks. Do not merge unrelated thread state just because both are in standby.
+
+Use the Computer Use lease queue for the real desktop, and use object-specific locks for cloud docs, drafts, calendar events, task-board cards, files, deployments, and external forms. If a thread is waiting for a resource, it should record a wait item and release locks until the next check is due.
+
+## Computer Use Lease Queue
+
+When more than one Coworx or Codex instance may be active, Computer Use must be coordinated through the local file-backed lease queue before any tool call that moves the mouse, types, changes app focus, opens a file picker, or operates a real browser profile.
+
+Queue state lives under ignored private runtime storage:
+
+```text
+.coworx-private/computer-use/
+  active.lock/lease.json
+  requests/*.json
+  history/*.json
+  events.ndjson
+  status.md
+```
+
+Use `scripts/coworx_computer_use_queue.mjs`:
+
+```bash
+node scripts/coworx_computer_use_queue.mjs request \
+  --task "Read approved portal export" \
+  --owner "codex-resume-polish" \
+  --locks "computer_app:Chrome,browser_profile:Chrome:approved,account_workflow:approved-portal,desktop_resource:active_window_focus" \
+  --duration-minutes 10
+
+node scripts/coworx_computer_use_queue.mjs acquire --request-id REQUEST_ID
+node scripts/coworx_computer_use_queue.mjs renew --lease-id LEASE_ID --duration-minutes 10
+node scripts/coworx_computer_use_queue.mjs release --lease-id LEASE_ID
+node scripts/coworx_computer_use_queue.mjs status
+```
+
+Use `reserve` with `--start` or `--start-in-minutes` when a future timeslot is better than waiting:
+
+```bash
+node scripts/coworx_computer_use_queue.mjs reserve \
+  --task "Upload final PDF through a file picker" \
+  --owner "codex-upload-lane" \
+  --start-in-minutes 15 \
+  --duration-minutes 5 \
+  --locks "computer_app:Chrome,desktop_resource:file_picker,desktop_resource:active_window_focus"
+```
+
+Rules:
+
+- No Computer Use call should start without an active lease held by the current lane.
+- The queue is global for the desktop by default because active focus, keyboard, mouse, and clipboard collide even when the logical targets differ.
+- Target locks are still recorded so the Director can understand what the lane intends to touch.
+- Leases expire automatically if not renewed. Stale active leases may be cleaned up by `cleanup-stale`.
+- Release the lease before local processing, parsing, drafting, testing, review, or any other work that does not require the GUI.
+- Prefer download once, release the lease, and fan out locally. The GUI lease should be short and extraction-focused.

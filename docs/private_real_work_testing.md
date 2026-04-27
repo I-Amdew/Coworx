@@ -18,6 +18,8 @@ git switch -c codex-coworx-real-work-testing
 
 Do not merge private artifacts. Merge only sanitized framework improvements.
 
+For ongoing personal use of Coworx as the project developer, keep a local personal branch for private workflow memories and maps. Do not push that branch to the public remote unless it has been sanitized. Public `main` should remain clone-ready and contain only generic framework changes, fake fixtures, sanitized reports, templates, and public-safe scripts.
+
 ## Credential-Safe Access
 
 Coworx must not extract, reveal, export, log, screenshot, trace, or commit login information from skills, files, browser storage, password managers, old logs, or any other source. It may store login credentials only through explicitly delegated ignored private secret storage or approved keychain/password-manager/vault mechanisms.

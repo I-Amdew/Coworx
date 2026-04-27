@@ -56,9 +56,13 @@ finish the deliverable
 
 Coworx treats Computer Use as a first-class lane for the things scripts and browser automation do not handle well: real Chrome profiles, file pickers, upload dialogs, Google Docs, Word, desktop apps, messaging apps, password-manager prompts, and visual saved-state checks.
 
+**Computer Use lease queue**
+
+When multiple Coworx or Codex instances are active, they coordinate real desktop control through `.coworx-private/computer-use/` using `scripts/coworx_computer_use_queue.mjs`. One agent can reserve or acquire the GUI lease, do the short extraction or app action, then release the screen so other work continues locally.
+
 **Standby dispatch**
 
-Run a task while the Codex session is alive, keep state between cycles, check for inbound messages, and report back only when something meaningful happens.
+Run a task while the Codex session is alive, keep state between cycles, check for inbound messages, and report back only when something meaningful happens. Private channels need setup first: where to send updates, which account or channel is approved, what replies can approve, and where private inbox/outbox state lives.
 
 **Project memory**
 
@@ -67,6 +71,10 @@ Store safe workflow facts locally: where files live, what browser profile matter
 **Credentialed workflows**
 
 Use approved signed-in sessions, autofill, password managers, keychain, connector auth, vault handles, or ignored local secret files. Coworx remembers routes and references, not raw secrets in chat.
+
+**Temporary waits**
+
+If a safe task needs to wait for a render, download, queue, upload, or approval window, Coworx records a wait, checks at a reasonable interval with Standby Mode or Codex Automations when available, then deletes or retires the temporary automation when finished.
 
 **Parallel by default**
 
@@ -191,6 +199,7 @@ It can:
 
 - keep the active task state;
 - continue from the last checkpoint;
+- ask first-run setup questions before relying on private channels;
 - check local inbox files or configured message adapters;
 - queue new requests into the same Director flow;
 - respond with milestones, blockers, and completed outputs;
@@ -216,6 +225,8 @@ Supported paths include:
 
 If you explicitly ask Coworx to save a password for a workflow, it should use private ignored storage, keychain, a password manager, or a vault handle. It should not put the password in chat, logs, screenshots, committed files, or normal memory.
 
+If you already pasted a secret into the chat and explicitly ask Coworx to save it, Coworx may do a one-time local transfer without echoing it, then should recommend ending that chat and starting a new one in the same project so the active model context no longer contains the secret.
+
 ## Security Defaults
 
 Coworx is designed as a single-user local workspace.
@@ -237,6 +248,8 @@ Useful starting points:
 - [Safety Policy](docs/safety_policy.md)
 - [Credential Handoff](docs/credential_handoff_protocol.md)
 - [Local Credential Persistence](docs/local_credential_persistence.md)
+- [Dispatch Channel Protocol](docs/dispatch_channel_protocol.md)
+- [Temporary Waits And Automations](docs/temporary_waits_and_automations.md)
 - [Computer Use Policy](docs/computer_use_policy.md)
 - [Private Memory Policy](docs/private_memory_policy.md)
 
@@ -266,6 +279,8 @@ Using apps and browsers:
 Running in the background:
 
 - [Standby Mode](docs/standby_mode.md)
+- [Dispatch Channel Protocol](docs/dispatch_channel_protocol.md)
+- [Temporary Waits And Automations](docs/temporary_waits_and_automations.md)
 - [Parallelism and Locks](docs/parallelism_and_locks.md)
 - [Concurrency Model](docs/concurrency_model.md)
 
