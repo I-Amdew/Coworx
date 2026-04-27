@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "status": "staged",
+  "source_artifact": "outputs/reports/20260427-real-task-drill/codex-coworx-brief.md",
+  "target": "approved-demo-upload-surface",
+  "reason": "Local drill stages the upload packet without using a real account.",
+  "required_next_lane": "connector_or_Playwright_or_Computer_Use_file_picker",
+  "final_submit_allowed": false,
+  "evidence": [
+    {
+      "type": "file",
+      "path": "outputs/reports/20260427-real-task-drill/codex-coworx-brief.md"
+    },
+    {
+      "type": "staged_state",
+      "value": "upload packet names source artifact, target, and final action boundary"
+    }
+  ]
+}

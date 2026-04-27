@@ -1,5 +1,6 @@
 # Runtime browser artifacts.
 .playwright-cli/
+tmp/
 
 # Private Coworx learning and user-specific memories.
 .coworx-private/

@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "checks": [
+    {
+      "name": "source_exists",
+      "pass": true,
+      "path": "outputs/reports/20260427-real-task-drill/source-notes.md"
+    },
+    {
+      "name": "brief_exists",
+      "pass": true,
+      "path": "outputs/reports/20260427-real-task-drill/codex-coworx-brief.md"
+    },
+    {
+      "name": "brief_mentions_computer_use",
+      "pass": true,
+      "path": "outputs/reports/20260427-real-task-drill/codex-coworx-brief.md"
+    },
+    {
+      "name": "upload_stage_exists",
+      "pass": true,
+      "path": "outputs/reports/20260427-real-task-drill/upload-stage.json"
+    },
+    {
+      "name": "standby_outbox_exists",
+      "pass": true,
+      "path": "outputs/reports/20260427-real-task-drill/standby-outbox.ndjson"
+    }
+  ]
+}
