@@ -53,15 +53,15 @@ Academic workflows need a narrower split. Coworx may help the user organize sour
 
 ## Credential Rules
 
-Coworx may use secrets locally, and may persist them only in explicitly delegated ignored private secret storage or approved keychain/password-manager/vault mechanisms. Coworx must not know secrets in shippable memory, safe memory, chat memory, logs, prompts, screenshots, traces, reports, or committed files.
+Coworx may use secrets locally, and may persist them only in explicitly delegated ignored private secret storage or approved keychain/password-manager/vault mechanisms. Coworx must not know secrets in shippable memory, safe memory, logs, prompts, screenshots, traces, reports, or committed files. If the user chooses chat credential intake, the current chat is temporary contaminated context and must be replaced after secure local intake.
 
 Credential exposure, credential export, credential capture, and credential storage outside approved local-only handoff are protected failures.
 
-Coworx must not ask the user to paste secrets into chat and must not log, screenshot, trace, commit, or expose secrets in repo files, safe memory, prompts, generated artifacts, or reports.
+Coworx must not ask the user to paste secrets into repo files and must not log, screenshot, trace, commit, or expose secrets in repo files, safe memory, prompts, generated artifacts, or reports. For chat, prefer hidden local capture by default; offer chat credential intake only when the user explicitly wants that route and understands the fresh-chat handoff.
 
-If a user has pasted a secret into chat, Coworx must not use the chat value directly for login or send it to a subagent. Pause the credential lane, route to secure local capture, approved local transfer, connector/session auth, keychain/password-manager/vault, local skill reference, environment variable, or user-present manual secure entry, and recommend starting a fresh chat after any local persistence is configured.
+If a user has pasted a secret into chat and explicitly authorizes use for a clear target, Coworx may use chat only as a temporary intake path. Do not send the value to a subagent, prompt, report, log, screenshot, or Computer Use typing action. Pause the credential lane, route to approved local credential storage/reference, connector/session auth, keychain/password-manager/vault, local skill reference, environment variable, or user-present manual secure entry, then recommend starting a fresh chat after local persistence is configured.
 
-Never store in chat, safe memory, shippable files, logs, prompts, screenshots, traces, reports, generated artifacts, or committed files:
+Never store durably in chat memory, safe memory, shippable files, logs, prompts, screenshots, traces, reports, generated artifacts, or committed files:
 
 - passwords;
 - 2FA codes;
@@ -78,7 +78,7 @@ Allowed local-only handoff sources include approved signed-in sessions, password
 
 If the user explicitly asks Coworx to save credentials for future approved work, treat that as a local persistence request, not a refusal trigger. Persist only through `.coworx-private/secrets/*.local.env`, OS keychain, password manager, encrypted vault handle, or another ignored private secret path. Store only non-secret references in memory and evidence.
 
-If the user already volunteered a login secret in chat and explicitly asks Coworx to save or use it, Coworx should prefer secure local capture or approved local transfer into local-only persistence without echoing the value. It must not use chat memory as the runtime credential source.
+If the user already volunteered a login secret in chat and explicitly asks Coworx to save or use it, Coworx should prefer secure chat intake transfer, hidden local capture, or approved local transfer into local-only persistence without echoing the value. It must not use chat memory as the runtime credential source.
 
 Safe memory may store non-secret references such as site names, account labels, browser profile names, password manager item names, OAuth connector names, vault handles, local environment variable names, ignored secret file paths, navigation steps, selectors, and stop conditions. It must not store secret values.
 

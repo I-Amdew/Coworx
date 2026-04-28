@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { chmodSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 
 const root = process.cwd();
@@ -67,6 +67,7 @@ function writeCredentialReference(name, secretPath, entries, options = {}) {
     target,
     account_label: accountLabel,
     source_type: "private_file",
+    intake_mode: options["intake-mode"] || "local_secure_capture",
     source_path: secretPath,
     stored_keys: entries.map(([key]) => key),
     values_printed: false,
@@ -86,6 +87,19 @@ function writeCredentialReference(name, secretPath, entries, options = {}) {
   }, null, 2)}\n`, { encoding: "utf8", mode: 0o600 });
   chmodSync(referencePath, 0o600);
   return referencePath;
+}
+
+function continuationPrompt(options, referencePath) {
+  const target = options.target || assertSafeName(options.name);
+  const accountLabel = options["account-label"] || assertSafeName(options.name);
+  const goal = options["continuation-goal"] || `continue the approved ${target} workflow`;
+  return [
+    "Use Coworx.",
+    goal,
+    `Use the saved credential reference at ${referencePath} for ${target} (${accountLabel}).`,
+    "Do not ask for credentials again, do not expose secret values, and use the approved local executor or credential resolver before Computer Use secret entry.",
+    "Continue from the active directive ledger or recreate the directive if needed, then complete the workflow with evidence."
+  ].join(" ");
 }
 
 function writeSecretFile(name, entries, options = {}) {
@@ -145,6 +159,45 @@ function fromEnv(options) {
     path,
     reference_path: referencePath,
     stored_keys: entries.map(([key]) => key),
+    continuation_prompt: continuationPrompt(options, referencePath),
+  });
+}
+
+function fromStdin(options) {
+  if (options["chat-intake"] !== "true") {
+    throw new Error("from-stdin is only for explicitly approved chat intake transfer. Pass --chat-intake true.");
+  }
+  const usernameKey = assertEnvKey(options["username-env"] || defaultKey(options.name, "USERNAME"));
+  const passwordKey = assertEnvKey(options["password-env"] || defaultKey(options.name, "PASSWORD"));
+  const raw = readFileSync(0, "utf8");
+  if (!raw.trim()) throw new Error("from-stdin requires a JSON payload on stdin.");
+  const payload = JSON.parse(raw);
+  const entries = [];
+
+  if (!payload.username || !payload.password) {
+    throw new Error("from-stdin JSON requires username and password fields.");
+  }
+  entries.push([usernameKey, payload.username]);
+  entries.push([passwordKey, payload.password]);
+
+  if (payload.extras && typeof payload.extras === "object" && !Array.isArray(payload.extras)) {
+    for (const [key, value] of Object.entries(payload.extras)) {
+      entries.push([assertEnvKey(key), value]);
+    }
+  }
+
+  const path = writeSecretFile(options.name, entries, { ...options, "intake-mode": "approved_chat_intake_transfer" });
+  const referencePath = writeCredentialReference(options.name, path, entries, { ...options, "intake-mode": "approved_chat_intake_transfer" });
+  printResult({
+    ok: true,
+    path,
+    reference_path: referencePath,
+    stored_keys: entries.map(([key]) => key),
+    intake_mode: "approved_chat_intake_transfer",
+    values_read_from_stdin: true,
+    values_printed: false,
+    continuation_required: true,
+    continuation_prompt: continuationPrompt(options, referencePath),
   });
 }
 
@@ -265,6 +318,15 @@ function demoTest() {
     ["COWORX_DEMO_USERNAME", "demo-user"],
     ["COWORX_DEMO_PASSWORD", "demo-password"]
   ], { target: "demo.example", "account-label": "demo-account" });
+  const prompt = continuationPrompt({
+    name: "demo-local-secret-store",
+    target: "demo.example",
+    "account-label": "demo-account",
+    "continuation-goal": "finish the demo workflow"
+  }, referencePath);
+  if (!prompt.includes(referencePath) || !prompt.includes("Use Coworx.")) {
+    throw new Error("continuation prompt was not generated");
+  }
   rmSync(path, { force: true });
   rmSync(referencePath, { force: true });
   console.log("Coworx local secret store demo test passed.");
@@ -274,12 +336,14 @@ const { command, options } = parseArgs(process.argv);
 
 try {
   if (command === "from-env") fromEnv(options);
+  else if (command === "from-stdin") fromStdin(options);
   else if (command === "capture") await capture(options);
   else if (command === "template") template(options);
   else if (command === "demo-test") demoTest();
   else {
     console.error(`Usage:
   node ${basename(process.argv[1])} from-env --name APP --username-env USER_ENV --password-env PASSWORD_ENV [--extra-env ENV_A,ENV_B] [--force true]
+  node ${basename(process.argv[1])} from-stdin --name APP --target DOMAIN_OR_APP --account-label LABEL --chat-intake true [--continuation-goal GOAL] < secure-intake.json
   node ${basename(process.argv[1])} capture --name APP [--target DOMAIN_OR_APP] [--account-label LABEL] [--username-env USER_ENV] [--password-env PASSWORD_ENV] [--extra-env ENV_A,ENV_B] [--force true]
   node ${basename(process.argv[1])} template --name APP [--username-env USER_ENV] [--password-env PASSWORD_ENV] [--extra-env ENV_A,ENV_B] [--force true]
   node ${basename(process.argv[1])} demo-test`);

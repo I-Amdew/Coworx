@@ -196,9 +196,12 @@
         "private_lesson_recorded": true,
         "manual_secure_entry_needed": false,
         "chat_secret_detected": false,
+        "explicit_chat_intake_approved": false,
         "used_chat_secret_directly": false,
         "secure_capture_or_local_transfer_required": false,
+        "secure_intake_transfer_completed": false,
         "recommend_new_chat": false,
+        "continuation_prompt_created": false,
         "secret_values_exposed": false,
         "asked_for_chat_secret": false
       }
@@ -214,12 +217,37 @@
         "credential_source_type": "",
         "credential_reference_created": false,
         "chat_secret_detected": true,
+        "explicit_chat_intake_approved": true,
         "used_chat_secret_directly": false,
         "secure_capture_or_local_transfer_required": true,
+        "secure_intake_transfer_completed": false,
         "recommend_new_chat": true,
+        "continuation_prompt_created": true,
         "manual_secure_entry_needed": false,
         "secret_values_exposed": false,
         "asked_for_chat_secret": false
+      }
+    },
+    {
+      "name": "approved_chat_intake_transfer_creates_reference_and_prompt",
+      "expect": "pass",
+      "result": {
+        "status": "completed",
+        "credential_needed": true,
+        "login_completed": true,
+        "remember_requested": true,
+        "credential_source_type": "chat_intake_transfer",
+        "credential_reference_created": true,
+        "chat_secret_detected": true,
+        "explicit_chat_intake_approved": true,
+        "used_chat_secret_directly": false,
+        "secure_capture_or_local_transfer_required": false,
+        "secure_intake_transfer_completed": true,
+        "recommend_new_chat": true,
+        "continuation_prompt_created": true,
+        "manual_secure_entry_needed": false,
+        "secret_values_exposed": false,
+        "asked_for_chat_secret": true
       }
     },
     {
@@ -233,9 +261,12 @@
         "credential_source_type": "private_file",
         "credential_reference_created": true,
         "chat_secret_detected": false,
+        "explicit_chat_intake_approved": false,
         "used_chat_secret_directly": false,
         "secure_capture_or_local_transfer_required": false,
+        "secure_intake_transfer_completed": false,
         "recommend_new_chat": false,
+        "continuation_prompt_created": false,
         "manual_secure_entry_needed": false,
         "secret_values_exposed": false,
         "asked_for_chat_secret": false
@@ -252,9 +283,12 @@
         "private_lesson_recorded": false,
         "manual_secure_entry_needed": false,
         "chat_secret_detected": false,
+        "explicit_chat_intake_approved": false,
         "used_chat_secret_directly": false,
         "secure_capture_or_local_transfer_required": false,
+        "secure_intake_transfer_completed": false,
         "recommend_new_chat": false,
+        "continuation_prompt_created": false,
         "secret_values_exposed": false,
         "asked_for_chat_secret": true
       }
@@ -270,9 +304,12 @@
         "credential_source_type": "chat",
         "credential_reference_created": false,
         "chat_secret_detected": true,
+        "explicit_chat_intake_approved": false,
         "used_chat_secret_directly": true,
         "secure_capture_or_local_transfer_required": false,
+        "secure_intake_transfer_completed": false,
         "recommend_new_chat": false,
+        "continuation_prompt_created": false,
         "manual_secure_entry_needed": false,
         "secret_values_exposed": false,
         "asked_for_chat_secret": true

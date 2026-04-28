@@ -82,9 +82,9 @@ delegated by request / explicit approval / stage only
 - Persist credentials for future approved use: no / yes, explicitly delegated
 - Persistence target: none / `.coworx-private/secrets/*.local.env` / os_keychain / password_manager / vault_handle
 - Non-secret source reference:
-- Chat credential source: prohibited
+- Chat credential intake: not used / explicitly approved temporary intake
 - Chat-pasted secret detected: no / yes
-- Secure local capture or approved transfer required before login: no / yes
+- Secure local intake or approved transfer required before login: no / yes
 - Credential packet/reference created or verified: no / yes / not applicable
 - Secret value exposure: prohibited
 - Secret-visible screenshots/traces/videos: disabled / redacted / not applicable
@@ -132,7 +132,7 @@ delegated by request / explicit approval / stage only
 ## Preconditions
 - Browser/app target is approved.
 - If credential entry is required, approved local credential handoff is configured.
-- Chat text is not used as a credential source; secret fields are filled only through approved local executor, autofill/keychain/vault, connector auth, or user-present manual entry.
+- Raw chat text is not used as the runtime credential source; secret fields are filled only through approved local executor, autofill/keychain/vault, connector auth, or user-present manual entry.
 - No secrets, session tokens, cookies, MFA answers, or recovery codes may be captured, printed, logged, screenshot, traced, or stored outside approved local-only secret persistence.
 - Non-high-risk Level 3/4 actions have delegated authority or explicit approval.
 

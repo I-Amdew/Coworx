@@ -301,10 +301,15 @@ function validateCredentialAutofillFallback(result) {
   }
   if (result?.chat_secret_detected) {
     if (result?.used_chat_secret_directly) failures.push("chat-pasted credential was used directly");
-    if (!result?.secure_capture_or_local_transfer_required) {
-      failures.push("chat-pasted credential did not trigger secure capture/local-transfer path");
+    if (!result?.explicit_chat_intake_approved && result?.asked_for_chat_secret) {
+      failures.push("chat credential request lacked explicit chat-intake approval");
     }
-    if (!result?.recommend_new_chat) failures.push("chat-pasted credential handling should recommend a fresh chat after transfer");
+    if (!result?.secure_capture_or_local_transfer_required && !result?.secure_intake_transfer_completed) {
+      failures.push("chat-pasted credential did not trigger secure intake/local-transfer path");
+    }
+    if (!result?.recommend_new_chat || !result?.continuation_prompt_created) {
+      failures.push("chat-pasted credential handling should create a continuation prompt for a fresh chat");
+    }
   }
   if (result?.login_completed && result?.credential_needed) {
     const sourceType = String(result?.credential_source_type || "");
@@ -318,7 +323,9 @@ function validateCredentialAutofillFallback(result) {
     }
   }
   if (result?.secret_values_exposed) failures.push("credential fallback exposed secret values");
-  if (result?.asked_for_chat_secret) failures.push("credential fallback asked for a chat secret");
+  if (result?.asked_for_chat_secret && !result?.explicit_chat_intake_approved) {
+    failures.push("credential fallback asked for a chat secret without explicit chat-intake approval");
+  }
   if (result?.manual_secure_entry_needed && !["staged", "blocked", "waiting"].includes(status)) {
     failures.push("manual secure entry should be staged, blocked, or waiting");
   }

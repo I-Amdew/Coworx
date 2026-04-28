@@ -47,7 +47,7 @@ If the Computer Use tools are visible, the safe sequence is:
 
 If the active model cannot find or correctly use Computer Use tools, it must delegate the Computer Use lane to a capable operator model or ask the user to switch the active Director model for that lane. It should continue safe non-GUI lanes in parallel while that GUI lane is blocked or delegated. It should not substitute Browser Use, generic web browsing, `open`, or shell commands for a workflow that specifically needs a real browser profile, native app, file picker, password-manager prompt, or visible desktop state.
 
-No model may treat chat as a credential source. If a user pastes a password or MFA answer into chat, the model should not type it into the browser. It should stage secure local capture or approved local transfer, then use only the resulting non-secret credential reference or ask the user to complete manual secure entry.
+No model may treat raw chat as the runtime credential source. If a user pastes a password or MFA answer into chat and explicitly authorizes use for a clear target, the Director should transfer it into approved local credential storage/reference, generate a continuation prompt, and stop or pause the current credentialed task. The fresh chat resumes from the non-secret credential reference. Computer Use should never type the raw chat value directly into the browser.
 
 ## Subagent Delegation With Any Model
 
@@ -81,7 +81,7 @@ Credential fallback order for an approved workflow:
 
 After one failed or unavailable autofill/password-manager/MFA attempt, record a private capability lesson and route to a local-only source or manual secure-entry checkpoint. Do not ask the user to paste secrets into chat, do not send secret values to subagents, and do not store secrets in shippable memory.
 
-If the user wants Coworx to remember a login route, the completed setup must produce a non-secret credential packet/reference under ignored private storage, an approved keychain/password-manager/vault label, connector auth, local skill reference, ignored secret file path, or environment variable name. A model remembering a chat-pasted value is a failure, not persistence.
+If the user wants Coworx to remember a login route, the completed setup must produce a non-secret credential packet/reference under ignored private storage, an approved keychain/password-manager/vault label, connector auth, local skill reference, ignored secret file path, or environment variable name. A model merely remembering a chat-pasted value is a failure, not persistence.
 
 ## Failure Handling
 
@@ -90,7 +90,7 @@ The active model must return a concrete blocked or staged state when it cannot c
 - missing Computer Use tool surface;
 - Computer Use permission prompt requiring local user approval;
 - password-manager unlock or MFA that is not covered by approved local handoff;
-- credential was pasted in chat and no secure local capture/reference exists;
+- credential was pasted in chat and no secure local intake/reference/continuation prompt exists;
 - wrong domain/app/account;
 - overlapping resource lock;
 - protected final action.

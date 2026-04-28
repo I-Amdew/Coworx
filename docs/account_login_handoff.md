@@ -4,11 +4,11 @@ Coworx can work with accounts through credential-safe, user-approved paths and l
 
 ## Rule
 
-Coworx may use secrets locally, and may persist them only in explicitly delegated ignored private secret storage or approved keychain/password-manager/vault mechanisms. Coworx must not know secrets in shippable memory, safe memory, chat memory, logs, prompts, screenshots, traces, reports, or committed files.
+Coworx may use secrets locally, and may persist them only in explicitly delegated ignored private secret storage or approved keychain/password-manager/vault mechanisms. Coworx must not know secrets in shippable memory, safe memory, logs, prompts, screenshots, traces, reports, or committed files. If the user chooses chat credential intake, the current chat is temporary contaminated context and must be replaced after secure local intake.
 
-Coworx never asks for secrets in chat and never logs, screenshots, traces, exports, commits, or shares passwords, MFA answers, recovery codes, session cookies, OAuth tokens, API keys, private keys, credit cards, or security answers.
+Coworx prefers not to ask for secrets in chat, but may offer explicit chat credential intake when the user wants that route for a clear target and agrees to restart in a fresh chat after local persistence. Coworx never logs, screenshots, traces, exports, commits, or shares passwords, MFA answers, recovery codes, session cookies, OAuth tokens, API keys, private keys, credit cards, or security answers.
 
-Chat is not a credential source. If the user has pasted a secret into chat, Coworx must not use that value directly for login. It should pause the credential lane, route to secure local capture or an approved local transfer path, and remember only a non-secret credential reference. If no secure local path is available, ask the user to complete login manually in the approved app/browser and continue after confirmation.
+Chat may be used only as an explicit temporary credential intake source. If the user has pasted a secret into chat and authorizes use or persistence for a clear target, Coworx should pause the credential lane, route the value through secure local intake, and remember only a non-secret credential reference. If no secure local path is available, ask the user to complete login manually in the approved app/browser and continue after confirmation.
 
 ## Allowed Credential-Safe Paths
 
@@ -23,13 +23,13 @@ Chat is not a credential source. If the user has pasted a secret into chat, Cowo
 - API connector or token stored outside the repo;
 - encrypted vault handle.
 
-The secret value must never enter chat, logs, repo files, memory, screenshots, traces, reports, generated artifacts, or subagent prompts.
+The secret value must never enter logs, repo files, durable memory, screenshots, traces, reports, generated artifacts, or subagent prompts. If it enters chat through explicit intake, move it to local-only persistence and restart from a fresh chat.
 
 When explicitly delegated, Coworx may create or update an ignored private secret file with `scripts/coworx_local_secret_store.mjs` or store a non-secret reference to a keychain/password-manager/vault item. Coworx may enter approved credentials into the approved login form when the credential source is local-only and the target domain/app, account label, authority source, and account workflow lock are confirmed. If no safe local handoff exists, Coworx asks the user to complete login manually and then continues after confirmation.
 
-The login route is remembered only after Coworx writes or verifies a non-secret credential packet/reference, keychain/password-manager/vault label, connector auth, local skill reference, ignored secret file path, or environment variable name. Seeing a credential in chat is not remembered state.
+The login route is remembered only after Coworx writes or verifies a non-secret credential packet/reference, keychain/password-manager/vault label, connector auth, local skill reference, ignored secret file path, or environment variable name. Seeing a credential in chat is only intake state, not remembered state.
 
-If repeated approved work keeps stopping on the same manual login, Coworx may offer to set up local-only credential persistence for that specific workflow. If the user already pasted a secret and explicitly asks to save it, transfer it once without echoing the value, then recommend ending this chat and starting a new one in the same project.
+If repeated approved work keeps stopping on the same manual login, Coworx may offer to set up local-only credential persistence for that specific workflow. If the user already pasted a secret and explicitly asks to save it, use secure chat intake transfer without echoing the value, then recommend ending this chat and starting a new one in the same project.
 
 Password-manager autofill, OS keychain prompts, and MFA-manager prompts are allowed only as credential-safe routes; they are not guaranteed to work unattended. If one approved attempt fails, stalls, or requires unsupported local approval, Coworx should stop retrying the same route, record a private capability lesson, and continue through the next safe path: existing session, connector/OAuth/API session, approved ignored local secret file, approved environment variables, vault/keychain/password-manager label handled by a local executor, local skill reference, or user-present manual login. Login mechanics are not the deliverable; once access is established, Coworx continues the delegated task.
 

@@ -76,7 +76,7 @@ Computer Use can type credentials into an approved login form only from an appro
 
 Before typing, it must verify the target domain/app visually and/or structurally. It must disable screenshots, videos, and traces during secret entry where possible, redact any screenshot that could show secrets, never print typed secret values, never paste credentials into unrelated windows, and never use credentials on a mismatched domain/app.
 
-Computer Use must not type credentials that came from chat memory. If a credential is needed and no approved local credential source exists, the lane must stage secure local capture, an approved local transfer, password-manager/keychain/vault use, connector auth, or user-present manual secure entry. A successful credential setup must leave a non-secret credential packet/reference or route label for future runs; the remembered route is not the raw secret.
+Computer Use must not type credentials directly from chat memory. If a credential is needed and no approved local credential source exists, the lane must stage secure chat intake transfer, hidden local capture, password-manager/keychain/vault use, connector auth, or user-present manual secure entry. A successful credential setup must leave a non-secret credential packet/reference or route label for future runs; the remembered route is not the raw secret.
 
 If using `scripts/coworx_type_secret_to_front_app.mjs` as the local executor, non-dry-run use requires an active Computer Use queue lease id and an allowed host. The helper reads only ignored private secret files, checks the active Chrome host, requires the lease to include active-focus control, types through local system events, clears the clipboard, and prints only key/domain/lease metadata.
 
@@ -92,7 +92,7 @@ For signed-in school, work, docs, calendar, messaging, LMS, and similar account 
 4. Confirm login page target.
 5. Disable or avoid secret-visible screenshots/traces.
 6. Acquire account workflow lock.
-7. Enter credentials locally from the approved source, never from chat text.
+7. Enter credentials locally from the approved source/reference, never directly from chat text.
 8. Clear clipboard if used.
 9. Resume evidence collection only after secrets are no longer visible.
 
