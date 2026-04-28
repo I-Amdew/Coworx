@@ -9,7 +9,7 @@ Use `private-local` for real user setups, account labels, browser profile names,
 ## Capability
 
 ## Type
-plugin / skill / connector / MCP tool / Browser Use / Playwright / Computer Use / local script / CLI / app / runtime / other
+plugin / skill / connector / MCP tool / Browser Use / Playwright / Computer Use / local script / CLI / app / runtime / model / operator lane / other
 
 ## Available In This Setup
 yes / no / unknown
@@ -32,6 +32,9 @@ Do not store credentials, tokens, cookies, session files, or raw secrets.
 ## Known Limitations
 
 ## Fallback Route
+
+## Model Routing Notes
+Record non-secret lessons such as under-delegation, Computer Use avoidance, first-wave staffing needs, or reviewer/operator model preferences.
 
 ## Last Verified
 

@@ -18,6 +18,7 @@ This file is the canonical operating contract. Load supporting docs only when th
 - [docs/dispatch_channel_protocol.md](docs/dispatch_channel_protocol.md): secure private-channel setup, inbound prompt handling, and remote approval limits.
 - [docs/temporary_waits_and_automations.md](docs/temporary_waits_and_automations.md): wait/check/delete lifecycle for temporary automations and standby waits.
 - [docs/capability_discovery.md](docs/capability_discovery.md): per-user capability inventory for plugins, skills, connectors, tools, profiles, and learned routing.
+- [docs/model_execution_routing.md](docs/model_execution_routing.md): model-agnostic routing rules for first-wave delegation, Computer Use operator lanes, and flaky credential fallbacks.
 - [docs/plugin_skill_router.md](docs/plugin_skill_router.md): capability routing across installed Codex skills/plugins.
 - [docs/project_workspace_model.md](docs/project_workspace_model.md): Coworx as a project-backed workspace with local memory, maps, outputs, and hand-off paths.
 - [docs/real_work_task_model.md](docs/real_work_task_model.md): real-work phases from request to evidence and memory.
@@ -35,6 +36,7 @@ It should:
 
 - understand the goal;
 - discover which plugins, skills, connectors, tools, browser profiles, apps, and scripts are available in the user's Codex setup;
+- route the current model to real execution, subagents, and Computer Use operator lanes instead of accepting plan-only or single-lane behavior from any model choice;
 - consult Coworx project memory before rediscovering known workflows;
 - learn which capabilities work well for this user's custom setup and save safe routing lessons;
 - decompose multi-stage requests into explicit directives with acceptance criteria;
@@ -81,6 +83,8 @@ For non-trivial, multi-stage, browser, account, document, or external-action wor
 
 Treat available capabilities as user-specific. Check the project capability map before routing. If the map is missing, stale, or incomplete, safely discover what plugins, skills, connectors, MCP tools, scripts, browser lanes, Computer Use targets, and app workflows are available, then save a non-secret lesson after use.
 
+Treat model behavior as user-specific capability state too. Any active model may under-delegate, avoid Computer Use, or fall back to instructions. For non-trivial work, apply [docs/model_execution_routing.md](docs/model_execution_routing.md): force a full first wave, assign independent lanes, discover exact tool surfaces, and delegate unsupported GUI/account lanes to a capable operator instead of pretending the model limitation is a user blocker.
+
 Keep public framework work separate from personal workflow work. Public branches may contain generic docs, templates, scripts, smoke tests, sanitized reports, and fake fixtures. Personal maps, real account routes, private workflow memory, selectors tied to the user, private dispatch configuration, real run logs, screenshots, traces, credential references, and real outputs belong in ignored private paths or a local personal branch that is not pushed to the public project.
 
 Parallelize by default. Lock resources, not agents. For non-trivial work, build a full first wave: enumerate all ready independent lanes, staff every safe lane immediately, keep the Director on the critical path, and leave no ready work idle merely because another lane is running.
@@ -116,6 +120,7 @@ The Director:
 
 Use the full Director protocol in [docs/director_use.md](docs/director_use.md) for broad, multi-wave, code, research, browser, document, account, or desktop work.
 Use [docs/directive_follow_through.md](docs/directive_follow_through.md) when a request contains multiple verbs, dependencies, implied next actions, approvals, or a "do this, then use it to do that" structure.
+Use [docs/model_execution_routing.md](docs/model_execution_routing.md) whenever the active model is fast, unfamiliar, or has previously failed to delegate lanes, use Computer Use, or continue past login mechanics.
 
 ## Directive Follow-Through
 
@@ -498,6 +503,8 @@ Use subagents when they improve the probability, speed, or verification quality 
 
 Default to subagents for independent lanes such as broad reconnaissance, separate source research, disjoint implementation, browser/API operation under a lease, blocker diagnosis, evidence collection, review, and verification. For broad or multi-stage requests, spawn or steer enough lanes to cover the ready graph, not just one scout. Keep work local when it is an immediate Director-only decision, critical-path integration, shared contract design, or tightly coupled context that would be slowed or made riskier by delegation.
 
+This rule applies to every model choice. If the active Director model tends to run slowly or serially, make delegation explicit in the first-wave graph: name the lanes, owners, resource locks, expected outputs, and Director-only decisions before starting solo work.
+
 Every subagent assignment must identify the directive it advances, owned scope, forbidden overlap, expected evidence, checkpoint trigger, stop conditions, and return envelope. The Director must inspect returned evidence, integrate or redirect the lane, update the directive ledger, and verify the result before considering that directive delivered. Returned agents should be continued, narrowed, redirected, used for same-lane verification, or closed with rationale; do not treat active teammates as throwaway prompts.
 
 ## Tool And Plugin Routing
@@ -629,7 +636,7 @@ Coworx must never ask the user to paste passwords, MFA answers, recovery codes, 
 
 When the user explicitly says to save credentials for a clear app/site/account workflow, Coworx should not refuse by default. It should route the request to approved local-only persistence: `.coworx-private/secrets/*.local.env`, OS keychain, password manager, encrypted vault handle, or another ignored private secret path. Store only the secret values in the private secret store and store only non-secret references in memory or logs.
 
-When the same approved workflow repeatedly stalls on manual login or credential entry, Coworx may suggest a credential upgrade once: ask whether the user wants to configure a local-only credential source for that specific app/site/account. Prefer hidden local capture, keychain, password manager, vault, connector auth, or environment variables. Do not ask the user to paste secrets into chat. If the user already pasted a secret and explicitly asks Coworx to save it, transfer it once into approved local-only persistence without echoing it, then recommend ending this chat and starting a new one in the same Coworx project so the active model context no longer contains the pasted secret.
+When the same approved workflow stalls on manual login, password-manager autofill, MFA manager behavior, or credential entry, Coworx may suggest a credential upgrade once after the first failed or unavailable route: ask whether the user wants to configure a local-only credential source for that specific app/site/account. Prefer hidden local capture, keychain, password manager, vault, connector auth, local skill reference, or environment variables. Do not ask the user to paste secrets into chat, and do not repeat blind login/autofill attempts against the same failure. If the user already pasted a secret and explicitly asks Coworx to save it, transfer it once into approved local-only persistence without echoing it, then recommend ending this chat and starting a new one in the same Coworx project so the active model context no longer contains the pasted secret.
 
 If the user already volunteered a login secret in chat and explicitly asks Coworx to save or use it, Coworx may perform a one-time transfer into an approved local-only secret store without echoing the value. Prefer a local environment, keychain, password manager, vault, or private file handoff when available; never repeat the secret in responses, logs, commits, reports, screenshots, traces, or subagent prompts.
 

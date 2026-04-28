@@ -18,6 +18,7 @@ Track:
 - account labels, connector names, browser profile labels, and approved login routes;
 - artifact tools for documents, spreadsheets, slides, PDFs, media, audio, video, images, and code;
 - known strengths, limitations, stop conditions, and evidence each capability can produce.
+- model-specific or model-agnostic routing lessons, such as missed Computer Use, under-delegation, or reliable operator/reviewer fallback.
 
 Do not store raw credentials, cookies, tokens, API keys, session files, private keys, payment data, or hidden authentication material.
 
@@ -49,6 +50,7 @@ The router should treat "available capability" as user-specific state:
 After each task, update memory when useful:
 
 - capability used;
+- active model or operator lane when relevant;
 - why it was chosen;
 - inputs it handled well;
 - evidence it produced;

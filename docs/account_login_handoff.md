@@ -27,6 +27,8 @@ When explicitly delegated, Coworx may create or update an ignored private secret
 
 If repeated approved work keeps stopping on the same manual login, Coworx may offer to set up local-only credential persistence for that specific workflow. If the user already pasted a secret and explicitly asks to save it, transfer it once without echoing the value, then recommend ending this chat and starting a new one in the same project.
 
+Password-manager autofill, OS keychain prompts, and MFA-manager prompts are allowed only as credential-safe routes; they are not guaranteed to work unattended. If one approved attempt fails, stalls, or requires unsupported local approval, Coworx should stop retrying the same route, record a private capability lesson, and continue through the next safe path: existing session, connector/OAuth/API session, approved ignored local secret file, approved environment variables, vault/keychain/password-manager label handled by a local executor, local skill reference, or user-present manual login. Login mechanics are not the deliverable; once access is established, Coworx continues the delegated task.
+
 ## Allowed After Login Or Connector Authorization
 
 - read approved pages;
@@ -49,7 +51,7 @@ Stage when:
 
 Block or require the user to act manually on credential export, cookie export, token export, password changes, account recovery, recovery code handling, security setting changes, payment credential changes, identity verification, suspicious login pages, wrong-domain login pages, academic submission, and other Level 5/protected actions.
 
-Unexpected MFA prompts are staged unless the directive names an approved user-present, connector-managed, or local runtime MFA handoff. TOTP seeds, backup codes, recovery codes, and security answers must never be persisted or copied into evidence.
+Unexpected MFA prompts are staged unless the directive names an approved user-present, connector-managed, or local runtime MFA handoff. Do not loop on an MFA-manager failure. TOTP seeds, backup codes, recovery codes, and security answers must never be persisted or copied into evidence.
 
 ## Memory
 

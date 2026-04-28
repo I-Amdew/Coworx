@@ -27,8 +27,10 @@ Use for every queued Coworx task.
 - Keep architecture, integration, and final answer in the lead thread.
 - Treat Coworx as the project workspace: consult maps, memory, queues, logs, and prior outputs before rediscovering context.
 - Consult capability maps for this user's available plugins, skills, connectors, browser profiles, scripts, apps, and fallbacks.
+- Apply model execution routing when any active model under-delegates, misses Computer Use, or returns instructions for a delegated lane.
 - Convert multi-stage requests into a directive ledger and keep it current until closeout.
 - Use subagents for independent work when they improve delivery, coverage, diagnosis, review, verification, or evidence collection.
+- For non-trivial work, build and staff the full first wave before serial solo execution; leave a lane unstaffed only when it is Director-owned, blocked, lock-waiting, deferred with rationale, or duplicative.
 - Assign every subagent a directive ID, owned scope, checkpoint trigger, stop conditions, and expected evidence.
 - Inspect and integrate subagent returns before marking a directive complete.
 - Record useful safe workflow memory, capability lessons, and output hand-offs after delivery.

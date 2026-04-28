@@ -33,6 +33,8 @@ Coworx must not reveal, copy, log, screenshot, export, or store the secret. If t
 
 When Computer Use is available, approved autofill and keychain prompts are normal execution routes for real account work. Coworx should verify the target app/domain, disable or avoid secret-visible evidence, acquire the app/profile/account lock, trigger the local autofill or keychain flow, and continue after the session is active. It should not stop with instructions merely because the route uses a real browser profile or password manager.
 
+Autofill, password-manager unlock, OS keychain, and MFA-manager behavior is not reliable enough to be the only unattended plan. If one approved attempt fails, stalls, or requires an unsupported local approval, Coworx should stop retrying that same route, record a private capability lesson, release GUI locks when safe, and use the next approved handoff route: existing session, connector/OAuth/API session, local-only secret source, local skill reference, vault/keychain/password-manager label handled by a local executor, or user-present manual secure entry.
+
 ### C. Local-Only Secret File Or Environment Variable
 
 Coworx may use credentials from an ignored local file under `.coworx-private/secrets/` or from environment variables. When the user explicitly delegates credential persistence for a clear app/site/account label, Coworx may also create or update that ignored local secret file using `scripts/coworx_local_secret_store.mjs`, an approved keychain/password-manager/vault route, or another approved local-only mechanism.
@@ -74,6 +76,8 @@ Use this pattern for migration from another local agent's credentialed workflow 
 
 If no safe local handoff exists, Coworx pauses and asks the user to complete login manually in the approved app/browser. Coworx then continues after the user confirms the session is signed in.
 
+Manual secure entry is a checkpoint, not a final answer. Once the user completes the local step or an existing session is active, Coworx should continue the delegated workflow until the directive completes, is staged, or hits a real stop condition.
+
 ### F. Unsupported Or Unsafe Credential Handling
 
 Coworx must pause or block:
@@ -103,6 +107,8 @@ Coworx must pause or block:
 7. Enter credentials locally from the approved source.
 8. Clear the clipboard if used.
 9. Resume evidence collection only after secrets are no longer visible.
+
+Use this deterministic fallback order for approved account workflows: existing signed-in session, connector/OAuth/API session, approved autofill/password-manager/keychain route, approved local-only secret source or local skill reference, user-present manual secure entry, then a staged blocker naming the exact missing setup. Do not ask the user to paste secrets into chat and do not send secret values to subagents.
 
 For unattended or standby work, these checks must be in the Operator action request before the cycle begins. A later remote `approve` reply may authorize only the pending non-protected action already recorded in the directive ledger; it may not authorize a new credential source, a new domain, credential export, recovery flow, security setting, payment prompt, or identity verification.
 

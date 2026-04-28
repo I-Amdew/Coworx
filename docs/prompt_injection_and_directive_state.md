@@ -93,4 +93,6 @@ If the change is only a normal label shift, layout move, selector update, or har
 
 ## Subagents And Tool Lanes
 
-Subagents and tool lanes should receive directive IDs, scoped action packets, and sanitized summaries instead of broad chat-history authority. When a subagent needs the active ledger, give it the ledger path and the exact directive IDs it may advance. Do not give subagents raw private maps or privileged workflow details unless the task requires them and the lane is operating inside the same approved private scope.
+Subagents and tool lanes should receive directive IDs, scoped action packets, lane roles, expected evidence, and sanitized summaries instead of broad chat-history authority. When a subagent needs the active ledger, give it the ledger path and the exact directive IDs it may advance. Do not give subagents raw private maps or privileged workflow details unless the task requires them and the lane is operating inside the same approved private scope.
+
+If a model under-delegates because it is trying to avoid sharing context, narrow the assignment rather than skipping the lane: provide only the directive ID, owned scope, allowed files/resources, locks, stop conditions, and return envelope needed for that lane.

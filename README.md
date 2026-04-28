@@ -80,6 +80,10 @@ If a safe task needs to wait for a render, download, queue, upload, or approval 
 
 Use one locked GUI lane to get the data, then release the screen and let local agents process the downloaded pieces in parallel.
 
+**Model execution routing**
+
+Any model can under-delegate, miss Computer Use, or drift into advice. Coworx treats that as a routing problem: staff a full first wave, delegate independent lanes, and hand unsupported GUI/account work to a capable operator lane.
+
 **Deliverables over replies**
 
 The normal output should be a file, report, draft, spreadsheet, checked account summary, staged upload, browser result, local artifact, or clear review point.
@@ -223,6 +227,8 @@ Supported paths include:
 - ignored local secret files;
 - local credential reference packets.
 
+Password-manager autofill and MFA-manager prompts are opportunistic, not guaranteed unattended login. If they fail or stall, Coworx should stop retrying that route and move to an approved local-only credential source, connector/session route, local skill reference, or user-present secure entry.
+
 If you explicitly ask Coworx to save a password for a workflow, it should use private ignored storage, keychain, a password manager, or a vault handle. It should not put the password in chat, logs, screenshots, committed files, or normal memory.
 
 If you already pasted a secret into the chat and explicitly ask Coworx to save it, Coworx may do a one-time local transfer without echoing it, then should recommend ending that chat and starting a new one in the same project so the active model context no longer contains the secret.
@@ -266,6 +272,7 @@ Doing real work:
 
 - [Real Result Delivery](docs/real_result_delivery_protocol.md)
 - [Real Work Task Model](docs/real_work_task_model.md)
+- [Model Execution Routing](docs/model_execution_routing.md)
 - [Directive Follow Through](docs/directive_follow_through.md)
 - [Non-Coding Workflows](docs/non_coding_workflows.md)
 

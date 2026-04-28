@@ -15,6 +15,8 @@ Use a subagent when it can materially improve true delivery:
 
 For broad, multi-stage, or uncertain work, subagents are the default execution model. Build the task graph first, then staff every ready independent lane that has a safe read scope or disjoint write scope. A single scout is not enough when the graph also has independent test discovery, source research, browser/API work, review, verification, evidence collection, or bounded implementation ready to run.
 
+This applies to every model Coworx uses. If a Director model tends to work serially, the first-wave graph must make delegation explicit before the first solo work unit: which lanes are delegated, which are Director-owned, which are lock-waiting, and which are blocked. A non-trivial task with multiple independent read or verification units should not run as a single main-thread lane merely because the current model is fast.
+
 Keep work in the main Director thread when:
 
 - the next step is an immediate blocker or critical-path decision;
@@ -24,6 +26,12 @@ Keep work in the main Director thread when:
 - the subagent cannot return useful evidence.
 
 Ready work should not remain idle just because another subagent is running. Leave a lane unstaffed only when it is Director-owned, intentionally deferred with rationale, waiting on a resource lock, blocked by safety/authority, or duplicative of work already assigned.
+
+## Director-Owned Versus Delegated
+
+Delegate independent research, source gathering, test discovery, disjoint implementation, review, verification, evidence collection, browser/API lane planning, extraction parsing, memory proposals, and local shard processing.
+
+Keep local authority classification, target/account approval, protected-action decisions, commit locks, shared architecture contracts, conflicting write ownership, final integration, and user-facing closeout.
 
 ## Allowed Work
 

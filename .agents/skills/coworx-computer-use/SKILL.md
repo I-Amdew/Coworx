@@ -27,10 +27,12 @@ Use after connector/API/Browser Use/Playwright routes are insufficient, or immed
 ## Rules
 - Keep tasks narrow.
 - Treat Computer Use as the practical execution lane for real GUI work, not as a reason to return instructions.
+- If the active model cannot discover or correctly call the Computer Use tool surface, return a routed-operator blocker and continue/delegate non-GUI lanes instead of substituting Browser Use or shell commands for real desktop work.
 - Use target-level locks for app/window/profile/account workflow/file picker/clipboard/active focus.
 - Do not open sensitive apps unless approved and necessary.
 - May enter credentials only into an approved login form from an approved local credential source, with target verified and secret-visible evidence disabled or redacted.
 - Approved credential sources include existing sessions, browser autofill, password managers, OS keychain, vault handles, ignored private files, environment variables, and local skill references. Local skill references must stay private and must not be copied into logs, memory, prompts, or shippable files.
+- Treat browser autofill, password managers, OS keychain, and MFA-manager prompts as opportunistic. After one failed or stalled attempt, stop retrying that route and fall back to an approved local-only source, existing session, connector, local skill reference, or user-present manual entry.
 - For credentialed Level 3 or Level 4 actions under autonomy, require the action gate packet and obey `proceed`, `stage`, or `block`.
 - Never print, log, screenshot, trace, export, or expose credentials, MFA answers, cookies, tokens, or recovery codes. Never store them outside approved local-only secret storage.
 - Stop on permissions outside authority, security/account/payment areas, password changes, recovery, identity verification, destructive actions, or wrong target.

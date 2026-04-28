@@ -31,6 +31,8 @@ Do not serialize browser/API/code/research work merely because another lane is a
 
 For non-trivial work, fill the wave. A ready lane should be either running, Director-owned, intentionally deferred, waiting on a specific lock, or blocked by safety or authority. Do not let safe independent work sit idle behind unrelated recon, tests, browser checks, drafting, review, or evidence collection.
 
+This is model-agnostic. If the active model is fast but serial, or if any model has previously under-delegated in this workspace, the Director must make the first wave explicit before solo execution: list ready lanes, staff independent lanes, and record the reason for any lane left unstaffed.
+
 Good parallel waves include:
 
 - recon over the codebase while test discovery runs;

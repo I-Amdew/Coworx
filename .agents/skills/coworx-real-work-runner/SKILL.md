@@ -31,6 +31,7 @@ Use for meeting summaries, documents, slides, spreadsheets, browser workflows, d
 - Use installed plugins and skills before manual workarounds.
 - Check Coworx project memory for maps, login routes, account labels, output locations, capability maps, and stop conditions before rediscovering a workflow.
 - Use subagents for parallel research, drafting, diagnosis, evidence collection, review, and verification when they improve delivery.
+- If the active model is running slowly or serially, make the first-wave delegation explicit and hand unsupported GUI/account lanes to a capable operator instead of returning instructions.
 - Keep each directive moving until it is completed, staged, blocked, skipped, or explicitly waiting.
 - Integrate returned subagent evidence before treating deliverables or external actions as complete.
 - Write outputs to project paths first and log any delegated move, copy, upload, or hand-off destination.
@@ -39,7 +40,7 @@ Use for meeting summaries, documents, slides, spreadsheets, browser workflows, d
 - Use leased browser/API/connector lanes in parallel when locks do not conflict.
 - Use Computer Use only with target-level locks and the file-backed queue lease when another Coworx or Codex instance may be active.
 - If a task is waiting on a queue, render, export, upload, or other external condition, create a private wait item or temporary automation and clean it up when done.
-- If the same approved workflow repeatedly needs manual credentials, suggest a one-time local-only credential source upgrade without asking for secrets in chat.
+- If the same approved workflow has one failed password-manager, autofill, MFA-manager, or manual credential route, suggest a one-time local-only credential source upgrade without asking for secrets in chat and do not repeat blind login attempts.
 - Draft external communications and calendar events when authority is unclear; send, invite, or schedule when delegated authority or explicit approval covers the action and it is not Level 5/protected.
 - Keep private task logs and user-specific memory out of shippable files.
 

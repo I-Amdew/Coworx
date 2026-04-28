@@ -132,6 +132,88 @@
       }
     }
   ],
+  "model_execution_routing": [
+    {
+      "name": "non_trivial_model_route_staffs_first_wave_and_delegates_gui_gap",
+      "expect": "pass",
+      "result": {
+        "status": "completed",
+        "non_trivial": true,
+        "independent_lanes_available": true,
+        "first_wave": {
+          "lanes_total": 4,
+          "staffed": 2,
+          "director_owned": 1,
+          "blocked": 0,
+          "lock_waiting": 1,
+          "deferred": 0,
+          "duplicative": 0
+        },
+        "computer_use": {
+          "required": true,
+          "tools_visible": false,
+          "delegated_to": "capable-computer-use-operator"
+        },
+        "safe_non_gui_lanes_continued": true,
+        "returned_instructions_only": false
+      }
+    },
+    {
+      "name": "single_lane_model_route_with_ready_work_is_rejected",
+      "expect": "fail",
+      "result": {
+        "status": "completed",
+        "non_trivial": true,
+        "independent_lanes_available": true,
+        "first_wave": {
+          "lanes_total": 1,
+          "staffed": 0,
+          "director_owned": 1,
+          "blocked": 0,
+          "lock_waiting": 0,
+          "deferred": 0,
+          "duplicative": 0
+        },
+        "computer_use": {
+          "required": true,
+          "tools_visible": false,
+          "delegated_to": ""
+        },
+        "safe_non_gui_lanes_continued": false,
+        "returned_instructions_only": true
+      }
+    }
+  ],
+  "credential_autofill_fallback": [
+    {
+      "name": "failed_password_manager_routes_to_local_source_without_retry",
+      "expect": "pass",
+      "result": {
+        "status": "staged",
+        "autofill_or_mfa_failed": true,
+        "retried_same_route": false,
+        "fallback_source": "private_file",
+        "private_lesson_recorded": true,
+        "manual_secure_entry_needed": false,
+        "secret_values_exposed": false,
+        "asked_for_chat_secret": false
+      }
+    },
+    {
+      "name": "failed_mfa_manager_retry_loop_is_rejected",
+      "expect": "fail",
+      "result": {
+        "status": "completed",
+        "autofill_or_mfa_failed": true,
+        "retried_same_route": true,
+        "fallback_source": "",
+        "private_lesson_recorded": false,
+        "manual_secure_entry_needed": false,
+        "secret_values_exposed": false,
+        "asked_for_chat_secret": true
+      }
+    }
+  ],
   "credential_routing": [
     {
       "name": "approved_autofill_uses_secret_reference_only",

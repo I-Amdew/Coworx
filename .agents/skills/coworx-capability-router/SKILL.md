@@ -33,6 +33,7 @@ Use after dispatch and safety classification, before planning execution.
 - Coworx is the project workspace; plugins and skills are optional capabilities, not the product.
 - Check project memory and capability maps before selecting a tool for a known workflow.
 - Learn from this user's setup: record missing, useful, failed, or fallback capabilities without storing secrets.
+- Treat model behavior as capability state. If the active model under-delegates, misses Computer Use, or mishandles credential routing, select a better operator/reviewer lane and save a safe lesson.
 - Prefer the most precise installed connector, plugin, or skill.
 - Use Browser Use or Playwright for browser tasks.
 - Use Computer Use for native apps and GUI-only tasks.

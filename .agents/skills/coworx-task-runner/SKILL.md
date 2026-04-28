@@ -29,6 +29,7 @@ Use when the Coordinator has selected a single task from `queue/todo/`.
 - Drive every directive in the task ledger to completed, staged, blocked, skipped, or explicitly waiting.
 - Continue through delegated downstream stages required by the original request.
 - Use subagents when independent work improves delivery, and integrate their evidence before closing.
+- For non-trivial tasks, do not run as a single slow lane when independent research, verification, implementation, or evidence lanes are ready; staff the first wave or record why each ready lane is Director-owned, blocked, lock-waiting, deferred, or duplicative.
 - Maintain the run log as work proceeds.
 - Do not use browser/API/connector or Computer Use lanes unless an approved action request, authority source, and required locks exist.
 

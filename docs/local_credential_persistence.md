@@ -58,6 +58,8 @@ The autonomy goal is that, after the local secret store or keychain reference ex
 
 When a workflow repeatedly blocks on the same approved login or manual credential step, Coworx may ask once whether the user wants to configure a local-only credential source for that specific app/site/account label. The prompt should name the workflow, the safe source options, and the stop conditions. It should not ask the user to paste credentials into chat.
 
+If an approved password-manager, browser autofill, keychain, or MFA-manager route fails or stalls once for the same workflow, treat that as enough evidence to offer the upgrade instead of repeatedly trying the same flaky route. The offer should prefer hidden local capture, environment variables, connector auth, keychain/password-manager/vault labels, or an approved local skill reference. Store only the non-secret route reference in memory.
+
 If the user declines, record a private failure or lesson only if useful and do not nag on every run. If the user accepts, use hidden local capture, keychain, password manager, vault, connector auth, browser autofill, or environment variables, then remember only the non-secret reference.
 
 ## Remembered Reference

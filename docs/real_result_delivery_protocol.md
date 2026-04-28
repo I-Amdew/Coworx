@@ -31,6 +31,8 @@ Use the most direct reliable capability that can finish the directive with evide
 
 Do not switch to a weaker route merely because it is easier to describe. Use the route that can actually complete the work while respecting authority, locks, credentials, and safety.
 
+Do not switch to a weaker route because the active model is uncomfortable with a tool. If a model cannot handle Computer Use or enough parallel lanes, route that lane to a capable operator/subagent and continue safe work rather than returning instructions.
+
 Computer Use is an active execution lane, not a ceremonial last resort. If a connector, Browser Use, Playwright, API, or local file route cannot complete a delegated routine step because the workflow needs a real browser profile, file picker, native app, password-manager prompt, visible confirmation, or system dialog, Coworx should escalate to Computer Use with the required target locks instead of handing the routine step back to the user.
 
 Only stop at instructions when the missing step is genuinely outside capability or authority, such as a local OS permission prompt the away user cannot grant, an unsupported login/MFA prompt, an unclear target, a protected final action, or a safety stop condition.
@@ -92,5 +94,7 @@ Avoid:
 - asking for context that project memory or approved inspection can discover;
 - treating login, browser work, or desktop app work as inherently blocked;
 - treating file pickers, real browser profiles, password manager prompts, or visual confirmation as reasons to stop instead of using Computer Use;
+- retrying a failed autofill/password-manager/MFA-manager path instead of moving to the next approved credential route;
+- accepting a model's single-lane behavior when independent subagent, browser/API, review, or verification lanes are ready;
 - leaving ready independent work unstaffed when locks allow progress;
 - closing while a directive lacks evidence or a final staged/blocked reason.

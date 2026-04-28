@@ -12,6 +12,7 @@ An action request must include:
 
 - goal;
 - tool mode;
+- model execution routing, including first-wave staffing and delegation decisions;
 - target;
 - privacy classification;
 - active directive file path and directive IDs;
@@ -54,6 +55,8 @@ The active lease is global for the real desktop even though the request records 
 
 Computer Use is the normal fallback when a delegated task needs a real user computer surface: signed-in browser profiles, Chrome extensions, native apps, password-manager prompts, file pickers, drag/drop uploads, system dialogs, visual save-state checks, or messaging apps. The Operator should escalate to Computer Use after connector/API/Browser Use/Playwright routes fail or cannot see the needed surface, rather than returning routine instructions to the user.
 
+This is model-agnostic. If the active model cannot find or use Computer Use correctly, route the Computer Use packet to a capable operator lane and keep safe non-GUI lanes running. Do not replace real-profile or native-app work with Browser Use, generic browsing, `open`, or instructions.
+
 For long signed-in web work, the default Computer Use browser target should be the user's approved Chrome profile when available. The Operator should not route those workflows through the in-app Browser Use lane just because it is a browser task; Browser Use lacks the user's normal signed-in profile, extensions, and local app integration.
 
 For upload or hand-off workflows, a Computer Use lane should verify the selected local file and the post-selection UI state before any final click. If the final click is outside authority or protected, leave the file attached or the page staged at the review point and record the exact remaining action.
@@ -72,6 +75,8 @@ The extraction lane should:
 - tell the Director how to shard the artifact for local parallel processing.
 
 After extraction, the Director should fan out local read-only agents over disjoint shards instead of keeping the Operator online to process everything through the site UI.
+
+If a model tries to keep extraction, parsing, review, and verification in one online GUI lane, treat that as a routing failure: release GUI locks after artifact verification and staff local lanes.
 
 ## Execution Rules
 

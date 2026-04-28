@@ -6,6 +6,15 @@
 Preferred:
 Fallback:
 
+## Model Execution Routing
+- Active model:
+- Model limitation observed or expected: no / yes
+- First-wave staffing plan:
+- Delegation decision: delegated / director-only / mixed
+- Why this is not single-lane:
+- Unsupported lanes routed to:
+- Reviewer or verifier lane required: no / yes
+
 ## Target
 
 ## Privacy Classification

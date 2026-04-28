@@ -9,13 +9,14 @@ Coworx is the project-backed workspace. Installed Codex skills, plugins, MCP too
 3. Check the capability map for user-available plugins, skills, connectors, MCP tools, browser profiles, scripts, apps, and known fallbacks.
 4. Identify authority source, target resources, privacy class, and locks.
 5. Identify work type: browser, native app, file, document, spreadsheet, presentation, design, GitHub, media, automation, research, coding, review, or mixed.
-6. Prefer the most direct available connector, plugin, MCP tool, skill, script, or profile when it helps complete the directive with evidence.
-7. Use Browser Use for Codex in-app/current/local/file-backed/public targets and quick unauthenticated checks.
-8. Use Playwright or Playwright Interactive for repeatable structured browser checks, persistent browser work, approved isolated profiles, and long authenticated workflows where Browser Use would repeatedly ask for permission or lose state.
-9. Use APIs/connectors for credentialed account work when available.
-10. Use Computer Use for native apps, real browser profiles, file pickers, system dialogs, password-manager prompts, approved messaging apps, visual checks, simulators, and GUI-only tasks.
-11. Staff independent lanes in parallel.
-12. Record tool choice, action level, authority, locks, evidence, outputs, capability result, and any memory updates in the run log.
+6. Run the model execution routing checkpoint for non-trivial work: identify first-wave lanes, delegate independent lanes, and note any model limitation that needs a stronger operator or reviewer.
+7. Prefer the most direct available connector, plugin, MCP tool, skill, script, or profile when it helps complete the directive with evidence.
+8. Use Browser Use for Codex in-app/current/local/file-backed/public targets and quick unauthenticated checks.
+9. Use Playwright or Playwright Interactive for repeatable structured browser checks, persistent browser work, approved isolated profiles, and long authenticated workflows where Browser Use would repeatedly ask for permission or lose state.
+10. Use APIs/connectors for credentialed account work when available.
+11. Use Computer Use for native apps, real browser profiles, file pickers, system dialogs, password-manager prompts, approved messaging apps, visual checks, simulators, and GUI-only tasks.
+12. Staff independent lanes in parallel.
+13. Record tool choice, model-routing decision, action level, authority, locks, evidence, outputs, capability result, and any memory updates in the run log.
 
 ## Installed Capability Examples
 
@@ -40,6 +41,7 @@ Coworx is the project-backed workspace. Installed Codex skills, plugins, MCP too
 | PDF | PDF skill | local extraction/render tools | Keep sensitive PDFs in private paths. |
 | Browser task | Browser Use for in-app/current/local/public targets | Playwright or Playwright Interactive for repeatable or persistent automation | Credentialed work prefers connectors, approved isolated profiles, or Computer Use with a real profile. |
 | Long signed-in browser workflow | Connector/API if available | Playwright Interactive with approved persistent profile, then Computer Use for real profile GUI | Avoid Browser Use when it repeatedly prompts or cannot preserve the needed session. |
+| Signed-in GUI or flaky model route | Computer Use operator lane with explicit locks | Delegate to capable operator/reviewer model and keep non-GUI lanes running | Do not let any model substitute instructions for real-profile, file-picker, or visible desktop work. |
 | Native app or GUI-only task | Computer Use | Screenshot skill for read-only evidence | Use target-level locks. |
 | File picker or visual upload | Structured file input or connector/API | Computer Use | Verify selected filename and stage final submit when protected. |
 | GitHub | GitHub plugin skills | `gh-*` standalone skills | Comments, PRs, merges, and settings follow action levels. |
@@ -60,6 +62,7 @@ Coworx is the project-backed workspace. Installed Codex skills, plugins, MCP too
 9. For calendar and messaging, stage when authority, target, recipients, or content are unclear.
 10. Do not use plugins or skills to bypass action levels, locks, or credential rules.
 11. Do not turn a solvable GUI step into user instructions. Escalate to Computer Use when it is the capability that can complete the delegated work safely.
+12. Do not turn a model limitation into a user blocker. If the active model under-delegates, cannot find Computer Use, or mishandles a lane, delegate that lane to a capable subagent/operator or stage the exact model/tool limitation while continuing independent work.
 
 ## Auto-Execution Defaults
 

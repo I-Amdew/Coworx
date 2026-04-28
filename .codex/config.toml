@@ -8,11 +8,16 @@ mode = "codex-native-coworker"
 [coworx]
 parallel_by_default = true
 lock_resources_not_agents = true
+model_execution_routing = true
+delegate_first_wave = true
 browser_lanes_parallel = true
 computer_use_target_locks = true
+computer_use_operator_lane = true
 playwright_for_structured_browser = true
 browser_use_for_in_app_local_public = true
 computer_use_fallback = true
+autofill_is_opportunistic = true
+local_credential_fallback = true
 store_secrets = false
 default_action_level = 0
 

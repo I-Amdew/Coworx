@@ -17,9 +17,10 @@ Coworx should deliver concrete outcomes: saved files, generated artifacts, organ
 7. Use Standby Mode when the user asks Coworx to keep checking or continue in the background during the current active session.
 8. Use subagents when parallel research, implementation, diagnosis, review, verification, or evidence collection improves delivery.
 9. Use installed skills/plugins/connectors as capabilities when they fit the task.
-10. Use Browser Use for in-app/current/local/public targets. Prefer Playwright or Playwright Interactive for repeatable, persistent, or long authenticated browser work, especially when Browser Use would repeatedly ask for permission.
-11. Use Computer Use for GUI/native/real-profile workflows and only with target-level locks. File pickers, browser profiles, password-manager prompts, approved messaging apps, and visual saved-state checks are expected Computer Use cases.
-12. Review the run log and final report before treating the task as complete.
+10. Apply model execution routing when the active model under-delegates, avoids Computer Use, or returns instructions instead of operating a delegated lane.
+11. Use Browser Use for in-app/current/local/public targets. Prefer Playwright or Playwright Interactive for repeatable, persistent, or long authenticated browser work, especially when Browser Use would repeatedly ask for permission.
+12. Use Computer Use for GUI/native/real-profile workflows and only with target-level locks. File pickers, browser profiles, password-manager prompts, approved messaging apps, and visual saved-state checks are expected Computer Use cases.
+13. Review the run log and final report before treating the task as complete.
 
 ## Creating A Task
 
@@ -51,6 +52,8 @@ Coworx also does not stop merely because the first subtask is finished. It stops
 
 Use `docs/real_result_delivery_protocol.md` as the delivery standard for local app, web, account, document, spreadsheet, presentation, file, message, calendar, GitHub, and desktop workflows.
 
+Use `docs/model_execution_routing.md` when any model choice is acting too serially, not delegating independent lanes, missing Computer Use, or treating login mechanics as the result. Model limitations should become operator or subagent routing decisions, not user instructions.
+
 ## Standby Mode
 
 Standby Mode is a lightweight dispatch loop for the current active Codex session and Coworx project. It is triggered by requests such as `standby mode`, `dispatch mode`, `keep checking`, `check every 5 minutes`, `run this in standby`, or `continue in the background while this chat/session is active`.
@@ -79,6 +82,8 @@ Use subagents for independent research, code changes in disjoint files/worktrees
 Subagents can operate browser/API/connector lanes when assigned a lease and resource lock. Desktop Computer Use requires a target-level lock and should be serialized whenever isolation is unclear.
 
 Every subagent should advance a named directive, own a clear scope, return evidence, and be integrated by the Director before the directive is considered complete.
+
+For non-trivial work, the first wave is full only when every ready independent lane is delegated, Director-owned with rationale, waiting on a lock, blocked, or duplicative. This is true for every active model, including fast models.
 
 ## Using Project Memory
 
@@ -110,6 +115,8 @@ Coworx may use what Codex already has installed:
 Plugins, skills, connectors, and tools inherit action levels, delegated authority, resource locks, stop conditions, and evidence rules. They are capability layers Coworx routes to, not the Coworx product itself.
 
 When a capability is missing, fails, or works especially well, Coworx should save a safe capability lesson so future tasks route better.
+
+Model behavior is also a capability lesson. If a model fails to use Computer Use, avoids subagents, or cannot operate a login route, record the safe lesson and route future work through a better operator, reviewer, or credential handoff path.
 
 ## Requesting Tool Operation
 

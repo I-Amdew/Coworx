@@ -67,6 +67,8 @@ The first wave is full only when every ready task is staffed, Director-owned, in
 
 Keep work local for immediate Director-only decisions, shared contracts, integration, critical-path steps that would be slowed by delegation, or tightly coupled context. Do not spawn agents for duplicate work, overlapping write scopes, or work that would fight over a locked resource.
 
+This staffing rule is model-agnostic. If the active model is fast, unfamiliar, or has previously failed to delegate, run the model execution routing checkpoint before solo execution: enumerate ready lanes, launch every independent safe lane, record any lane kept Director-owned, and route unsupported Computer Use or account-operation work to a capable operator lane. See `docs/model_execution_routing.md`.
+
 Returned agents are still useful context. After each checkpoint, decide whether to continue the same lane, narrow it, redirect it, ask it to verify its own area, split out a sibling lane, or close it with a concrete rationale. Do not use subagents as one-shot reports when their fresh context can cheaply advance the graph.
 
 ## Agent Assignments

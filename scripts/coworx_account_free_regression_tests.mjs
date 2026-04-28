@@ -265,6 +265,47 @@ function validateTemporaryWait(result) {
   return failures;
 }
 
+function validateModelExecutionRouting(result) {
+  const failures = [];
+  const firstWave = result?.first_wave || {};
+  const lanesTotal = Number(firstWave.lanes_total || 0);
+  const accounted = Number(firstWave.staffed || 0)
+    + Number(firstWave.director_owned || 0)
+    + Number(firstWave.blocked || 0)
+    + Number(firstWave.lock_waiting || 0)
+    + Number(firstWave.deferred || 0)
+    + Number(firstWave.duplicative || 0);
+
+  if (result?.non_trivial && lanesTotal < 2) failures.push("non-trivial model routing needs at least two accounted lanes");
+  if (lanesTotal > 0 && accounted !== lanesTotal) failures.push("first-wave lanes are not fully accounted");
+  if (result?.independent_lanes_available && Number(firstWave.staffed || 0) < 1) {
+    failures.push("independent lanes were available but none were staffed");
+  }
+  if (result?.computer_use?.required && result?.computer_use?.tools_visible === false) {
+    if (!result?.computer_use?.delegated_to && String(result?.status || "") !== "blocked" && String(result?.status || "") !== "staged") {
+      failures.push("missing Computer Use tool surface must delegate, stage, or block");
+    }
+    if (result?.safe_non_gui_lanes_continued !== true) failures.push("safe non-GUI lanes did not continue while Computer Use was routed");
+  }
+  if (result?.returned_instructions_only) failures.push("model routing returned instructions only");
+  return failures;
+}
+
+function validateCredentialAutofillFallback(result) {
+  const failures = [];
+  if (result?.autofill_or_mfa_failed) {
+    if (result?.retried_same_route) failures.push("failed autofill/MFA route was retried");
+    if (!result?.fallback_source) failures.push("failed autofill/MFA route lacks fallback source");
+    if (!result?.private_lesson_recorded) failures.push("failed autofill/MFA route should record a private capability lesson");
+  }
+  if (result?.secret_values_exposed) failures.push("credential fallback exposed secret values");
+  if (result?.asked_for_chat_secret) failures.push("credential fallback asked for a chat secret");
+  if (result?.manual_secure_entry_needed && !["staged", "blocked", "waiting"].includes(String(result?.status || ""))) {
+    failures.push("manual secure entry should be staged, blocked, or waiting");
+  }
+  return failures;
+}
+
 function assertFixtureExpectations(section, cases, validator) {
   const failures = [];
   for (const testCase of cases || []) {
@@ -358,6 +399,8 @@ const failures = [
   ...assertFixtureExpectations("real_work_completion", fixtures.real_work_completion, validateRealWork),
   ...assertFixtureExpectations("upload_file_picker_fallback", fixtures.upload_file_picker_fallback, validateUploadFallback),
   ...assertFixtureExpectations("download_then_fanout", fixtures.download_then_fanout, validateDownloadThenFanout),
+  ...assertFixtureExpectations("model_execution_routing", fixtures.model_execution_routing, validateModelExecutionRouting),
+  ...assertFixtureExpectations("credential_autofill_fallback", fixtures.credential_autofill_fallback, validateCredentialAutofillFallback),
   ...assertFixtureExpectations("credential_routing", fixtures.credential_routing, validateCredentialRoute),
   ...assertFixtureExpectations("autonomous_action_gate", fixtures.autonomous_action_gate, validateAutonomousActionGate),
   ...assertFixtureExpectations("dispatch_channel_setup", fixtures.dispatch_channel_setup, validateDispatchChannelSetup),

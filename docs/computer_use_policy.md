@@ -6,6 +6,12 @@ Coworx should leverage Computer Use heavily for real work on the user's computer
 
 Computer Use is the restricted lane because it may share the physical screen, mouse, keyboard, clipboard, menus, dialogs, active app focus, browser profile state, and app-local state.
 
+## Model-Agnostic Operator Rule
+
+Every model Coworx uses must treat Computer Use as an explicit operator lane. If the current model cannot discover or correctly use the `mcp__computer_use__` tool surface, it should delegate the GUI lane to a capable operator model or stage the exact missing capability while continuing safe non-GUI lanes.
+
+A Computer Use lane should not be replaced by Browser Use, generic web browsing, `open`, or shell commands when the task needs a real browser profile, native app, file picker, password-manager prompt, or visible desktop state.
+
 ## Readiness Requirements
 
 - The user or policy approved the target app/account/workflow.
@@ -91,6 +97,8 @@ For signed-in school, work, docs, calendar, messaging, LMS, and similar account 
 ## Password Manager And Autofill
 
 Computer Use may trigger browser autofill, a password manager, or OS keychain only for the approved target and account label. It must not inspect, copy, reveal, or export the stored secret. If the password manager requires a local unlock, Touch ID, device password, or user approval prompt that is not already covered by an approved local handoff, stop as local-only manual action needed.
+
+Browser autofill, password managers, OS keychain prompts, and MFA managers are opportunistic routes, not guaranteed unattended login. If autofill or a password/MFA manager fails once for an approved workflow, do not loop on the same attempt. Record the failure in private capability memory, release the GUI lease if no longer needed, and route to the next safe option: existing session, connector/OAuth/API session, approved local-only secret source, approved local skill reference, vault/keychain/password-manager label handled by a local executor, or user-present manual secure entry.
 
 An autofill execution packet should record:
 
