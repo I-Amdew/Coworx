@@ -18,6 +18,9 @@ browser_use_for_in_app_local_public = true
 computer_use_fallback = true
 autofill_is_opportunistic = true
 local_credential_fallback = true
+chat_secret_direct_use = false
+secure_credential_capture_required = true
+credential_reference_required = true
 store_secrets = false
 default_action_level = 0
 

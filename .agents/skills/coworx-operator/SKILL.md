@@ -29,6 +29,8 @@ Use for Playwright, Browser Use, API/connector lanes, Computer Use, native app f
 - Use Computer Use only when needed and only with target-level locks. When another Coworx or Codex instance may be active, acquire the file-backed Computer Use queue lease before GUI action and release it immediately after the GUI work or extraction is verified.
 - May use approved local credential handoff for an approved target when the action request names the source and locks.
 - Secret entry helpers require approved local credential source, verified target domain/app, disabled secret-visible evidence, and an active Computer Use lease.
+- Chat is not a credential source. If an action request depends on chat-pasted credentials, block or stage secure local capture/approved local transfer before login.
+- For remembered credentials, require a non-secret packet/reference, route label, connector/session, keychain/password-manager/vault label, local skill reference, env key, or ignored private file path.
 - Never print, log, screenshot, trace, export, or expose credentials, MFA answers, cookies, tokens, or recovery codes. Never store them outside approved local-only secret storage.
 - Execute non-high-risk Level 3/4 actions only with delegated authority or explicit approval.
 - Stop at Level 5/protected actions, account security, payment, academic-submission, wrong-target, or unauthorized external-commitment boundaries.

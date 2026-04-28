@@ -195,6 +195,48 @@
         "fallback_source": "private_file",
         "private_lesson_recorded": true,
         "manual_secure_entry_needed": false,
+        "chat_secret_detected": false,
+        "used_chat_secret_directly": false,
+        "secure_capture_or_local_transfer_required": false,
+        "recommend_new_chat": false,
+        "secret_values_exposed": false,
+        "asked_for_chat_secret": false
+      }
+    },
+    {
+      "name": "chat_secret_is_staged_for_secure_capture_not_used_directly",
+      "expect": "pass",
+      "result": {
+        "status": "staged",
+        "credential_needed": true,
+        "login_completed": false,
+        "remember_requested": true,
+        "credential_source_type": "",
+        "credential_reference_created": false,
+        "chat_secret_detected": true,
+        "used_chat_secret_directly": false,
+        "secure_capture_or_local_transfer_required": true,
+        "recommend_new_chat": true,
+        "manual_secure_entry_needed": false,
+        "secret_values_exposed": false,
+        "asked_for_chat_secret": false
+      }
+    },
+    {
+      "name": "secure_capture_creates_reference_before_completed_login",
+      "expect": "pass",
+      "result": {
+        "status": "completed",
+        "credential_needed": true,
+        "login_completed": true,
+        "remember_requested": true,
+        "credential_source_type": "private_file",
+        "credential_reference_created": true,
+        "chat_secret_detected": false,
+        "used_chat_secret_directly": false,
+        "secure_capture_or_local_transfer_required": false,
+        "recommend_new_chat": false,
+        "manual_secure_entry_needed": false,
         "secret_values_exposed": false,
         "asked_for_chat_secret": false
       }
@@ -208,6 +250,29 @@
         "retried_same_route": true,
         "fallback_source": "",
         "private_lesson_recorded": false,
+        "manual_secure_entry_needed": false,
+        "chat_secret_detected": false,
+        "used_chat_secret_directly": false,
+        "secure_capture_or_local_transfer_required": false,
+        "recommend_new_chat": false,
+        "secret_values_exposed": false,
+        "asked_for_chat_secret": true
+      }
+    },
+    {
+      "name": "chat_pasted_credentials_used_directly_is_rejected",
+      "expect": "fail",
+      "result": {
+        "status": "completed",
+        "credential_needed": true,
+        "login_completed": true,
+        "remember_requested": true,
+        "credential_source_type": "chat",
+        "credential_reference_created": false,
+        "chat_secret_detected": true,
+        "used_chat_secret_directly": true,
+        "secure_capture_or_local_transfer_required": false,
+        "recommend_new_chat": false,
         "manual_secure_entry_needed": false,
         "secret_values_exposed": false,
         "asked_for_chat_secret": true

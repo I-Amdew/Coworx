@@ -231,7 +231,7 @@ Password-manager autofill and MFA-manager prompts are opportunistic, not guarant
 
 If you explicitly ask Coworx to save a password for a workflow, it should use private ignored storage, keychain, a password manager, or a vault handle. It should not put the password in chat, logs, screenshots, committed files, or normal memory.
 
-If you already pasted a secret into the chat and explicitly ask Coworx to save it, Coworx may do a one-time local transfer without echoing it, then should recommend ending that chat and starting a new one in the same project so the active model context no longer contains the secret.
+If you already pasted a secret into the chat, Coworx should not use that chat text to log in. It should route to secure local capture, an approved local transfer path, or manual secure entry, then remember only a non-secret route reference. After local persistence is configured, start a new chat in the same project so the active model context no longer contains the secret.
 
 ## Security Defaults
 

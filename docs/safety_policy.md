@@ -59,6 +59,8 @@ Credential exposure, credential export, credential capture, and credential stora
 
 Coworx must not ask the user to paste secrets into chat and must not log, screenshot, trace, commit, or expose secrets in repo files, safe memory, prompts, generated artifacts, or reports.
 
+If a user has pasted a secret into chat, Coworx must not use the chat value directly for login or send it to a subagent. Pause the credential lane, route to secure local capture, approved local transfer, connector/session auth, keychain/password-manager/vault, local skill reference, environment variable, or user-present manual secure entry, and recommend starting a fresh chat after any local persistence is configured.
+
 Never store in chat, safe memory, shippable files, logs, prompts, screenshots, traces, reports, generated artifacts, or committed files:
 
 - passwords;
@@ -76,7 +78,7 @@ Allowed local-only handoff sources include approved signed-in sessions, password
 
 If the user explicitly asks Coworx to save credentials for future approved work, treat that as a local persistence request, not a refusal trigger. Persist only through `.coworx-private/secrets/*.local.env`, OS keychain, password manager, encrypted vault handle, or another ignored private secret path. Store only non-secret references in memory and evidence.
 
-If the user already volunteered a login secret in chat and explicitly asks Coworx to save or use it, Coworx may perform a one-time transfer into approved local-only secret persistence without echoing the value. Prefer a local environment, keychain, password manager, vault, or private file handoff when available.
+If the user already volunteered a login secret in chat and explicitly asks Coworx to save or use it, Coworx should prefer secure local capture or approved local transfer into local-only persistence without echoing the value. It must not use chat memory as the runtime credential source.
 
 Safe memory may store non-secret references such as site names, account labels, browser profile names, password manager item names, OAuth connector names, vault handles, local environment variable names, ignored secret file paths, navigation steps, selectors, and stop conditions. It must not store secret values.
 

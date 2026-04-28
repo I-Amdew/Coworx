@@ -32,6 +32,7 @@ Use for meeting summaries, documents, slides, spreadsheets, browser workflows, d
 - Check Coworx project memory for maps, login routes, account labels, output locations, capability maps, and stop conditions before rediscovering a workflow.
 - Use subagents for parallel research, drafting, diagnosis, evidence collection, review, and verification when they improve delivery.
 - If the active model is running slowly or serially, make the first-wave delegation explicit and hand unsupported GUI/account lanes to a capable operator instead of returning instructions.
+- Never ask for credentials in chat and never use chat-pasted credentials directly. Stage secure local capture, approved local transfer, connector/auth session, or manual secure entry; then remember only the non-secret route reference.
 - Keep each directive moving until it is completed, staged, blocked, skipped, or explicitly waiting.
 - Integrate returned subagent evidence before treating deliverables or external actions as complete.
 - Write outputs to project paths first and log any delegated move, copy, upload, or hand-off destination.

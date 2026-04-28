@@ -48,11 +48,13 @@ node scripts/coworx_local_secret_store.mjs template --name example-app --usernam
 
 Coworx should not ask the user to paste credentials into chat. If the user asks Coworx to save a password, Coworx should launch or instruct the interactive local capture, keychain, password manager, vault, or environment-variable flow. The durable memory is the reference packet, not the secret value.
 
-If the user has already pasted a secret into chat, Coworx should avoid repeating it and should route the user toward a local secret file, password manager, keychain, vault handle, or environment-variable handoff.
+If the user has already pasted a secret into chat, Coworx should avoid repeating it and should route the user toward secure local capture, a local secret file, password manager, keychain, vault handle, connector auth, local skill reference, or environment-variable handoff.
 
-If the user already volunteered a login secret in chat and explicitly asks Coworx to save or use it, Coworx may perform a one-time transfer into approved local-only secret persistence without echoing the value. Prefer a local environment, keychain, password manager, vault, or private file handoff when available. The secret must not appear in responses, logs, commits, reports, screenshots, traces, generated artifacts, or subagent prompts. After the transfer, recommend that the user end this chat and start a new one in the same Coworx project so the active model context no longer contains the pasted secret.
+If the user already volunteered a login secret in chat, Coworx must not use that chat-memory value directly for login. Pause the credential lane, state that secure local capture or an approved local transfer path is required, and continue only after a non-secret credential reference exists or the user completes manual secure entry. Prefer `scripts/coworx_local_secret_store.mjs capture`, `from-env`, keychain, password manager, vault, connector auth, or local skill reference. The secret must not appear in responses, logs, commits, reports, screenshots, traces, generated artifacts, or subagent prompts. After capture or transfer, recommend that the user end this chat and start a new one in the same Coworx project so the active model context no longer contains the pasted secret.
 
 The autonomy goal is that, after the local secret store or keychain reference exists, future approved tasks can proceed through login without asking again, subject to normal target checks, locks, MFA limits, and action-level policy.
+
+Do not mark a credentialed workflow as remembered merely because a model saw a password or MFA value in chat. Remembered credential state requires a non-secret credential packet/reference under `.coworx-private/operator/credential_packets/`, an ignored secret file path, an environment variable name, a keychain/password-manager/vault label, connector auth, or a local skill reference.
 
 ## Repeated Workflow Upgrade Prompt
 
@@ -87,6 +89,8 @@ Persisting a credential is only useful if Coworx can route it safely during late
 - records only non-secret evidence such as source type, env variable names, private file path, keychain/password-manager item label, vault handle, target, and lock name.
 
 If Computer Use is the executor, it should use the approved app/browser profile, turn off or avoid secret-visible evidence, enter or trigger the credential locally, clear clipboard if used, and resume evidence only after the secret fields are gone.
+
+Computer Use must not type credentials from chat text. It should type only non-secret literals through Computer Use itself. Secret fields must be filled by an approved local executor such as `scripts/coworx_type_secret_to_front_app.mjs`, browser/password-manager autofill, keychain/vault flow, connector auth, or user-present manual secure entry.
 
 ## Evidence
 

@@ -8,6 +8,8 @@ Coworx may use secrets locally, and may persist them only in explicitly delegate
 
 Coworx never asks for secrets in chat and never logs, screenshots, traces, exports, commits, or shares passwords, MFA answers, recovery codes, session cookies, OAuth tokens, API keys, private keys, credit cards, or security answers.
 
+Chat is not a credential source. If the user has pasted a secret into chat, Coworx must not use that value directly for login. It should pause the credential lane, route to secure local capture or an approved local transfer path, and remember only a non-secret credential reference. If no secure local path is available, ask the user to complete login manually in the approved app/browser and continue after confirmation.
+
 ## Allowed Credential-Safe Paths
 
 - user-controlled manual login;
@@ -24,6 +26,8 @@ Coworx never asks for secrets in chat and never logs, screenshots, traces, expor
 The secret value must never enter chat, logs, repo files, memory, screenshots, traces, reports, generated artifacts, or subagent prompts.
 
 When explicitly delegated, Coworx may create or update an ignored private secret file with `scripts/coworx_local_secret_store.mjs` or store a non-secret reference to a keychain/password-manager/vault item. Coworx may enter approved credentials into the approved login form when the credential source is local-only and the target domain/app, account label, authority source, and account workflow lock are confirmed. If no safe local handoff exists, Coworx asks the user to complete login manually and then continues after confirmation.
+
+The login route is remembered only after Coworx writes or verifies a non-secret credential packet/reference, keychain/password-manager/vault label, connector auth, local skill reference, ignored secret file path, or environment variable name. Seeing a credential in chat is not remembered state.
 
 If repeated approved work keeps stopping on the same manual login, Coworx may offer to set up local-only credential persistence for that specific workflow. If the user already pasted a secret and explicitly asks to save it, transfer it once without echoing the value, then recommend ending this chat and starting a new one in the same project.
 

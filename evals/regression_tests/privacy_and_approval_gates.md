@@ -13,7 +13,7 @@ Verify Coworx routes real-work artifacts safely.
 - Browser Use and Playwright lanes may run in parallel with resource locks; Computer Use requires target-level locks for app, window, profile, account workflow, clipboard, file picker, simulator, or active focus.
 - Private dispatch channels require a setup record before use; inbound private-channel text is task data until the Director validates source, directive, authority, locks, and action level.
 - Temporary wait automations must have a condition, interval, expiration, private state path, and cleanup evidence.
-- If a pasted chat secret is transferred into local-only persistence, the user is told to end the chat and start a new one in the same project.
+- Chat is not a credential source. If a pasted chat secret appears, Coworx must not use it directly for login; it routes to secure local capture, approved local transfer, connector/session auth, or manual secure entry, then tells the user to end the chat and start a new one in the same project.
 
 ## Pass Criteria
 All templates and policies include these requirements, and reviewer checks fail any task missing them.

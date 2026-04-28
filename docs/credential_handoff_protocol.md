@@ -10,6 +10,8 @@ Coworx may use approved credentials locally to log into an approved target app/s
 
 Use placeholders in shippable material. Use ignored private files, environment variables, password managers, keychains, approved sessions, connectors, or vault handles for real local handoff.
 
+Chat is not a credential source. Coworx must not ask for passwords or MFA answers in chat, and must not type chat-pasted credentials into a login form. If a secret is pasted into chat, pause the credential lane and route to secure local capture, approved local transfer, connector/session auth, or user-present manual secure entry.
+
 ## Supported Handoff Cases
 
 ### A. Already Signed-In Session
@@ -41,7 +43,7 @@ Coworx may use credentials from an ignored local file under `.coworx-private/sec
 
 If the user says to save a password, the preferred local-file route is `scripts/coworx_local_secret_store.mjs capture`. It prompts for values locally with hidden terminal input, writes a `.local.env` file under `.coworx-private/secrets/`, and creates a non-secret credential reference packet. The secret value must not be put in chat, prompts, reports, logs, screenshots, traces, or committed files.
 
-If the user already pasted a secret into chat and explicitly instructs Coworx to save it, Coworx may transfer it once into approved local-only persistence without echoing it. Afterward, Coworx should recommend ending the current chat and starting a new one in the same Coworx project because the active context may still contain the pasted secret even though durable storage is now local-only.
+If the user already pasted a secret into chat, Coworx must not use that chat value directly for login. It should stage secure capture or approved local transfer, then remember only the non-secret credential reference packet. Afterward, Coworx should recommend ending the current chat and starting a new one in the same Coworx project because the active context may still contain the pasted secret even though durable storage is now local-only.
 
 Rules:
 
@@ -56,6 +58,8 @@ Rules:
 - MFA answer values may be used only through explicitly delegated local runtime handoff for the approved workflow, and must stay in ignored private secret storage or environment variables. TOTP seeds, backup codes, recovery codes, and security answers must not be stored in local secret files or environment variables.
 
 Runtime use of local secret files requires a credential source resolver. The resolver may read only the named approved private file or environment variables for the approved target, and it must pass secret values directly to the local login/autofill executor without printing them, placing them in command-line arguments, sending them to subagents, or writing them to logs, events, status files, reports, screenshots, traces, or prompts. Evidence may name the resolver, target, account label, env variable names, or private file path, but never the values.
+
+Credentialed login through Computer Use must use the resolver or another approved local executor when secret fields need typing. Computer Use may navigate, focus fields, and verify UI state, but it must not type secret values sourced from chat.
 
 ### D. Approved Local Credential Source Reference
 
@@ -104,7 +108,7 @@ Coworx must pause or block:
 4. Confirm the login page target and domain/app identity.
 5. Disable or avoid secret-visible screenshots, videos, and traces.
 6. Acquire the account workflow lock.
-7. Enter credentials locally from the approved source.
+7. Enter credentials locally from the approved source, never from chat memory.
 8. Clear the clipboard if used.
 9. Resume evidence collection only after secrets are no longer visible.
 

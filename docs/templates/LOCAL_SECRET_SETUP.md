@@ -34,7 +34,7 @@ node scripts/coworx_local_secret_store.mjs capture --name example-app --target e
 
 The command stores values under `.coworx-private/secrets/`, creates a non-secret credential reference packet, and prints only paths and key names.
 
-If a secret was already pasted into chat and the user explicitly asks Coworx to save it, transfer it once into local-only persistence without echoing it, then recommend ending the chat and starting a new one in the same project.
+If a secret was already pasted into chat, do not use chat text as the runtime credential source. Stage secure local capture or an approved local transfer path, then recommend ending the chat and starting a new one in the same project. Remember only the non-secret credential packet/reference.
 
 To persist values from an already-private local environment without printing values:
 
