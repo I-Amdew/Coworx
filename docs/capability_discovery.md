@@ -60,3 +60,5 @@ After each task, update memory when useful:
 - last verified date.
 
 Keep shippable memory generic. Put user-specific capability maps in ignored private paths.
+
+For GUI capabilities, record evidence quality too. A Computer Use lesson should say whether the lane had a queue request or lease id, app-state/action evidence, target verification, and release or wait evidence. A model claim without that evidence is a routing failure, not a verified capability result.

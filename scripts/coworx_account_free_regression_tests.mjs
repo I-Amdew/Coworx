@@ -265,6 +265,46 @@ function validateTemporaryWait(result) {
   return failures;
 }
 
+function validateStandbyComputerUseDispatch(result) {
+  const failures = [];
+  const computerUse = result?.computer_use || {};
+  const inbound = result?.inbound || {};
+  const locks = new Set(Array.isArray(computerUse.locks) ? computerUse.locks : []);
+
+  if (result?.gui_only_channel_configured) {
+    if (computerUse.queued_or_acquired_immediately !== true) {
+      failures.push("configured GUI-only dispatch channel did not immediately queue or acquire Computer Use");
+    }
+    if (!String(computerUse.request_id || computerUse.lease_id || "").trim()) {
+      failures.push("Computer Use dispatch lacks request or lease evidence");
+    }
+    if (!locks.has("desktop_resource:active_window_focus")) {
+      failures.push("Computer Use dispatch lacks active-focus lock");
+    }
+    if (![...locks].some((lock) => lock.startsWith("computer_app:"))) {
+      failures.push("Computer Use dispatch lacks app lock");
+    }
+    if (computerUse.one_agent_per_app_at_a_time !== true) {
+      failures.push("Computer Use dispatch did not enforce one agent per app");
+    }
+    if (Number(computerUse.same_app_parallel_agents || 0) > 1) {
+      failures.push("more than one Computer Use agent was allowed on the same app");
+    }
+    if (computerUse.claimed_channel_checked && computerUse.tool_evidence_recorded !== true) {
+      failures.push("dispatch claimed a GUI channel was checked without Computer Use evidence");
+    }
+    if (computerUse.lease_blocked && computerUse.wait_item_recorded !== true) {
+      failures.push("blocked Computer Use lease did not create a wait item");
+    }
+  }
+  if (inbound.vague_task_received) {
+    if (inbound.clarification_queued !== true) failures.push("vague inbound task did not queue clarification");
+    if (inbound.task_marked_completed === true) failures.push("vague inbound task was marked completed");
+  }
+  if (inbound.task_text_stored_publicly === true) failures.push("private inbound task text was stored publicly");
+  return failures;
+}
+
 function validateModelExecutionRouting(result) {
   const failures = [];
   const firstWave = result?.first_wave || {};
@@ -431,6 +471,7 @@ const failures = [
   ...assertFixtureExpectations("autonomous_action_gate", fixtures.autonomous_action_gate, validateAutonomousActionGate),
   ...assertFixtureExpectations("dispatch_channel_setup", fixtures.dispatch_channel_setup, validateDispatchChannelSetup),
   ...assertFixtureExpectations("temporary_waits", fixtures.temporary_waits, validateTemporaryWait),
+  ...assertFixtureExpectations("standby_computer_use_dispatch", fixtures.standby_computer_use_dispatch, validateStandbyComputerUseDispatch),
   ...assertFixtureExpectations("signed_in_readonly_synthesis", fixtures.signed_in_readonly_synthesis, validateSignedInReadonlySynthesis),
   ...assertFixtureExpectations("academic_lms_boundary", fixtures.academic_lms_boundary, validateAcademicLmsBoundary),
   ...runStandbyAccountFreeCheck(),

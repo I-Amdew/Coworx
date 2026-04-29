@@ -19,6 +19,7 @@ yes / no / unknown
 ## Inputs It Handles
 
 ## Outputs Or Evidence It Produces
+For Computer Use, include queue request or lease id, app-state/action evidence, target verification, and release or wait evidence before claiming the capability was used.
 
 ## Authority And Action-Level Notes
 

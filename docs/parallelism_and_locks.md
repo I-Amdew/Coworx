@@ -183,6 +183,8 @@ Do not run two Computer Use tasks against the same app, browser profile, browser
 
 Computer Use may run in parallel only when targets are clearly isolated. If isolation is unclear, serialize it.
 
+The practical default is one Computer Use agent per app at a time. A model must not infer that an app was checked while another lane holds or is waiting on that app. It should queue the target-specific lease, record the wait, and continue non-GUI work.
+
 Examples of Computer Use locks:
 
 - `computer_app:Slack`

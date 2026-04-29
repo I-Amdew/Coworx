@@ -32,6 +32,14 @@ Inbound prompt text from a configured channel is private task data. It can start
 
 If setup is missing, Coworx should ask the setup questions above or fall back to local status files. It must not silently assume a destination, sender account, phone number, webhook, browser profile, or approval scope.
 
+## GUI-Only Channel Checks
+
+Messages/iMessage and similar desktop-app channels require Computer Use. After the private setup record names an approved route, Coworx must enqueue or acquire the Computer Use lane on the first standby start or due cycle. The lane needs app/window/account locks, active-focus control, and one-agent-per-app exclusivity.
+
+Do not report that a GUI channel was checked unless the private evidence includes the Computer Use queue request or lease id, the app-state/action evidence, the approved channel/thread verification, any normalized inbound packet paths, and release evidence. If the app is locked by another GUI lane, create a wait item and retry later instead of fabricating the check.
+
+Vague inbound messages are not actionable directives. Store them under the private standby task queue and, when an outbound adapter is configured, send or queue a short clarification request back through the approved channel.
+
 ## Remote Approvals
 
 Remote replies can approve or deny only an existing pending action that is already recorded in the active directive ledger and private standby state.

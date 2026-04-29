@@ -64,6 +64,8 @@ First-time setup asks how meaningful updates should be delivered: Discord/privat
 
 Private-channel dispatch requires a setup gate before channel prompts can start or steer work. Confirm the approved channel, account or sender label, inbound/outbound adapter, maximum remote action level, approval command shape, quiet/verbose preference, private config path, and stop conditions. If this is missing, use local status files and ask only the missing setup questions.
 
+For configured Messages/iMessage or other GUI-only dispatch channels, Coworx should queue or acquire the Computer Use lane immediately at standby start or the first due cycle. It must not claim the channel was checked without private queue or lease evidence, app-state/action evidence, approved-channel verification, and release or wait evidence.
+
 Standby Mode uses adapter files under `.coworx-private/standby/`: local status/events/outbox for outbound messages and local inbox files for replies. Computer Use or connector lanes can deliver and check those messages through approved channels such as Messages/iMessage when configured.
 
 If a safe task is waiting on a queue, render, download, upload, or other external condition, create a wait item and check again later instead of ending with instructions. Use Standby Mode in-session, or Codex Automations when available and authorized. Delete, disable, or mark the temporary automation retired after the wait completes, expires, or blocks.

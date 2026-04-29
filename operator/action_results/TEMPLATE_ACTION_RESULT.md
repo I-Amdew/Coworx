@@ -44,12 +44,17 @@ success / partial / blocked
 
 ## Computer Use Or File Picker Result
 - Used: no / yes
+- Queue request id:
+- Lease id:
 - Locks held:
+- One agent per app/window/profile/account enforced: no / yes
+- App-state or action evidence:
 - Source artifact path:
 - File selected or attached:
 - Visible target verified:
 - Final action clicked: no / yes
 - If not clicked, staged review state:
+- If lease blocked, wait item path:
 
 ## Standby Adapter Result
 - Outbound adapter used:

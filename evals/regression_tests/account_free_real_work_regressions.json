@@ -606,6 +606,62 @@
       }
     }
   ],
+  "standby_computer_use_dispatch": [
+    {
+      "name": "configured_messages_channel_queues_computer_use_and_clarifies_vague_inbound",
+      "expect": "pass",
+      "result": {
+        "gui_only_channel_configured": true,
+        "computer_use": {
+          "queued_or_acquired_immediately": true,
+          "request_id": "cuq-demo",
+          "lease_id": "",
+          "locks": [
+            "computer_app:Messages",
+            "desktop_resource:active_window_focus",
+            "account_workflow:approved-standby-dispatch-channel"
+          ],
+          "one_agent_per_app_at_a_time": true,
+          "same_app_parallel_agents": 1,
+          "claimed_channel_checked": false,
+          "tool_evidence_recorded": false,
+          "lease_blocked": true,
+          "wait_item_recorded": true
+        },
+        "inbound": {
+          "vague_task_received": true,
+          "clarification_queued": true,
+          "task_marked_completed": false,
+          "task_text_stored_publicly": false
+        }
+      }
+    },
+    {
+      "name": "hallucinated_messages_check_without_lease_is_rejected",
+      "expect": "fail",
+      "result": {
+        "gui_only_channel_configured": true,
+        "computer_use": {
+          "queued_or_acquired_immediately": false,
+          "request_id": "",
+          "lease_id": "",
+          "locks": [],
+          "one_agent_per_app_at_a_time": false,
+          "same_app_parallel_agents": 2,
+          "claimed_channel_checked": true,
+          "tool_evidence_recorded": false,
+          "lease_blocked": true,
+          "wait_item_recorded": false
+        },
+        "inbound": {
+          "vague_task_received": true,
+          "clarification_queued": false,
+          "task_marked_completed": true,
+          "task_text_stored_publicly": true
+        }
+      }
+    }
+  ],
   "temporary_waits": [
     {
       "name": "temporary_automation_wait_cleans_up_after_completion",

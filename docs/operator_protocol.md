@@ -53,6 +53,8 @@ node scripts/coworx_computer_use_queue.mjs release --lease-id LEASE_ID
 
 The active lease is global for the real desktop even though the request records narrow target locks. This prevents two agents from fighting over focus, mouse, keyboard, clipboard, dialogs, and browser profile state. If the lane downloads or exports data, release the lease after verifying the local artifact and continue with local read-only processing.
 
+The target locks still matter. Do not run or claim two Computer Use agents against the same app, browser profile, window, account workflow, simulator, file picker, clipboard-dependent flow, or active-focus target. A claimed GUI action without a queue request or lease id, Computer Use app-state/action evidence, target verification, and release or wait evidence is not an action result.
+
 Computer Use is the normal fallback when a delegated task needs a real user computer surface: signed-in browser profiles, Chrome extensions, native apps, password-manager prompts, file pickers, drag/drop uploads, system dialogs, visual save-state checks, or messaging apps. The Operator should escalate to Computer Use after connector/API/Browser Use/Playwright routes fail or cannot see the needed surface, rather than returning routine instructions to the user.
 
 This is model-agnostic. If the active model cannot find or use Computer Use correctly, route the Computer Use packet to a capable operator lane and keep safe non-GUI lanes running. Do not replace real-profile or native-app work with Browser Use, generic browsing, `open`, or instructions.
@@ -103,6 +105,8 @@ Standby Mode must pause before protected final actions, unexpected permission pr
 Standby Mode may also run approved notification adapters. Outbound adapters deliver meaningful events from `.coworx-private/standby/outbox.ndjson`. Inbound adapters write normalized replies to `.coworx-private/standby/inbox.ndjson` or `.coworx-private/standby/inbox/*.json`. Computer Use notification adapters require the same target locks as any other GUI lane.
 
 Private dispatch channels need a setup record before use. An Operator must verify the approved channel/account label, adapter path, remote approval scope, and stop conditions before delivering outbox messages or consuming inbound approvals. Real channel content stays in ignored private standby paths; public output paths may contain only fake demo outboxes or sanitized summaries.
+
+If the configured private dispatch channel is Messages/iMessage or another GUI-only app, the first standby start or due cycle must enqueue or acquire the Computer Use dispatch lane automatically. The user should not have to restate "use Computer Use." If the lease is busy, record a wait item and retry; do not claim the channel was checked. Vague inbound messages should be stored privately and answered with a clarification request when an outbound adapter is configured.
 
 Temporary waits should be recorded as wait items or Codex Automations when available and authorized. A wait Operator checks only when due, releases GUI/account locks between checks, and records cleanup when the temporary automation is deleted, disabled, or retired.
 

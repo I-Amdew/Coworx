@@ -69,6 +69,30 @@
       "credentials"
     ]
   },
+  "computer_use_dispatch": {
+    "immediate_check_when_configured": true,
+    "queue_state_dir": ".coworx-private/computer-use",
+    "gui_only_channel_types": [
+      "messages_or_imessage",
+      "messages_or_imessage_if_available",
+      "imessage",
+      "gui_messaging_app"
+    ],
+    "required_locks": [
+      "computer_app:Messages",
+      "desktop_resource:active_window_focus",
+      "account_workflow:approved-standby-dispatch-channel"
+    ],
+    "one_agent_per_app_at_a_time": true,
+    "claim_requires": [
+      "queued_or_acquired_lease_id",
+      "Computer Use state/action evidence",
+      "approved channel/thread verification",
+      "lease release evidence"
+    ],
+    "lease_blocked_behavior": "record_wait_item_and_retry_next_cycle",
+    "vague_inbound_task_behavior": "store_private_packet_and_queue_clarification"
+  },
   "notifications": {
     "first_time_setup_required": true,
     "default_method": "local_status_file",

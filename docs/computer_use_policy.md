@@ -36,6 +36,8 @@ Use specific locks such as:
 
 Do not run another Computer Use lane against the same locked target. If isolation is unclear, serialize.
 
+One agent per app is the default. A second Computer Use lane must not control the same app, browser profile, window, account workflow, file picker, simulator, clipboard-dependent flow, or active focus while another lane holds or is acquiring that target. Queue it, reserve a later slot, or do non-GUI work until the lease releases.
+
 ## File-Backed Lease Queue
 
 Before using Computer Use in a workspace where another Coworx or Codex instance may be active, reserve and acquire the desktop lease with `scripts/coworx_computer_use_queue.mjs`.
@@ -69,6 +71,18 @@ node scripts/coworx_computer_use_queue.mjs release --lease-id LEASE_ID
 ```
 
 Use `reserve --start ...` or `reserve --start-in-minutes ...` for a future timeslot. A waiting agent should do non-GUI work while queued instead of polling the desktop.
+
+## Usage Claims Need Evidence
+
+Coworx must not say it used Computer Use, checked an app, read a private thread, selected a file, or completed a GUI action unless the private action result contains:
+
+- the queue request id or active lease id;
+- target locks held, including the app/profile/account and `desktop_resource:active_window_focus`;
+- Computer Use app-state/action evidence;
+- the verified target thread, window, page, file, or dialog;
+- release evidence or a recorded wait item if the lease was blocked.
+
+For standby Messages/iMessage checks, this evidence is required before converting channel text into inbox packets. If the lease is blocked, the correct result is queued or waiting, not checked.
 
 ## Credential Entry
 

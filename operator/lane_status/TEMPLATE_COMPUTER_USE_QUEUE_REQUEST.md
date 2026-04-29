@@ -20,6 +20,11 @@ pending / reserved / active / released / expired / blocked
 - Browser profile/account workflow:
 - Clipboard/file picker/simulator/active focus:
 
+## Exclusivity
+- One agent per app/window/profile/account target: yes
+- Same-app lane behavior: queue or wait
+- Usage claim requires queue/lease evidence: yes
+
 ## Action Level
 
 ## Authority Source

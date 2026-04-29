@@ -45,6 +45,8 @@ If the Computer Use tools are visible, the safe sequence is:
 5. verify the visible result;
 6. release the lease immediately when GUI work or extraction is done.
 
+For standby dispatch channels that are GUI-only, such as Messages/iMessage, the Computer Use lane is not optional or delayed. Once setup is complete, queue or acquire the lane at standby start or the first due cycle. Do not claim the channel was checked without the queue/lease id, app-state or action evidence, approved-thread verification, and release or wait evidence.
+
 If the active model cannot find or correctly use Computer Use tools, it must delegate the Computer Use lane to a capable operator model or ask the user to switch the active Director model for that lane. It should continue safe non-GUI lanes in parallel while that GUI lane is blocked or delegated. It should not substitute Browser Use, generic web browsing, `open`, or shell commands for a workflow that specifically needs a real browser profile, native app, file picker, password-manager prompt, or visible desktop state.
 
 No model may treat raw chat as the runtime credential source. If a user pastes a password or MFA answer into chat and explicitly authorizes use for a clear target, the Director should transfer it into approved local credential storage/reference, generate a continuation prompt, and stop or pause the current credentialed task. The fresh chat resumes from the non-secret credential reference. Computer Use should never type the raw chat value directly into the browser.

@@ -25,7 +25,10 @@ node scripts/coworx_ready_check.mjs
 - Outbox packets include Dispatch-style conversation metadata so a notifier lane can deliver them in one continuous thread.
 - Inbound local reply packets can apply `approve` / `deny`, pause, resume, stop, or store a new task privately for Director review.
 - Inbound `task` or `new_task` packets are stored under the private standby task queue, not inside the consumable inbox directory.
+- Vague inbound task packets are stored privately and queue a clarification instead of being marked completed.
 - Standby keeps checking inbound sources while the active task continues.
+- Configured GUI-only dispatch channels such as Messages/iMessage immediately queue a Computer Use request with app and active-focus locks.
+- A GUI channel is not reported as checked unless private queue/lease, app-state/action, approved-channel verification, and release or wait evidence exist.
 - Remote replies cannot expand authority beyond the active directive.
 - Permission prompts are classified as remote-grantable approval, local-only manual action, or hard block.
 - Runtime files stay under ignored private paths or temporary directories.

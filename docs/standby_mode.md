@@ -69,6 +69,20 @@ Do not treat `start standby mode` or an inbound private-channel message as enoug
 
 If any required setup is missing, ask only the missing questions or fall back to local status files. Store real channel identifiers, webhooks, handles, phone numbers, and personal message content only in ignored private state.
 
+## Out-Of-Box GUI Dispatch
+
+Requests such as "standby mode, text me", "check Messages", "check iMessage", or "use my self-chat" imply a GUI-only private dispatch channel when Messages/iMessage is the configured route. Coworx should not wait for the user to say "use Computer Use" after that. Once the private setup record has an approved channel label and approved account or sender label, the first standby start or due cycle must immediately queue or acquire a Computer Use dispatch check with:
+
+- `computer_app:Messages`;
+- `desktop_resource:active_window_focus`;
+- an account or workflow lock for the approved dispatch channel;
+- one-agent-per-app exclusivity;
+- a private action result path.
+
+A Messages/iMessage check is not complete merely because the model says it checked. The checked-channel claim requires a Computer Use lease id, app-state or action evidence, confirmation that the approved thread/channel was inspected, normalized private inbox packets if new messages exist, and lease release evidence. If the Computer Use lease is busy, record a wait item, leave the check queued, and retry on the next cycle; do not claim that the channel was checked.
+
+If a configured private-channel message is vague, such as a generic "can you do something" request, store the packet privately and queue a clarification through the approved outbound adapter when available. Do not mark the task completed, broaden the active directive, or ask the user to repeat routine routing instructions.
+
 ## Notifications
 
 Quiet mode is the default. Do not notify every 5 minutes unless verbose mode is enabled.

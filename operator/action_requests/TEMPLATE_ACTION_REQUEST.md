@@ -95,8 +95,11 @@ delegated by request / explicit approval / stage only
 - Reason: native_app / real_browser_profile / file_picker / system_dialog / password_manager_or_autofill / messaging_app / visual_verification / other
 - Preferred real browser profile:
 - App/window/profile/account locks:
+- One agent per app/window/profile/account enforced: no / yes
 - Clipboard lock required: no / yes
 - File picker lock required: no / yes
+- Queue request or lease required before claiming use: no / yes
+- Usage claim evidence required: queue_or_lease_id / app_state_or_action / target_verification / release_or_wait
 - Secret-visible evidence policy: disabled / redacted / not applicable
 - Post-action verification required:
 
@@ -143,6 +146,7 @@ delegated by request / explicit approval / stage only
 - Computer Use: lock target app/window/profile/account workflow and any clipboard, file picker, simulator, or active-focus dependency.
 - Computer Use queue lease: not required / requested / acquired / released
 - Computer Use release evidence path/status:
+- GUI action claim status: not_claimed / queued / acquired / verified / waiting_on_lease / blocked
 
 ## Steps
 1.

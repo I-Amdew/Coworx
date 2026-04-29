@@ -205,6 +205,7 @@ It can:
 - continue from the last checkpoint;
 - ask first-run setup questions before relying on private channels;
 - check local inbox files or configured message adapters;
+- route GUI-only adapters such as Messages/iMessage through Computer Use immediately after setup;
 - queue new requests into the same Director flow;
 - respond with milestones, blockers, and completed outputs;
 - stay quiet during normal work.

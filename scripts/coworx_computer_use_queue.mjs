@@ -56,7 +56,7 @@ function usage(exitCode = 0) {
 
 Commands:
   request --task "..." --owner "..." --locks "computer_app:Chrome,desktop_resource:active_window_focus" [--duration-minutes 15]
-  reserve --task "..." --owner "..." --start "2026-04-27T15:30:00-05:00" --duration-minutes 10 [--locks "..."]
+  reserve --task "..." --owner "..." --start "2026-04-27T15:30:00-05:00" --duration-minutes 10 --locks "..."
   acquire --request-id ID [--owner "..."] [--wait-seconds 0]
   acquire --task "..." --owner "..." --locks "..." [--duration-minutes 15]
   renew --lease-id ID --duration-minutes 15
@@ -114,6 +114,26 @@ function splitCsv(value) {
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
+}
+
+function exclusiveTargets(locks) {
+  const prefixes = [
+    "computer_app:",
+    "browser_profile:",
+    "browser_window:",
+    "account_workflow:",
+    "simulator:",
+  ];
+  return locks.filter((lock) => prefixes.some((prefix) => lock.startsWith(prefix)));
+}
+
+function validateComputerUseLocks(locks) {
+  if (exclusiveTargets(locks).length === 0) {
+    throw new Error("Computer Use requests need an app/window/profile/account/simulator target lock.");
+  }
+  if (!locks.includes("desktop_resource:active_window_focus")) {
+    throw new Error("Computer Use requests need desktop_resource:active_window_focus.");
+  }
 }
 
 function assertSafeLabel(value, name) {
@@ -243,6 +263,9 @@ function createRequest(p, flags, status = "pending") {
   assertSafeLabel(owner, "--owner");
   assertSafeLabel(flags.target, "--target");
   assertSafeLabel(flags.note, "--note");
+  const locks = splitCsv(flags.locks || "desktop_resource:active_window_focus");
+  validateComputerUseLocks(locks);
+  const targets = exclusiveTargets(locks);
   const request = {
     schema_version: version,
     request_id: makeId("cuq"),
@@ -251,7 +274,10 @@ function createRequest(p, flags, status = "pending") {
     updated_at: nowIso(),
     owner,
     task,
-    locks: splitCsv(flags.locks || "desktop_resource:active_window_focus"),
+    locks,
+    exclusive_targets: targets,
+    target_exclusivity_rule: "one Computer Use agent per app/window/profile/account target at a time; if isolation is unclear, use the global desktop lease",
+    usage_claim_requires_lease_evidence: true,
     allowed_target: flags.target || null,
     action_level: flags["action-level"] || null,
     priority: flags.priority || "normal",
@@ -386,6 +412,9 @@ async function acquire(p, flags) {
       owner: flags.owner || request.owner,
       task: request.task,
       locks: request.locks,
+      exclusive_targets: request.exclusive_targets,
+      target_exclusivity_rule: request.target_exclusivity_rule,
+      usage_claim_requires_lease_evidence: true,
       allowed_target: request.allowed_target,
       action_level: request.action_level,
       acquired_at: nowIso(),
@@ -464,12 +493,27 @@ function release(p, flags) {
 async function demoTest() {
   const demoDir = mkdtempSync(join(tmpdir(), "coworx-computer-use-queue-"));
   const p = paths({ "state-dir": demoDir });
+  let missingTargetRejected = false;
+  try {
+    createRequest(p, {
+      task: "demo missing app lock",
+      owner: "demo-agent",
+      locks: "desktop_resource:active_window_focus",
+      "duration-minutes": "1",
+    });
+  } catch (error) {
+    missingTargetRejected = error.message.includes("target lock");
+  }
+  if (!missingTargetRejected) throw new Error("Demo request without target lock was not rejected.");
   const request = createRequest(p, {
     task: "demo Computer Use task",
     owner: "demo-agent",
     locks: "computer_app:Chrome,desktop_resource:active_window_focus",
     "duration-minutes": "1",
   });
+  if (!request.exclusive_targets.includes("computer_app:Chrome") || request.usage_claim_requires_lease_evidence !== true) {
+    throw new Error("Demo request did not record app exclusivity and usage-claim evidence requirements.");
+  }
   const lease = await acquire(p, { "request-id": request.request_id, "wait-seconds": "0" });
   if (!lease) throw new Error("Demo acquire failed.");
   renew(p, { "lease-id": lease.lease_id, "duration-minutes": "2" });

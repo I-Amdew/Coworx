@@ -2,6 +2,7 @@
 import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, isAbsolute, join } from "node:path";
 import { tmpdir } from "node:os";
+import { execFileSync } from "node:child_process";
 
 const root = process.cwd();
 const defaultStateDir = join(root, ".coworx-private", "standby");
@@ -41,6 +42,9 @@ const meaningfulEvents = new Set([
   "config_initialized",
   "task_received",
   "task_started",
+  "clarification_needed",
+  "computer_use_dispatch_queued",
+  "computer_use_dispatch_waiting",
 ]);
 
 function nowIso() {
@@ -202,6 +206,29 @@ function defaultConfig() {
         "Should normal cycles stay quiet or send verbose updates?"
       ]
     },
+    computer_use_dispatch: {
+      immediate_check_when_configured: true,
+      queue_state_dir: ".coworx-private/computer-use",
+      gui_only_channel_types: [
+        "messages_or_imessage",
+        "messages_or_imessage_if_available",
+        "imessage",
+        "gui_messaging_app"
+      ],
+      required_locks: [
+        "computer_app:Messages",
+        "desktop_resource:active_window_focus",
+        "account_workflow:approved-standby-dispatch-channel"
+      ],
+      one_agent_per_app_at_a_time: true,
+      claim_requires: [
+        "queued_or_acquired_lease_id",
+        "Computer Use state/action evidence",
+        "approved channel/thread verification",
+        "lease release evidence"
+      ],
+      lease_blocked_behavior: "record_wait_item_and_retry_next_cycle"
+    },
     temporary_waits: {
       private_wait_dir: ".coworx-private/standby/waits/",
       default_interval_minutes: 5,
@@ -265,6 +292,7 @@ function normalizeConfig(config) {
   if (!config.permission_prompt_policy) config.permission_prompt_policy = defaults.permission_prompt_policy;
   if (!config.conversation_style) config.conversation_style = defaults.conversation_style;
   if (!config.dispatch_setup) config.dispatch_setup = defaults.dispatch_setup;
+  if (!config.computer_use_dispatch) config.computer_use_dispatch = defaults.computer_use_dispatch;
   if (!config.temporary_waits) config.temporary_waits = defaults.temporary_waits;
   return config;
 }
@@ -311,7 +339,7 @@ function appendOutbox(paths, config, state, type, message) {
       cycle_count: state.cycle_count || 0,
       conversation_style: config?.conversation_style?.mode || "dispatch_thread",
       delivery_hint: "deliver through the configured approved channel when available",
-      expects_reply: ["approval_needed", "login_needed", "blocker"].includes(type)
+      expects_reply: ["approval_needed", "login_needed", "blocker", "clarification_needed"].includes(type)
     })}\n`);
   }
 }
@@ -335,6 +363,118 @@ function redactOutboundMessage(message) {
 
 function dispatchSetupConfigured(config) {
   return config?.dispatch_setup?.configured === true;
+}
+
+function guiOnlyChannelTypes(config) {
+  return new Set(config?.computer_use_dispatch?.gui_only_channel_types || [
+    "messages_or_imessage",
+    "messages_or_imessage_if_available",
+    "imessage",
+    "gui_messaging_app",
+  ]);
+}
+
+function adapterRequiresComputerUse(config, adapter) {
+  if (!adapter) return false;
+  const types = guiOnlyChannelTypes(config);
+  return adapter.requires_computer_use === true
+    || types.has(String(adapter.type || ""))
+    || types.has(String(adapter.id || ""));
+}
+
+function computerUseDispatchRequired(config) {
+  if (!dispatchSetupConfigured(config)) return false;
+  const types = guiOnlyChannelTypes(config);
+  if (types.has(String(config.notification_method || ""))) return true;
+  return configuredAdapters(config, "inbound").some((adapter) => adapterRequiresComputerUse(config, adapter))
+    || configuredAdapters(config, "outbound").some((adapter) => adapterRequiresComputerUse(config, adapter));
+}
+
+function computerUseQueueStateDir(paths, config) {
+  if (paths.stateDir === defaultStateDir) {
+    const configured = config?.computer_use_dispatch?.queue_state_dir || ".coworx-private/computer-use";
+    return isAbsolute(configured) ? configured : join(root, configured);
+  }
+  return join(paths.stateDir, "computer-use-queue");
+}
+
+function computerUseDispatchLocks(config) {
+  const locks = config?.computer_use_dispatch?.required_locks;
+  if (Array.isArray(locks) && locks.length > 0) return locks;
+  return ["computer_app:Messages", "desktop_resource:active_window_focus", "account_workflow:approved-standby-dispatch-channel"];
+}
+
+function requestStatus(queueStateDir, requestId) {
+  if (!requestId) return null;
+  return readJson(join(queueStateDir, "requests", `${requestId}.json`));
+}
+
+function ensureComputerUseDispatchRequest(paths, state, config) {
+  const required = computerUseDispatchRequired(config);
+  const queueStateDir = computerUseQueueStateDir(paths, config);
+  const locks = computerUseDispatchLocks(config);
+  const previous = state.computer_use_dispatch || {};
+  state.computer_use_dispatch = {
+    ...previous,
+    required,
+    status: required ? previous.status || "pending" : "not_required",
+    queue_state_dir: paths.stateDir === defaultStateDir ? ".coworx-private/computer-use" : queueStateDir,
+    locks,
+    one_agent_per_app_at_a_time: config?.computer_use_dispatch?.one_agent_per_app_at_a_time !== false,
+    usage_claim_requires_evidence: config?.computer_use_dispatch?.claim_requires || [],
+    lease_blocked_behavior: config?.computer_use_dispatch?.lease_blocked_behavior || "record_wait_item_and_retry_next_cycle",
+  };
+
+  if (!required || config?.computer_use_dispatch?.immediate_check_when_configured === false) return;
+
+  const existing = requestStatus(queueStateDir, state.computer_use_dispatch.request_id);
+  if (existing && ["pending", "reserved", "active"].includes(existing.status)) {
+    state.computer_use_dispatch.status = existing.status === "active" ? "lease_active" : "queued";
+    state.computer_use_dispatch.request_id = existing.request_id;
+    state.computer_use_dispatch.last_queue_status = existing.status;
+    state.current_status = "running; Computer Use dispatch check queued";
+    return;
+  }
+
+  try {
+    const output = execFileSync(process.execPath, [
+      join(root, "scripts/coworx_computer_use_queue.mjs"),
+      "request",
+      "--state-dir",
+      queueStateDir,
+      "--task",
+      "check approved standby dispatch channel",
+      "--owner",
+      "coworx-standby",
+      "--locks",
+      locks.join(","),
+      "--target",
+      "approved-dispatch",
+      "--duration-minutes",
+      "5",
+    ], { cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
+    const parsed = JSON.parse(output);
+    const request = parsed.request;
+    state.computer_use_dispatch.status = "queued";
+    state.computer_use_dispatch.request_id = request.request_id;
+    state.computer_use_dispatch.queued_at = nowIso();
+    state.computer_use_dispatch.last_queue_status = request.status;
+    state.current_status = "running; Computer Use dispatch check queued";
+    state.current_checkpoint = "approved GUI dispatch channel requires Computer Use evidence before any checked-channel claim";
+    appendEvent(paths, {
+      type: "computer_use_dispatch_queued",
+      message: "Approved GUI dispatch channel check was queued through the Computer Use lease queue."
+    }, true, state);
+    appendOutbox(paths, config, state, "computer_use_dispatch_queued", "I queued the approved dispatch channel check through Computer Use and will not treat it as checked until the lease and app evidence are recorded.");
+  } catch (error) {
+    state.computer_use_dispatch.status = "blocked";
+    state.computer_use_dispatch.blocked_reason = "could not queue Computer Use dispatch check";
+    state.current_status = "blocked: could not queue Computer Use dispatch check";
+    appendEvent(paths, {
+      type: "blocker",
+      message: `Computer Use dispatch queue request failed: ${error.message}`
+    }, true, state);
+  }
 }
 
 function sourceAllowsApproval(config, source) {
@@ -478,22 +618,44 @@ function processInboundPackets(paths, state, config) {
     } else if (packet.command === "new_task" || packet.command === "task") {
       ensureDir(paths.taskQueueDir);
       const privateTaskPath = join(paths.taskQueueDir, `task-${nowIso().replace(/[:.]/g, "")}.json`);
+      const text = packet.text || packet.task || packet.message || "";
+      const vague = isVagueTaskText(text);
       writeJson(privateTaskPath, {
         received_at: nowIso(),
         source: packet.source,
-        text: packet.text || packet.task || packet.message || "",
-        status: "received_private_needs_director_review",
+        text,
+        status: vague ? "needs_clarification_before_director_review" : "received_private_needs_director_review",
         rule: "Inbound text is private task data. It does not expand the active directive, authority, recipients, destinations, or safety rules until the Director updates the directive ledger."
       });
       state.inbound_task_count = Number(state.inbound_task_count || 0) + 1;
       state.last_inbound_task_path = privateTaskPath;
       state.current_checkpoint = `inbound task received and stored privately at ${privateTaskPath}`;
-      appendEvent(paths, { type: "task_received", message: "Inbound task received and stored for Director review." }, true, state);
-      appendOutbox(paths, config, state, "task_received", "Got it. I saved the new task privately for Director review and I am still working the active task.");
+      if (vague) {
+        state.clarification_needed_count = Number(state.clarification_needed_count || 0) + 1;
+        appendEvent(paths, { type: "clarification_needed", message: "Vague inbound task stored privately and clarification queued." }, true, state);
+        appendOutbox(paths, config, state, "clarification_needed", "I got your message, but I need the actual task before I can act. Send the concrete task in this approved dispatch thread.");
+      } else {
+        appendEvent(paths, { type: "task_received", message: "Inbound task received and stored for Director review." }, true, state);
+        appendOutbox(paths, config, state, "task_received", "Got it. I saved the new task privately for Director review and I am still working the active task.");
+      }
     } else {
       appendEvent(paths, { type: "blocker", message: `Unsupported inbound standby command from ${packet.source}: ${packet.command}` }, true, state);
     }
   }
+}
+
+function isVagueTaskText(value) {
+  const text = String(value || "").trim().toLowerCase().replace(/[?.!]+$/g, "");
+  if (!text) return true;
+  return [
+    "can you do something for me",
+    "do something for me",
+    "do something",
+    "can you help",
+    "help me",
+    "task",
+    "new task",
+  ].includes(text);
 }
 
 function renderStatus(state, config) {
@@ -516,6 +678,10 @@ function renderStatus(state, config) {
 - Notification Setup Needed: ${state.notification_setup_needed ? "yes" : "no"}
 - Dispatch Setup Configured: ${dispatchSetupConfigured(config) ? "yes" : "no"}
 - Inbound Tasks Waiting For Director Review: ${state.inbound_task_count || 0}
+- Clarifications Needed: ${state.clarification_needed_count || 0}
+- Computer Use Dispatch Required: ${state.computer_use_dispatch?.required ? "yes" : "no"}
+- Computer Use Dispatch Status: ${state.computer_use_dispatch?.status || "not_required"}
+- Computer Use Dispatch Request: ${state.computer_use_dispatch?.request_id || "none"}
 
 Runtime files under .coworx-private/standby/ are private local state and should not be committed.
 `;
@@ -675,6 +841,7 @@ function startStandby(flags) {
     },
     demo_task: flags.demo ? demoTask() : null,
   };
+  ensureComputerUseDispatchRequest(paths, state, config);
   if (state.notification_setup_needed) {
     state.current_status = "running; dispatch/notification setup needed";
   }
@@ -740,6 +907,7 @@ function runCycle(flags) {
     state.last_cycle = cycleTime;
     state.cycle_count += 1;
     state.next_cycle = nextCycleFrom(state.interval_minutes, new Date(cycleTime));
+    ensureComputerUseDispatchRequest(paths, state, config);
 
     if (flags.demo || state.demo_task) {
       state.demo_task = state.demo_task || demoTask();
@@ -824,6 +992,11 @@ function inactiveState(config) {
     current_checkpoint: null,
     pending_approval: null,
     approval_decision: null,
+    computer_use_dispatch: {
+      required: computerUseDispatchRequired(config),
+      status: computerUseDispatchRequired(config) ? "pending" : "not_required",
+      request_id: null,
+    },
   };
 }
 
@@ -913,6 +1086,19 @@ function demoTest() {
     if (!state.last_inbound_task_path.includes(`${join(tempDir, "tasks")}`)) {
       throw new Error("inbound task was stored in the inbox instead of the private task queue");
     }
+    appendFileSync(join(tempDir, "inbox.ndjson"), `${JSON.stringify({ command: "task", text: "Can you do something for me" })}\n`);
+    runCycle({ "state-path": statePath, demo: true, force: true });
+    state = readJson(statePath);
+    if (state.clarification_needed_count !== 1) {
+      throw new Error("vague inbound task did not request clarification");
+    }
+    const vagueTask = readJson(state.last_inbound_task_path);
+    if (vagueTask.status !== "needs_clarification_before_director_review") {
+      throw new Error("vague inbound task was not stored as clarification-needed private state");
+    }
+    if (!readFileSync(outboxPath, "utf8").includes("need the actual task")) {
+      throw new Error("vague inbound task did not queue a clarification outbox message");
+    }
     state.user_input_needed = true;
     state.stop_pause_state = "needs_input";
     writeJson(statePath, state);
@@ -973,7 +1159,7 @@ function demoTest() {
     appendFileSync(join(tempDir, "inbox.ndjson"), `${JSON.stringify({ command: "approve", note: "demo approval" })}\n`);
     runCycle({ "state-path": statePath, demo: true, force: true });
     state = readJson(statePath);
-    if (state.approval_decision?.decision !== "approve" || state.stop_pause_state !== "running") {
+    if (state.approval_decision?.decision !== "approve" || state.user_input_needed || !["running", "completed"].includes(state.stop_pause_state)) {
       throw new Error("inbound approval did not resume standby state");
     }
     runCycle({ "state-path": statePath, demo: true, force: true });
@@ -992,6 +1178,35 @@ function demoTest() {
     }
     if (outbox.includes("quiet_cycle")) {
       throw new Error("quiet cycle spam was written to local outbox while verbose mode was off");
+    }
+    const guiStatePath = join(tempDir, "gui", "state.json");
+    const guiPaths = statePaths({ "state-path": guiStatePath });
+    ensureDir(guiPaths.stateDir);
+    const guiConfig = defaultConfig();
+    guiConfig.configured = true;
+    guiConfig.notification_method = "imessage";
+    guiConfig.dispatch_setup.configured = true;
+    guiConfig.dispatch_setup.approved_channel_label = "demo-approved-channel";
+    guiConfig.dispatch_setup.approved_account_or_sender_label = "demo-sender-label";
+    guiConfig.dispatch_setup.remote_replies_can_create_task_packets = true;
+    guiConfig.notification_adapters.inbound.push({
+      id: "demo_messages_inbound",
+      type: "messages_or_imessage",
+      enabled: true,
+      requires_computer_use: true,
+    });
+    writeJson(guiPaths.configPath, guiConfig);
+    startStandby({ "state-path": guiStatePath, "interval-minutes": "60", "max-hours": "1", task: "demo gui standby task", demo: true });
+    const guiState = readJson(guiStatePath);
+    if (guiState.computer_use_dispatch?.status !== "queued" || !guiState.computer_use_dispatch?.request_id) {
+      throw new Error("configured GUI dispatch channel did not immediately queue a Computer Use request");
+    }
+    if (!guiState.computer_use_dispatch.locks.includes("computer_app:Messages") || !guiState.computer_use_dispatch.locks.includes("desktop_resource:active_window_focus")) {
+      throw new Error("GUI dispatch Computer Use request did not declare app and active-focus locks");
+    }
+    const guiRequest = requestStatus(join(guiPaths.stateDir, "computer-use-queue"), guiState.computer_use_dispatch.request_id);
+    if (!guiRequest || guiRequest.status !== "pending") {
+      throw new Error("GUI dispatch queue request evidence was not written");
     }
     console.log("Standby demo test passed.");
   } finally {
