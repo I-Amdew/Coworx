@@ -82,6 +82,9 @@ delegated by request / explicit approval / stage only
 - Persist credentials for future approved use: no / yes, explicitly delegated
 - Persistence target: none / `.coworx-private/secrets/*.local.env` / os_keychain / password_manager / vault_handle
 - Non-secret source reference:
+- Credential entry review: not required / pending / complete
+- Credential entry review packet:
+- Credential entry mode: autofill / system-events-paste / clipboard-for-computer-use-paste / user-present-manual
 - Chat credential intake: not used / explicitly approved temporary intake
 - Chat-pasted secret detected: no / yes
 - Secure local intake or approved transfer required before login: no / yes

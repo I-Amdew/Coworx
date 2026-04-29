@@ -61,6 +61,8 @@ Runtime use of local secret files requires a credential source resolver. The res
 
 Credentialed login through Computer Use must use the resolver or another approved local executor when secret fields need typing. Computer Use may navigate, focus fields, and verify UI state, but it must not type raw secret values directly from chat.
 
+If the normal local paste route fails, the approved fallback is reviewed operator paste: create a credential-entry review packet, set the secret on the local clipboard through `scripts/coworx_type_secret_to_front_app.mjs enter --entry-mode clipboard-for-computer-use-paste`, use Computer Use to paste into the already reviewed focused field, and immediately run the helper's `clear-clipboard` command. The model receives only packet paths, key names, host labels, lease ids, and clear evidence; it must never receive the secret value.
+
 ### D. Approved Local Credential Source Reference
 
 Sometimes the user's existing setup already has a private local credential source, such as a local skill file, password-manager handle, keychain item, vault handle, or connector-managed auth record. Coworx may save a private credential packet that references that source without copying the secret into Coworx.
@@ -108,9 +110,10 @@ Coworx must pause or block:
 4. Confirm the login page target and domain/app identity.
 5. Disable or avoid secret-visible screenshots, videos, and traces.
 6. Acquire the account workflow lock.
-7. Enter credentials locally from the approved source/reference, never directly from raw chat memory.
-8. Clear the clipboard if used.
-9. Resume evidence collection only after secrets are no longer visible.
+7. Complete target/account/field review and record a review packet or explicit reviewed-entry flag.
+8. Enter credentials locally from the approved source/reference, never directly from raw chat memory.
+9. Clear the clipboard if used.
+10. Resume evidence collection only after secrets are no longer visible.
 
 Use this deterministic fallback order for approved account workflows: existing signed-in session, connector/OAuth/API session, approved autofill/password-manager/keychain route, approved local-only secret source or local skill reference, user-present manual secure entry, then a staged blocker naming the exact missing setup. Do not ask the user to paste secrets into chat and do not send secret values to subagents.
 

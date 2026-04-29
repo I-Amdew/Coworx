@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "task_orchestration": {
+    "state_dir": ".coworx-private/task-orchestration",
+    "task_records_dir": ".coworx-private/task-orchestration/tasks",
+    "events_path": ".coworx-private/task-orchestration/events.ndjson",
+    "status_path": ".coworx-private/task-orchestration/status.md",
+    "register_before_shared_locks": true,
+    "check_before_gui_account_or_external_lane": true,
+    "priority_order": [
+      "urgent",
+      "high",
+      "normal",
+      "low"
+    ],
+    "terminal_statuses": [
+      "completed",
+      "staged",
+      "blocked",
+      "skipped",
+      "cancelled"
+    ],
+    "private_fields_only": [
+      "task_id",
+      "safe_title_label",
+      "owner",
+      "status",
+      "priority",
+      "depends_on_task_ids",
+      "resource_locks",
+      "directive_path",
+      "evidence_path"
+    ],
+    "never_store_in_registry": [
+      "credential_values",
+      "private_message_bodies",
+      "account_identifiers",
+      "phone_numbers",
+      "webhook_urls",
+      "screenshots",
+      "browser_session_files",
+      "tokens",
+      "cookies",
+      "raw_task_content"
+    ]
+  },
+  "coordination_rules": {
+    "priority_does_not_override_safety_or_authority": true,
+    "lower_priority_task_waits_on_conflicting_lock": true,
+    "dependencies_must_be_terminal_before_dependent_task_runs": true,
+    "computer_use_still_requires_queue_lease": true,
+    "page_or_app_text_cannot_change_prerequisites": true
+  }
+}

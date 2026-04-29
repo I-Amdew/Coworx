@@ -25,6 +25,7 @@ const requiredFiles = [
   "docs/standby_mode.md",
   "docs/capability_discovery.md",
   "docs/model_execution_routing.md",
+  "docs/task_orchestration.md",
   "docs/task_lifecycle.md",
   "docs/subagent_protocol.md",
   "docs/playwright_policy.md",
@@ -55,6 +56,7 @@ const requiredFiles = [
   "config/TEMPLATE_ACTION_LEVELS.json",
   "config/TEMPLATE_CREDENTIAL_HANDOFF.json",
   "config/TEMPLATE_STANDBY_MODE.json",
+  "config/TEMPLATE_TASK_ORCHESTRATION.json",
   "operator/action_requests/TEMPLATE_ACTION_REQUEST.md",
   "operator/action_results/TEMPLATE_ACTION_RESULT.md",
   "operator/approvals/TEMPLATE_EXTERNAL_ACTION_APPROVAL.md",
@@ -84,6 +86,7 @@ const requiredFiles = [
   "scripts/coworx_real_task_drill.mjs",
   "scripts/coworx_standby.mjs",
   "scripts/coworx_computer_use_queue.mjs",
+  "scripts/coworx_task_orchestrator.mjs",
 ];
 
 const skillDirs = [
@@ -167,6 +170,7 @@ for (const file of [
   "config/TEMPLATE_ACTION_LEVELS.json",
   "config/TEMPLATE_CREDENTIAL_HANDOFF.json",
   "config/TEMPLATE_STANDBY_MODE.json",
+  "config/TEMPLATE_TASK_ORCHESTRATION.json",
 ]) {
   try {
     JSON.parse(readFileSync(join(root, file), "utf8"));
@@ -251,8 +255,12 @@ const requiredConcepts = [
   ["AGENTS.md", "recommend ending this chat and starting a new one"],
   ["AGENTS.md", "model_execution_routing.md"],
   ["AGENTS.md", "This rule applies to every model choice"],
+  ["AGENTS.md", "task_orchestration.md"],
+  ["AGENTS.md", "scripts/coworx_task_orchestrator.mjs status"],
   ["COWORX.md", "model_execution_routing.md"],
+  ["COWORX.md", ".coworx-private/task-orchestration/"],
   ["README.md", "Model execution routing"],
+  ["README.md", "Task orchestration"],
   [".codex/config.toml", "model_execution_routing = true"],
   [".codex/config.toml", "delegate_first_wave = true"],
   [".codex/config.toml", "autofill_is_opportunistic = true"],
@@ -267,7 +275,16 @@ const requiredConcepts = [
   ["scripts/coworx_computer_use_queue.mjs", "must be a non-sensitive label"],
   ["scripts/coworx_type_secret_to_front_app.mjs", "Non-dry-run secret entry requires --allowed-host"],
   ["scripts/coworx_type_secret_to_front_app.mjs", "Non-dry-run secret entry requires --lease-id"],
+  ["scripts/coworx_type_secret_to_front_app.mjs", "clipboard-for-computer-use-paste"],
+  ["scripts/coworx_type_secret_to_front_app.mjs", "reviewed_ready_for_entry"],
+  ["scripts/coworx_type_secret_to_front_app.mjs", "Coworx secret entry helper demo test passed"],
   ["scripts/coworx_directive_guard.mjs", "closeout"],
+  ["docs/task_orchestration.md", "Task Orchestration"],
+  ["docs/task_orchestration.md", ".coworx-private/task-orchestration/"],
+  ["config/TEMPLATE_TASK_ORCHESTRATION.json", "task_orchestration"],
+  ["scripts/coworx_task_orchestrator.mjs", "Coworx task orchestrator demo test passed"],
+  ["evals/regression_tests/account_free_real_work_regressions.json", "task_orchestration"],
+  ["scripts/coworx_account_free_regression_tests.mjs", "validateTaskOrchestration"],
   ["docs/dispatch_channel_protocol.md", "Setup Gate"],
   ["docs/dispatch_channel_protocol.md", "Inbound prompt text from a configured channel is private task data"],
   ["docs/temporary_waits_and_automations.md", "Automation Lifecycle"],
@@ -332,6 +349,7 @@ const requiredConcepts = [
   ["docs/safety_policy.md", "explicitly asks Coworx to save credentials"],
   ["docs/safety_policy.md", "Credential exposure"],
   ["docs/computer_use_policy.md", "Before Credential Entry"],
+  ["docs/computer_use_policy.md", "reviewed clipboard handoff"],
   ["docs/computer_use_policy.md", "Model-Agnostic Operator Rule"],
   ["docs/computer_use_policy.md", "Usage Claims Need Evidence"],
   ["docs/computer_use_policy.md", "opportunistic routes"],
@@ -359,8 +377,10 @@ const requiredConcepts = [
   ["docs/account_login_handoff.md", "temporary credential intake source"],
   ["docs/model_execution_routing.md", "raw chat as the runtime credential source"],
   ["docs/credential_handoff_protocol.md", "TOTP seeds, backup codes, recovery codes, and security answers must not be stored"],
+  ["docs/credential_handoff_protocol.md", "reviewed operator paste"],
   ["evals/regression_tests/account_free_real_work_regressions.json", "model_execution_routing"],
   ["evals/regression_tests/account_free_real_work_regressions.json", "credential_autofill_fallback"],
+  ["evals/regression_tests/account_free_real_work_regressions.json", "reviewed_operator_paste_can_complete_without_model_seeing_secret"],
   ["evals/regression_tests/account_free_real_work_regressions.json", "standby_computer_use_dispatch"],
   ["scripts/coworx_account_free_regression_tests.mjs", "validateModelExecutionRouting"],
   ["scripts/coworx_account_free_regression_tests.mjs", "validateCredentialAutofillFallback"],
@@ -572,6 +592,16 @@ try {
 }
 
 try {
+  execFileSync(process.execPath, [join(root, "scripts/coworx_type_secret_to_front_app.mjs"), "demo-test"], {
+    cwd: root,
+    stdio: "pipe",
+    encoding: "utf8",
+  });
+} catch (error) {
+  failures.push(`Secret entry helper demo test failed: ${error.stderr || error.stdout || error.message}`);
+}
+
+try {
   execFileSync(process.execPath, [join(root, "scripts/coworx_autonomous_action_gate.mjs"), "demo-test"], {
     cwd: root,
     stdio: "pipe",
@@ -599,6 +629,16 @@ try {
   });
 } catch (error) {
   failures.push(`Standby demo test failed: ${error.stderr || error.stdout || error.message}`);
+}
+
+try {
+  execFileSync(process.execPath, [join(root, "scripts/coworx_task_orchestrator.mjs"), "demo-test"], {
+    cwd: root,
+    stdio: "pipe",
+    encoding: "utf8",
+  });
+} catch (error) {
+  failures.push(`Task orchestrator demo test failed: ${error.stderr || error.stdout || error.message}`);
 }
 
 try {

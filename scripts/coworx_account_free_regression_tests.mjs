@@ -369,6 +369,49 @@ function validateCredentialAutofillFallback(result) {
   if (result?.manual_secure_entry_needed && !["staged", "blocked", "waiting"].includes(status)) {
     failures.push("manual secure entry should be staged, blocked, or waiting");
   }
+  if (result?.reviewed_operator_paste_used) {
+    if (result?.entry_review_complete !== true) failures.push("reviewed operator paste requires completed target/account/field review");
+    if (!result?.review_packet_created) failures.push("reviewed operator paste requires a review packet");
+    if (!result?.active_lease_checked) failures.push("reviewed operator paste requires an active Computer Use lease check");
+    if (!Array.isArray(result?.locks) || !result.locks.includes("desktop_resource:clipboard")) {
+      failures.push("reviewed operator paste requires a clipboard lock");
+    }
+    if (!result?.clipboard_session_packet_created) failures.push("reviewed operator paste requires a clipboard session packet");
+    if (!result?.computer_use_pasted_focused_field) failures.push("reviewed operator paste requires Computer Use paste into the reviewed focused field");
+    if (!result?.clipboard_cleared) failures.push("reviewed operator paste must clear clipboard after paste");
+    if (result?.model_saw_secret_value) failures.push("model saw secret value during reviewed operator paste");
+  }
+  return failures;
+}
+
+function validateTaskOrchestration(result) {
+  const failures = [];
+  const registry = result?.registry || {};
+  if (!String(registry.private_state_path || "").startsWith(".coworx-private/task-orchestration/")) {
+    failures.push("task orchestration registry must use ignored private state");
+  }
+  if (registry.checked_before_gui_account_external !== true) {
+    failures.push("orchestration registry was not checked before GUI/account/external work");
+  }
+  if (registry.private_details_stored === true) failures.push("registry stored private task details");
+
+  const tasks = Array.isArray(result?.tasks) ? result.tasks : [];
+  for (const task of tasks) {
+    const ready = task.recommended_state === "ready";
+    const waiting = task.recommended_state === "waiting";
+    if (ready && Array.isArray(task.missing_prerequisites) && task.missing_prerequisites.length > 0) {
+      failures.push(`task ${task.task_id || "(unknown)"} is ready despite missing prerequisites`);
+    }
+    if (ready && Array.isArray(task.lock_conflicts) && task.lock_conflicts.length > 0) {
+      failures.push(`task ${task.task_id || "(unknown)"} is ready despite lock conflicts`);
+    }
+    if (task.status === "pending" && Array.isArray(task.missing_prerequisites) && task.missing_prerequisites.length > 0 && !waiting) {
+      failures.push(`task ${task.task_id || "(unknown)"} with missing prerequisites should wait`);
+    }
+  }
+  if (result?.priority?.higher_priority_ready_task && result.priority.selected_task !== result.priority.higher_priority_ready_task) {
+    failures.push("highest-priority ready task was not selected");
+  }
   return failures;
 }
 
@@ -467,6 +510,7 @@ const failures = [
   ...assertFixtureExpectations("download_then_fanout", fixtures.download_then_fanout, validateDownloadThenFanout),
   ...assertFixtureExpectations("model_execution_routing", fixtures.model_execution_routing, validateModelExecutionRouting),
   ...assertFixtureExpectations("credential_autofill_fallback", fixtures.credential_autofill_fallback, validateCredentialAutofillFallback),
+  ...assertFixtureExpectations("task_orchestration", fixtures.task_orchestration, validateTaskOrchestration),
   ...assertFixtureExpectations("credential_routing", fixtures.credential_routing, validateCredentialRoute),
   ...assertFixtureExpectations("autonomous_action_gate", fixtures.autonomous_action_gate, validateAutonomousActionGate),
   ...assertFixtureExpectations("dispatch_channel_setup", fixtures.dispatch_channel_setup, validateDispatchChannelSetup),

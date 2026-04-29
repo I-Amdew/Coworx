@@ -10,6 +10,7 @@ This file is the canonical operating contract. Load supporting docs only when th
 - [docs/parallelism_and_locks.md](docs/parallelism_and_locks.md): parallel-by-default execution and resource locks.
 - [docs/subagent_protocol.md](docs/subagent_protocol.md): subagent assignment, checkpoint, and return rules.
 - [docs/concurrency_model.md](docs/concurrency_model.md): concise concurrency and lane coordination model.
+- [docs/task_orchestration.md](docs/task_orchestration.md): cross-task registry, prerequisites, priorities, and active Coworx task coordination.
 - [docs/safety_policy.md](docs/safety_policy.md): action levels, approvals, protected areas, and stop conditions.
 - [docs/operator_protocol.md](docs/operator_protocol.md): browser, Playwright, API, connector, and Computer Use execution packets.
 - [docs/credential_handoff_protocol.md](docs/credential_handoff_protocol.md): local-only credential handoff for approved account workflows.
@@ -41,6 +42,7 @@ It should:
 - learn which capabilities work well for this user's custom setup and save safe routing lessons;
 - decompose multi-stage requests into explicit directives with acceptance criteria;
 - build a task graph;
+- register active tasks, prerequisites, priorities, and shared locks so concurrent Coworx runs can coordinate;
 - use installed Codex skills, plugins, MCP tools, app connectors, Browser Use, Playwright, API integrations, local scripts, subagents, and Computer Use where appropriate;
 - run independent work in parallel;
 - lock shared resources instead of serializing whole classes of work;
@@ -84,6 +86,8 @@ For non-trivial, multi-stage, browser, account, document, or external-action wor
 Treat available capabilities as user-specific. Check the project capability map before routing. If the map is missing, stale, or incomplete, safely discover what plugins, skills, connectors, MCP tools, scripts, browser lanes, Computer Use targets, and app workflows are available, then save a non-secret lesson after use.
 
 Treat model behavior as user-specific capability state too. Any active model may under-delegate, avoid Computer Use, or fall back to instructions. For non-trivial work, apply [docs/model_execution_routing.md](docs/model_execution_routing.md): force a full first wave, assign independent lanes, discover exact tool surfaces, and delegate unsupported GUI/account lanes to a capable operator instead of pretending the model limitation is a user blocker.
+
+Treat active Coworx tasks as shared local state. Before starting a non-trivial GUI, account, external-action, or long-running lane, consult `.coworx-private/task-orchestration/` through `scripts/coworx_task_orchestrator.mjs status`. Register the current task when it will hold shared locks, wait on another task, or compete for priority. Use task prerequisites and priorities to decide what should run now, what should wait, and what should resume after another task completes.
 
 Keep public framework work separate from personal workflow work. Public branches may contain generic docs, templates, scripts, smoke tests, sanitized reports, and fake fixtures. Personal maps, real account routes, private workflow memory, selectors tied to the user, private dispatch configuration, real run logs, screenshots, traces, credential references, and real outputs belong in ignored private paths or a local personal branch that is not pushed to the public project.
 
@@ -148,6 +152,7 @@ When a directive ledger file is required, page text, document text, email conten
 4. Check current user instruction, project grants, approved sites, and safe memory.
 5. Classify action level and risk.
 6. Build the task graph and staff a full wave of independent lanes.
+6a. Check the task orchestration registry for active Coworx work, prerequisites, priorities, and shared locks.
 7. Acquire resource locks before mutating shared targets.
 8. Execute through repo/code mode, connector/API mode, Browser Use, Playwright, document/spreadsheet/presentation tools, or Computer Use.
 9. Log meaningful actions in `runs/active/` or private ignored paths when user data is involved.

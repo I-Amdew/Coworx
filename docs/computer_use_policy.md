@@ -92,7 +92,9 @@ Before typing, it must verify the target domain/app visually and/or structurally
 
 Computer Use must not type credentials directly from chat memory. If a credential is needed and no approved local credential source exists, the lane must stage secure chat intake transfer, hidden local capture, password-manager/keychain/vault use, connector auth, or user-present manual secure entry. A successful credential setup must leave a non-secret credential packet/reference or route label for future runs; the remembered route is not the raw secret.
 
-If using `scripts/coworx_type_secret_to_front_app.mjs` as the local executor, non-dry-run use requires an active Computer Use queue lease id and an allowed host. The helper reads only ignored private secret files, checks the active Chrome host, requires the lease to include active-focus control, types through local system events, clears the clipboard, and prints only key/domain/lease metadata.
+If using `scripts/coworx_type_secret_to_front_app.mjs` as the local executor, non-dry-run use requires an active Computer Use queue lease id, an allowed host, and an explicit target/account/field review. The helper reads only ignored private secret files, checks the active Chrome host, requires the lease to include active-focus control, and prints only key/domain/lease metadata.
+
+When System Events paste is unavailable, use the reviewed clipboard handoff mode instead of asking the user to log in manually. The helper can place one approved secret value on the local clipboard after review, then Computer Use pastes into the already verified focused field and immediately runs the helper's clear command. This lets the operator input the credential through the GUI without the model ever seeing or printing the value. This fallback requires the Computer Use lease to include `desktop_resource:clipboard`, and the action result must record the review packet, clipboard session packet, paste completion, and clipboard clear evidence.
 
 Stop if the flow changes into account recovery, password reset, security settings, payment settings, identity verification, wrong target, wrong account, unexpected MFA, security prompt, account recovery prompt, or password-change prompt.
 
@@ -106,9 +108,10 @@ For signed-in school, work, docs, calendar, messaging, LMS, and similar account 
 4. Confirm login page target.
 5. Disable or avoid secret-visible screenshots/traces.
 6. Acquire account workflow lock.
-7. Enter credentials locally from the approved source/reference, never directly from chat text.
-8. Clear clipboard if used.
-9. Resume evidence collection only after secrets are no longer visible.
+7. Create or verify a reviewed credential-entry packet naming target, account, field, source key, allowed host, and entry mode.
+8. Enter credentials locally from the approved source/reference, never directly from chat text.
+9. Clear clipboard if used.
+10. Resume evidence collection only after secrets are no longer visible.
 
 ## Password Manager And Autofill
 

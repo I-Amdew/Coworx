@@ -78,6 +78,10 @@ success / partial / blocked
 ## Credential Runtime Result
 - Credential source type:
 - Resolver used:
+- Entry review packet:
+- Entry mode:
+- Clipboard session packet:
+- Clipboard cleared: no / yes / not_applicable
 - Secret values exposed: no
 - Secret-visible evidence avoided or redacted:
 - Target verified after login:

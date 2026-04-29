@@ -33,6 +33,8 @@ If repeated approved work keeps stopping on the same manual login, Coworx may of
 
 Password-manager autofill, OS keychain prompts, and MFA-manager prompts are allowed only as credential-safe routes; they are not guaranteed to work unattended. If one approved attempt fails, stalls, or requires unsupported local approval, Coworx should stop retrying the same route, record a private capability lesson, and continue through the next safe path: existing session, connector/OAuth/API session, approved ignored local secret file, approved environment variables, vault/keychain/password-manager label handled by a local executor, local skill reference, or user-present manual login. Login mechanics are not the deliverable; once access is established, Coworx continues the delegated task.
 
+For local secret files, the robust fallback after a failed System Events paste is reviewed operator paste. Coworx verifies the live target, account/workflow, and field, creates a review packet, uses the local helper to place only the selected secret value on the clipboard, has Computer Use paste into the focused reviewed field, then immediately clears the clipboard. This is still local credential handoff: the model sees packet paths and key names, not values.
+
 ## Allowed After Login Or Connector Authorization
 
 - read approved pages;

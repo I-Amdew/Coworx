@@ -60,6 +60,10 @@ Coworx treats Computer Use as a first-class lane for the things scripts and brow
 
 When multiple Coworx or Codex instances are active, they coordinate real desktop control through `.coworx-private/computer-use/` using `scripts/coworx_computer_use_queue.mjs`. One agent can reserve or acquire the GUI lease, do the short extraction or app action, then release the screen so other work continues locally.
 
+**Task orchestration**
+
+When multiple Coworx tasks are active, they can register prerequisites, priority, and shared locks under `.coworx-private/task-orchestration/` using `scripts/coworx_task_orchestrator.mjs`. This lets one task wait for another, let higher-priority work go first, and avoid starting a GUI/account lane that is already owned by another run.
+
 **Standby dispatch**
 
 Run a task while the Codex session is alive, keep state between cycles, check for inbound messages, and report back only when something meaningful happens. Private channels need setup first: where to send updates, which account or channel is approved, what replies can approve, and where private inbox/outbox state lives.

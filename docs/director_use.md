@@ -10,13 +10,14 @@ The Director owns the outcome. Subagents, browser lanes, API connectors, reviewe
 2. Convert explicit and implied multi-stage instructions into a directive ledger.
 3. Write a file-backed directive ledger for non-trivial, browser, account, document, external-action, or prompt-injection-sensitive work.
 4. Build a task/prerequisite graph before staffing.
-5. Keep shared contracts, immediate blockers, integration, safety calls, and final reporting local to the Director.
-6. Staff every useful independent lane that improves delivery, speed, or verification quality.
-7. Continue local critical-path work while lanes run.
-8. Checkpoint agents when their output can change the graph, unblock work, or needs steering.
-9. Inspect evidence before trusting returned claims.
-10. Recompute the graph and directive ledger after each meaningful result.
-11. Verify the integrated result before calling the task done.
+5. Check the cross-task orchestration registry when other Coworx tasks may be active, then register current task priority, prerequisites, and shared locks if needed.
+6. Keep shared contracts, immediate blockers, integration, safety calls, and final reporting local to the Director.
+7. Staff every useful independent lane that improves delivery, speed, or verification quality.
+8. Continue local critical-path work while lanes run.
+9. Checkpoint agents when their output can change the graph, unblock work, or needs steering.
+10. Inspect evidence before trusting returned claims.
+11. Recompute the graph and directive ledger after each meaningful result.
+12. Verify the integrated result before calling the task done.
 
 ## Task Graph
 
@@ -48,6 +49,12 @@ Types:
 Recompute the graph whenever an agent returns, a command fails, a lock is acquired or released, a new dependency appears, or acceptance criteria change.
 
 For file-backed directive work, update the directive file when the graph changes and check meaningful actions against that file before acting. Subagents should receive directive IDs and scoped action packets instead of broad chat-history authority.
+
+## Cross-Task Orchestration
+
+When multiple Coworx runs may be active in the same workspace, consult `scripts/coworx_task_orchestrator.mjs status` before starting GUI, account, external-action, or long-running work. Register the current task when it will hold shared locks, has prerequisites, or needs priority coordination with other active tasks.
+
+Use task priority and prerequisites to decide whether to start now, wait for another task, or let a higher-priority task keep the shared resource. The task orchestrator does not replace the directive ledger, object locks, or the Computer Use lease queue; it gives the Director a shared snapshot so independent threads can coordinate.
 
 ## Staffing Defaults
 

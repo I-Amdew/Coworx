@@ -273,6 +273,42 @@
       }
     },
     {
+      "name": "reviewed_operator_paste_can_complete_without_model_seeing_secret",
+      "expect": "pass",
+      "result": {
+        "status": "completed",
+        "credential_needed": true,
+        "login_completed": true,
+        "remember_requested": true,
+        "credential_source_type": "private_file",
+        "credential_reference_created": true,
+        "reviewed_operator_paste_used": true,
+        "entry_review_complete": true,
+        "review_packet_created": true,
+        "active_lease_checked": true,
+        "locks": [
+          "computer_app:Chrome",
+          "account_workflow:approved-login",
+          "desktop_resource:active_window_focus",
+          "desktop_resource:clipboard"
+        ],
+        "clipboard_session_packet_created": true,
+        "computer_use_pasted_focused_field": true,
+        "clipboard_cleared": true,
+        "model_saw_secret_value": false,
+        "chat_secret_detected": false,
+        "explicit_chat_intake_approved": false,
+        "used_chat_secret_directly": false,
+        "secure_capture_or_local_transfer_required": false,
+        "secure_intake_transfer_completed": false,
+        "recommend_new_chat": false,
+        "continuation_prompt_created": false,
+        "manual_secure_entry_needed": false,
+        "secret_values_exposed": false,
+        "asked_for_chat_secret": false
+      }
+    },
+    {
       "name": "failed_mfa_manager_retry_loop_is_rejected",
       "expect": "fail",
       "result": {
@@ -313,6 +349,80 @@
         "manual_secure_entry_needed": false,
         "secret_values_exposed": false,
         "asked_for_chat_secret": true
+      }
+    }
+  ],
+  "task_orchestration": [
+    {
+      "name": "dependent_task_waits_while_urgent_independent_task_runs",
+      "expect": "pass",
+      "result": {
+        "registry": {
+          "private_state_path": ".coworx-private/task-orchestration/status.md",
+          "checked_before_gui_account_external": true,
+          "private_details_stored": false
+        },
+        "tasks": [
+          {
+            "task_id": "mail-lane",
+            "status": "running",
+            "priority": "high",
+            "recommended_state": "running",
+            "missing_prerequisites": [],
+            "lock_conflicts": []
+          },
+          {
+            "task_id": "send-after-mail",
+            "status": "pending",
+            "priority": "normal",
+            "recommended_state": "waiting",
+            "missing_prerequisites": [
+              "mail-lane"
+            ],
+            "lock_conflicts": [
+              "mail-lane"
+            ]
+          },
+          {
+            "task_id": "local-review",
+            "status": "pending",
+            "priority": "urgent",
+            "recommended_state": "ready",
+            "missing_prerequisites": [],
+            "lock_conflicts": []
+          }
+        ],
+        "priority": {
+          "higher_priority_ready_task": "local-review",
+          "selected_task": "local-review"
+        }
+      }
+    },
+    {
+      "name": "task_with_missing_prerequisite_marked_ready_is_rejected",
+      "expect": "fail",
+      "result": {
+        "registry": {
+          "private_state_path": "outputs/reports/task-status.md",
+          "checked_before_gui_account_external": false,
+          "private_details_stored": true
+        },
+        "tasks": [
+          {
+            "task_id": "send-after-mail",
+            "status": "pending",
+            "priority": "normal",
+            "recommended_state": "ready",
+            "missing_prerequisites": [
+              "mail-lane"
+            ],
+            "lock_conflicts": []
+          }
+        ],
+        "priority": {
+          "higher_priority_ready_task": "local-review",
+          "selected_task": "send-after-mail"
+        }
       }
     }
   ],
