@@ -4,6 +4,14 @@ Use this template only with placeholders in shippable docs. Do not commit real c
 
 Coworx can read approved local secrets at runtime from ignored private files under `.coworx-private/secrets/` or from environment variables. When the user explicitly delegates credential persistence, Coworx may create or update those ignored private files or a keychain/password-manager/vault reference. Secret values must never appear in prompts, logs, traces, screenshots, docs, config templates, reports, memory, or generated artifacts.
 
+Check the shipped Coworx credential-memory capability with:
+
+```bash
+node scripts/coworx_local_secret_store.mjs status
+```
+
+This reports only capability and path metadata. It does not print secret values.
+
 ## Example Private File
 
 Create an ignored local file such as:

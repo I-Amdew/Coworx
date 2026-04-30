@@ -132,6 +132,33 @@ function printResult(result) {
   }, null, 2));
 }
 
+function status() {
+  printResult({
+    ok: true,
+    ships_with_coworx: true,
+    credential_memory_available: true,
+    credential_memory_name: "Coworx local credential memory",
+    default_backend: "ignored_private_secret_file_with_non_secret_reference_packet",
+    encrypted_password_manager: false,
+    encrypted_backend_routes: [
+      "os_keychain_reference",
+      "password_manager_reference",
+      "vault_handle_reference"
+    ],
+    explicit_user_grant_required: true,
+    preferred_intake: "interactive_hidden_tty_capture",
+    chat_intake_supported: true,
+    chat_intake_rule: "Temporary contaminated intake only. Transfer to local storage/reference, generate a continuation prompt, then resume from a fresh chat.",
+    chrome_password_manager_is_not_coworx_memory: true,
+    model_memory_is_not_credential_memory: true,
+    secret_values_in_model_memory: false,
+    secret_values_printed: false,
+    secrets_dir: secretsDir,
+    reference_dir: referenceDir,
+    runtime_entry_helper: "scripts/coworx_type_secret_to_front_app.mjs",
+  });
+}
+
 function fromEnv(options) {
   const usernameEnv = options["username-env"];
   const passwordEnv = options["password-env"];
@@ -310,6 +337,19 @@ async function capture(options) {
 }
 
 function demoTest() {
+  const statusMessages = [];
+  const originalLog = console.log;
+  console.log = (message) => statusMessages.push(String(message));
+  try {
+    status();
+  } finally {
+    console.log = originalLog;
+  }
+  const statusPayload = JSON.parse(statusMessages.join("\n"));
+  if (statusPayload.credential_memory_available !== true || statusPayload.chrome_password_manager_is_not_coworx_memory !== true) {
+    throw new Error("credential memory status did not report the shipped Coworx local capability");
+  }
+
   const path = writeSecretFile("demo-local-secret-store", [
     ["COWORX_DEMO_USERNAME", "demo-user"],
     ["COWORX_DEMO_PASSWORD", "demo-password"]
@@ -335,7 +375,8 @@ function demoTest() {
 const { command, options } = parseArgs(process.argv);
 
 try {
-  if (command === "from-env") fromEnv(options);
+  if (command === "status") status();
+  else if (command === "from-env") fromEnv(options);
   else if (command === "from-stdin") fromStdin(options);
   else if (command === "capture") await capture(options);
   else if (command === "template") template(options);
@@ -346,6 +387,7 @@ try {
   node ${basename(process.argv[1])} from-stdin --name APP --target DOMAIN_OR_APP --account-label LABEL --chat-intake true [--continuation-goal GOAL] < secure-intake.json
   node ${basename(process.argv[1])} capture --name APP [--target DOMAIN_OR_APP] [--account-label LABEL] [--username-env USER_ENV] [--password-env PASSWORD_ENV] [--extra-env ENV_A,ENV_B] [--force true]
   node ${basename(process.argv[1])} template --name APP [--username-env USER_ENV] [--password-env PASSWORD_ENV] [--extra-env ENV_A,ENV_B] [--force true]
+  node ${basename(process.argv[1])} status
   node ${basename(process.argv[1])} demo-test`);
     process.exit(2);
   }

@@ -236,6 +236,8 @@ Password-manager autofill and MFA-manager prompts are opportunistic, not guarant
 
 If you explicitly ask Coworx to save a password for a workflow, it should use private ignored storage, keychain, a password manager, or a vault handle. It should not put the password in chat, logs, screenshots, committed files, or normal memory.
 
+Coworx includes a local credential memory helper: `scripts/coworx_local_secret_store.mjs`. It creates ignored private secret files or non-secret references for approved workflows. It is separate from Chrome's password manager and separate from model memory; encrypted storage depends on an OS keychain, password-manager, or vault route you approve.
+
 If you choose to paste a secret into chat, Coworx treats it as temporary intake only. It should route the value into secure local storage or another approved local source, remember only a non-secret route reference, and give you a continuation prompt for a new chat so the active model context no longer contains the secret.
 
 ## Security Defaults

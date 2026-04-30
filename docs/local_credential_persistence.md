@@ -2,6 +2,18 @@
 
 Coworx should preserve autonomy when the user explicitly wants credentials saved for repeated approved workflows. The safe durable route is local-only credential persistence, not chat memory, shippable memory, logs, screenshots, traces, or committed files. Chat may be used only as temporary intake when the user explicitly chooses that path and the task immediately transitions to a fresh chat after local persistence.
 
+## Coworx Credential Memory
+
+Coworx ships with local credential memory for explicitly delegated workflows. That means `scripts/coworx_local_secret_store.mjs`, ignored private secret files, approved keychain/password-manager/vault references, and non-secret credential reference packets. It is not model memory, public project memory, or Chrome's password manager.
+
+When a user asks whether Coworx has a built-in password memory system, answer from the local capability, not from guesswork:
+
+```bash
+node scripts/coworx_local_secret_store.mjs status
+```
+
+The correct short answer is: Coworx has local credential memory and reference packets for approved workflows; it is not an encrypted cloud password manager unless the route is an OS keychain, password-manager, or vault reference. If the user asks to use Coworx memory, do not save to Chrome instead unless the user explicitly chooses Chrome.
+
 ## Rule
 
 When the user explicitly delegates credential persistence for a specific app/site/account label, Coworx may create or update an ignored local secret file under `.coworx-private/secrets/` or store a non-secret reference to a system keychain/password-manager/vault item.

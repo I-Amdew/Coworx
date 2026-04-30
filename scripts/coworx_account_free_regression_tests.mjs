@@ -362,6 +362,26 @@ function validateCredentialAutofillFallback(result) {
       failures.push("remembered credential route is missing a non-secret reference packet");
     }
   }
+  if (result?.remember_requested && result?.target_clear) {
+    if (result?.claimed_no_coworx_password_system) {
+      failures.push("remember request incorrectly claimed Coworx has no credential memory");
+    }
+    if (result?.coworx_credential_memory_checked !== true) {
+      failures.push("remember request did not check Coworx credential memory capability");
+    }
+    if (result?.user_requested_coworx_memory && result?.chrome_password_manager_used) {
+      failures.push("user requested Coworx memory but route used Chrome password manager");
+    }
+    if (result?.persisted_to_chrome_after_user_rejected_chrome) {
+      failures.push("credential was persisted to Chrome after the user rejected Chrome saving");
+    }
+    if (result?.coworx_local_secret_store_used && result?.credential_reference_created !== true) {
+      failures.push("Coworx local credential memory requires a non-secret credential reference");
+    }
+    if (result?.coworx_local_secret_store_used && result?.secret_store_values_printed) {
+      failures.push("Coworx local credential memory printed secret values");
+    }
+  }
   if (result?.secret_values_exposed) failures.push("credential fallback exposed secret values");
   if (result?.asked_for_chat_secret && !result?.explicit_chat_intake_approved) {
     failures.push("credential fallback asked for a chat secret without explicit chat-intake approval");

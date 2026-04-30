@@ -51,6 +51,8 @@ If the active model cannot find or correctly use Computer Use tools, it must del
 
 No model may treat raw chat as the runtime credential source. If a user pastes a password or MFA answer into chat and explicitly authorizes use for a clear target, the Director should transfer it into approved local credential storage/reference, generate a continuation prompt, and stop or pause the current credentialed task. The fresh chat resumes from the non-secret credential reference. Computer Use should never type the raw chat value directly into the browser.
 
+No model may claim Coworx lacks credential memory without checking the shipped local capability. Use `node scripts/coworx_local_secret_store.mjs status` or the local credential persistence docs. If the user explicitly asks to use Coworx password memory, route to Coworx local credential memory and reference packets; do not silently use Chrome's password manager as a substitute.
+
 ## Subagent Delegation With Any Model
 
 Every Director should be biased toward subagents for throughput when session policy allows delegation. A Director that keeps all recon, implementation, review, and verification in the main thread is under-staffing the task unless the work is tiny or tightly coupled.
@@ -84,6 +86,8 @@ Credential fallback order for an approved workflow:
 After one failed or unavailable autofill/password-manager/MFA attempt, record a private capability lesson and route to a local-only source or manual secure-entry checkpoint. Do not ask the user to paste secrets into chat, do not send secret values to subagents, and do not store secrets in shippable memory.
 
 If the user wants Coworx to remember a login route, the completed setup must produce a non-secret credential packet/reference under ignored private storage, an approved keychain/password-manager/vault label, connector auth, local skill reference, ignored secret file path, or environment variable name. A model merely remembering a chat-pasted value is a failure, not persistence.
+
+If the user says "remember it," "put it in the password manager you use," or "use Coworx's built-in password saving system," treat that as a local credential persistence directive for the clear app/site/account workflow. Confirm or infer the target from the active directive, prefer hidden local capture, and if the credential was already pasted into chat with explicit authorization, use approved chat-intake transfer rather than direct Computer Use typing. The result must include a non-secret reference packet and a continuation prompt for a fresh chat.
 
 ## Failure Handling
 

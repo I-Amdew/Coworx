@@ -103,6 +103,8 @@ Coworx gets faster by storing safe local knowledge:
 
 Private user-specific maps belong in ignored private paths. Coworx may store login routes, account labels, and local secret-store references. When explicitly delegated, Coworx may persist login credentials only in ignored private secret storage, OS keychain, password manager, or vault handles, not in shippable memory or logs.
 
+Coworx has a shipped local credential memory helper: `scripts/coworx_local_secret_store.mjs`. Use `node scripts/coworx_local_secret_store.mjs status` before claiming Coworx lacks password memory. If the user asks for Coworx memory, use Coworx local secret-store/reference packets or stage secure capture; do not substitute Chrome password saving unless the user chooses Chrome.
+
 Chat text may be a temporary login intake route when the user explicitly chooses it for a clear target. Coworx should not use the pasted value directly for Computer Use. It should stage secure chat intake transfer or approved local transfer, store only the non-secret credential reference for future runs, and provide a fresh-chat continuation prompt.
 
 When developing Coworx itself, keep generic framework changes on public branches and personal workflow memories on ignored private paths or a local personal branch that is not pushed. Public commits should contain templates, fake fixtures, sanitized lessons, and generic scripts only.

@@ -22,7 +22,15 @@ chat_secret_direct_use = false
 chat_secret_intake_allowed = true
 secure_credential_capture_required = true
 credential_reference_required = true
+# Never store secrets by default. Explicit user grants use the Coworx local
+# credential memory settings below.
 store_secrets = false
+credential_memory_available = true
+coworx_local_secret_store_enabled = true
+credential_persistence_requires_explicit_user_grant = true
+default_secret_backend = "ignored_private_file_reference"
+chrome_password_manager_is_not_coworx_memory = true
+model_memory_is_not_credential_memory = true
 default_action_level = 0
 
 [paths]

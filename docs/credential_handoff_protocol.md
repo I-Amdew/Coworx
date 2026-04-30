@@ -12,6 +12,8 @@ Use placeholders in shippable material. Use ignored private files, environment v
 
 Chat may be used only as an explicit temporary credential intake source. It is never a runtime credential source for Computer Use, subagents, prompts, logs, or reports. If a secret is pasted into chat, pause the credential lane, transfer it into approved local persistence or another secure local source, create a non-secret credential reference, generate a continuation prompt for a fresh chat, and continue the credentialed workflow only from that reference or from user-present manual secure entry.
 
+Coworx has a shipped local credential memory path: `scripts/coworx_local_secret_store.mjs` plus non-secret credential reference packets. Models must not answer that Coworx has no password memory until they have checked that capability. The honest distinction is that Coworx local credential memory is not model memory and is not Chrome's password manager; encrypted storage requires an approved OS keychain, password-manager, or vault route.
+
 ## Supported Handoff Cases
 
 ### A. Already Signed-In Session
